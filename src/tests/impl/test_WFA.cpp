@@ -18,6 +18,50 @@
 
 
 
+TEST(needleAlignment, c20){
+
+    std::vector<std::string> align_queries;
+    std::vector<std::string> align_refs;
+
+    int32_t matchingScore = 0;
+    int32_t mismatchingPenalty = -3;
+    int32_t _open_gap_penalty1 = -4;
+    int32_t _extend_gap_penalty1 = -2;
+    int32_t _open_gap_penalty2 = -80;
+    int32_t _extend_gap_penalty2 = -1;
+
+    align_refs.push_back ("CCTATGGCACAGCGGTT---GCTTGCGCGGTCACCGGCGACTGGTCGATT");
+    align_refs.push_back ("CCTATGGCACAGCGGTTGGCGCTTGCGC---CACCGGCGACTGGTCGATT");
+    align_queries.push_back("CCTATGGCACAGCGGTTGGCGCTTGCGCACCGGCGACTGGTCGATT");
+    align_queries.push_back("CCTATGGCACAGCGGTTGGCG--CGGTCACCGGCGACTGGTCGATT");
+
+    std::vector<std::stack<char>> SQs(align_queries.size());
+    std::vector<std::stack<char>> SRs(align_refs.size());
+
+    int32_t score = needleAlignment(align_refs, align_queries, SQs, SRs, mismatchingPenalty,
+                                    _open_gap_penalty1,_extend_gap_penalty1, _open_gap_penalty2, _extend_gap_penalty2);
+    std::vector<std::string> _alignment_qs(align_queries.size());
+    std::vector<std::string> _alignment_ds(align_refs.size());
+    while (!SQs[0].empty()) {
+        for ( int k=0; k<align_refs.size(); ++k ){
+            _alignment_ds[k] += SRs[k].top();
+            SRs[k].pop();
+        }
+        for( int l=0; l<align_queries.size(); ++l ){
+            _alignment_qs[l] += SQs[l].top();
+            SQs[l].pop();
+        }
+    }
+    for ( int k=0; k<align_refs.size(); ++k ){
+        std::cout <<_alignment_ds[k]<< std::endl;
+    }
+    for( int l=0; l<align_queries.size(); ++l ) {
+        std::cout << _alignment_qs[l] << std::endl;
+    }
+
+    std::cout << score << std::endl;
+    ASSERT_EQ(0, 0);
+}
 
 
 /*

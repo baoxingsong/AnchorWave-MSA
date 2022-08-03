@@ -461,6 +461,263 @@ int32_t needleAlignment(const std::string& _dna_ref2, const std::string & _dna_q
 }
 
 
+
+
+
+
+
+
+int32_t needleAlignment(const std::vector<std::string> & _dna_refs, const std::vector<std::string> & _dna_queries, std::vector<std::stack<char>> & SQs, std::vector<std::stack<char>> & SRs,
+                        const int32_t & mismatchingPenalty, const int32_t & _open_gap_penalty1, const int32_t & _extend_gap_penalty1, const int32_t & _open_gap_penalty2, const int32_t & _extend_gap_penalty2){
+    int32_t matchingScore = 0;
+    int32_t length1 = _dna_refs[0].length();
+    int32_t length2 = _dna_queries[0].length();
+//    std::cout << "line 51" << std::endl;
+    int64_t matrixsize = (length1 +1) * (length2+1);
+    //  std::cout << "line 53" << std::endl;
+    int32_t * MM = new int32_t [matrixsize * 6];
+    int8_t * TM = new int8_t [matrixsize * 6];
+    //std::cout << "line 56" << std::endl;
+    std::fill_n(MM, matrixsize * 6, 0);
+    //std::cout << "line 58" << std::endl;
+    std::fill_n(TM+matrixsize*0, matrixsize*2, 0); //V and M
+    std::fill_n(TM+matrixsize*2, matrixsize, 1); //E1
+    std::fill_n(TM+matrixsize*3, matrixsize, 3); //F1
+    std::fill_n(TM+matrixsize*4, matrixsize, 2); //E2
+    std::fill_n(TM+matrixsize*5, matrixsize, 4); //F2
+
+//    std::cout << "line 65" << std::endl;
+    int32_t i=0, j;
+    for (j = 0; j < (length2 + 1); ++j  ){
+        MM[matrixsize * 0 + i * (length2 + 1) + j] = max(_open_gap_penalty1 + j*_extend_gap_penalty1, _open_gap_penalty2 + j*_extend_gap_penalty2);
+        MM[matrixsize * 1 + i * (length2 + 1) + j] = max(_open_gap_penalty1 + j*_extend_gap_penalty1, _open_gap_penalty2 + j*_extend_gap_penalty2);
+        MM[matrixsize * 2 + i * (length2 + 1) + j] = _open_gap_penalty1 + j*_extend_gap_penalty1;
+        MM[matrixsize * 3 + i * (length2 + 1) + j] = _open_gap_penalty1 + j*_extend_gap_penalty1;
+        MM[matrixsize * 4 + i * (length2 + 1) + j] = _open_gap_penalty2 + j*_extend_gap_penalty2;
+        MM[matrixsize * 5 + i * (length2 + 1) + j] = _open_gap_penalty2 + j*_extend_gap_penalty2;
+        TM[matrixsize * 0 + i * (length2 + 1) + j] = 1;
+        TM[matrixsize * 1 + i * (length2 + 1) + j] = 1;
+        TM[matrixsize * 2 + i * (length2 + 1) + j] = 1;
+        TM[matrixsize * 3 + i * (length2 + 1) + j] = 1;
+        TM[matrixsize * 4 + i * (length2 + 1) + j] = 1;
+        TM[matrixsize * 5 + i * (length2 + 1) + j] = 1;
+    }
+//    std::cout << "line 81" << std::endl;
+    j=0;
+    for (i = 0; i < (length1 + 1); ++i  ){
+        MM[matrixsize * 0 + i * (length2 + 1) + j] = max(_open_gap_penalty1 + i*_extend_gap_penalty1, _open_gap_penalty2 + i*_extend_gap_penalty2);
+        MM[matrixsize * 1 + i * (length2 + 1) + j] = max(_open_gap_penalty1 + i*_extend_gap_penalty1, _open_gap_penalty2 + i*_extend_gap_penalty2);
+        MM[matrixsize * 2 + i * (length2 + 1) + j] = _open_gap_penalty1 + i*_extend_gap_penalty1;
+        MM[matrixsize * 3 + i * (length2 + 1) + j] = _open_gap_penalty1 + i*_extend_gap_penalty1;
+        MM[matrixsize * 4 + i * (length2 + 1) + j] = _open_gap_penalty2 + i*_extend_gap_penalty2;
+        MM[matrixsize * 5 + i * (length2 + 1) + j] = _open_gap_penalty2 + i*_extend_gap_penalty2;
+        TM[matrixsize * 0 + i * (length2 + 1) + j] = 3;
+        TM[matrixsize * 1 + i * (length2 + 1) + j] = 3;
+        TM[matrixsize * 2 + i * (length2 + 1) + j] = 3;
+        TM[matrixsize * 3 + i * (length2 + 1) + j] = 3;
+        TM[matrixsize * 4 + i * (length2 + 1) + j] = 3;
+        TM[matrixsize * 5 + i * (length2 + 1) + j] = 3;
+    }
+//    std::cout << "line 97" << std::endl;
+    MM[0] = 0;
+    TM[0] = 0; //V
+    TM[matrixsize * 1] = 0;//M
+    TM[matrixsize * 2] = 1;//E1
+    TM[matrixsize * 3] = 3;//F1
+    TM[matrixsize * 4] = 2;//E2
+    TM[matrixsize * 5] = 4;//F2
+    int32_t mScore;
+//    std::cout << "line 106" << std::endl;
+    for ( i=1; i<=length1; ++i ){
+        for ( j=1; j<=length2; ++j ){
+            mScore = 0;
+            for ( int k=0; k<_dna_refs.size(); ++k  ){
+                for ( int l=0; l<_dna_queries.size(); ++l  ){
+                    mScore += _dna_refs[k][i-1] == '-' ? 0 :  _dna_queries[l][j-1] == '-' ? 0 : (_dna_refs[k][i-1] == _dna_queries[l][j-1] ? matchingScore : mismatchingPenalty);
+                }
+            }
+            if(i ==j){
+                std::cout << "line 539 " << mScore << std::endl;
+            }
+            mScore = mScore / (_dna_refs.size() * _dna_queries.size());
+
+            if(i ==j) {
+                std::cout << "line 541 " << mScore << std::endl;
+            }
+            MM[matrixsize * 1 + i * (length2 + 1) + j] = mScore + MM[matrixsize * 0 + (i-1) * (length2 + 1) + j-1];
+            TM[matrixsize * 1 + i * (length2 + 1) + j] = 0;
+            if( _extend_gap_penalty1 + MM[matrixsize * 2 + i * (length2 + 1) + j-1] >= _open_gap_penalty1 + _extend_gap_penalty1 + MM[matrixsize * 1 + i * (length2 + 1) + j-1] ){
+                MM[matrixsize * 2 + i * (length2 + 1) + j] = _extend_gap_penalty1 + MM[matrixsize * 2 + i * (length2 + 1) + j-1];
+                TM[matrixsize * 2 + i * (length2 + 1) + j] = 1;
+            }else{
+                MM[matrixsize * 2 + i * (length2 + 1) + j] = _open_gap_penalty1 + _extend_gap_penalty1 + MM[matrixsize * 1 + i * (length2 + 1) + j-1];
+                TM[matrixsize * 2 + i * (length2 + 1) + j] = -1;
+            }
+            if( _extend_gap_penalty2 + MM[matrixsize * 4 + i * (length2 + 1) + j-1] >= _open_gap_penalty2 + _extend_gap_penalty2 + MM[matrixsize * 1 + i * (length2 + 1) + j-1] ){
+                MM[matrixsize * 4 + i * (length2 + 1) + j] = _extend_gap_penalty2 + MM[matrixsize * 4 + i * (length2 + 1) + j-1];
+                TM[matrixsize * 4 + i * (length2 + 1) + j] = 2;
+            }else{
+                MM[matrixsize * 4 + i * (length2 + 1) + j] = _open_gap_penalty2 + _extend_gap_penalty2 + MM[matrixsize * 1 + i * (length2 + 1) + j-1];
+                TM[matrixsize * 4 + i * (length2 + 1) + j] = -1;
+            }
+
+            if(_extend_gap_penalty1 + MM[matrixsize * 3 + (i -1)* (length2 + 1) + j] >= _open_gap_penalty1 + _extend_gap_penalty1 + MM[matrixsize * 1 + (i -1)* (length2 + 1) + j] ){
+                MM[matrixsize * 3 + i * (length2 + 1) + j] = _extend_gap_penalty1 + MM[matrixsize * 3 + (i -1)* (length2 + 1) + j];
+                TM[matrixsize * 3 + i * (length2 + 1) + j] = 3;
+            }else{
+                MM[matrixsize * 3 + i * (length2 + 1) + j] = _open_gap_penalty1 + _extend_gap_penalty1 + MM[matrixsize * 1 + (i -1)* (length2 + 1) + j];
+                TM[matrixsize * 3 + i * (length2 + 1) + j] = -1;
+            }
+            if(_extend_gap_penalty2 + MM[matrixsize * 5 + (i -1)* (length2 + 1) + j] >= _open_gap_penalty2 + _extend_gap_penalty2 + MM[matrixsize * 1 + (i -1)* (length2 + 1) + j] ){
+                MM[matrixsize * 5 + i * (length2 + 1) + j] = _extend_gap_penalty2 + MM[matrixsize * 5 + (i -1)* (length2 + 1) + j];
+                TM[matrixsize * 5 + i * (length2 + 1) + j] = 4;
+            }else{
+                MM[matrixsize * 5 + i * (length2 + 1) + j] = _open_gap_penalty2 + _extend_gap_penalty2 + MM[matrixsize * 1 + (i -1)* (length2 + 1) + j];
+                TM[matrixsize * 5 + i * (length2 + 1) + j] = -1;
+            }
+            MM[matrixsize * 0 + i * (length2 + 1) + j] = max(MM[matrixsize * 1 + i * (length2 + 1) + j], MM[matrixsize * 2 + i * (length2 + 1) + j], MM[matrixsize * 3 + i * (length2 + 1) + j], MM[matrixsize * 4 + i * (length2 + 1) + j], MM[matrixsize * 5 + i * (length2 + 1) + j], TM[matrixsize * 0 + i * (length2 + 1) + j]);
+        }
+    }
+//    std::cout << "line 144" << std::endl;
+
+    int32_t endPosition1 = length1;
+    int32_t endPosition2 = length2;
+    int32_t maxScore = MM[matrixsize * 0 + endPosition1 * (length2 + 1) + endPosition2];
+
+    i = endPosition1;
+    j = endPosition2;
+
+    int8_t trackMatrix = TM[matrixsize * 0 + endPosition1 * (length2 + 1) + endPosition2];
+//    std::cout << "line 154" << std::endl;
+    while (i != 0 || j != 0) {
+        if (j == 0) {
+            for ( int l=0; l<_dna_queries.size(); ++l  ){
+                SQs[l].push('-');
+            }
+            for ( int k=0; k<_dna_refs.size(); ++k  ){
+                SRs[k].push(_dna_refs[k][i-1]);
+            }
+            --i;
+        } else if (i == 0) {
+            for ( int l=0; l<_dna_queries.size(); ++l  ){
+                SQs[l].push(_dna_queries[l][j-1]);
+            }
+            for ( int k=0; k<_dna_refs.size(); ++k  ){
+                SRs[k].push('-');
+            }
+            --j;
+        } else {
+            if( 0 == trackMatrix ) { // come from V
+                {
+                    if ( TM[matrixsize * 0 + i * (length2 + 1) + j] == -1 ) {
+                        for ( int l=0; l<_dna_queries.size(); ++l  ){
+                            SQs[l].push(_dna_queries[l][j-1]);
+                        }
+                        for ( int k=0; k<_dna_refs.size(); ++k  ){
+                            SRs[k].push(_dna_refs[k][i-1]);
+                        }
+                        trackMatrix = TM[matrixsize * 1 + i * (length2 + 1) + j];
+                        --i; --j;
+                    } else if (  TM[matrixsize * 0 + i * (length2 + 1) + j] == 3 ) {
+                        for ( int k=0; k<_dna_refs.size(); ++k  ){
+                            SRs[k].push(_dna_refs[k][i-1]);
+                        }
+                        for ( int l=0; l<_dna_queries.size(); ++l  ){
+                            SQs[l].push('-');
+                        }
+                        trackMatrix = TM[matrixsize * 3 + i * (length2 + 1) + j];
+                        --i;
+                    } else if (  TM[matrixsize * 0 + i * (length2 + 1) + j] == 4 ) {
+                        for ( int k=0; k<_dna_refs.size(); ++k  ){
+                            SRs[k].push(_dna_refs[k][i-1]);
+                        }
+                        for ( int l=0; l<_dna_queries.size(); ++l  ){
+                            SQs[l].push('-');
+                        }
+                        trackMatrix = TM[matrixsize * 5 + i * (length2 + 1) + j];
+                        --i;
+                    } else if (  TM[matrixsize * 0 + i * (length2 + 1) + j] == 1 ) {
+                        for ( int k=0; k<_dna_refs.size(); ++k  ){
+                            SRs[k].push('-');
+                        }
+                        for ( int l=0; l<_dna_queries.size(); ++l  ){
+                            SQs[l].push(_dna_queries[l][j-1]);
+                        }
+                        trackMatrix = TM[matrixsize * 2 + i * (length2 + 1) + j];
+                        --j;
+                    } else if (  TM[matrixsize * 0 + i * (length2 + 1) + j] == 2 ){
+                        for ( int k=0; k<_dna_refs.size(); ++k  ){
+                            SRs[k].push('-');
+                        }
+                        for ( int l=0; l<_dna_queries.size(); ++l  ){
+                            SQs[l].push(_dna_queries[l][j-1]);
+                        }
+                        trackMatrix = TM[matrixsize * 4 + i * (length2 + 1) + j];
+                        --j;
+                    }else{
+                        std::cout << "line 203" << std::endl;
+                    }
+                }
+            } else if ( trackMatrix == -1 ) {
+                for ( int l=0; l<_dna_queries.size(); ++l  ){
+                    SQs[l].push(_dna_queries[l][j-1]);
+                }
+                for ( int k=0; k<_dna_refs.size(); ++k  ){
+                    SRs[k].push(_dna_refs[k][i-1]);
+                }
+                trackMatrix = TM[matrixsize * 1 + i * (length2 + 1) + j];
+                --i; --j;
+            } else if( 1 == trackMatrix ){
+                for ( int k=0; k<_dna_refs.size(); ++k  ){
+                    SRs[k].push('-');
+                }
+                for ( int l=0; l<_dna_queries.size(); ++l  ){
+                    SQs[l].push(_dna_queries[l][j-1]);
+                }
+                trackMatrix = TM[matrixsize * 2 + i * (length2 + 1) + j];
+                --j;
+            }else if( 2 == trackMatrix ){
+                for ( int k=0; k<_dna_refs.size(); ++k  ){
+                    SRs[k].push('-');
+                }
+                for ( int l=0; l<_dna_queries.size(); ++l  ){
+                    SQs[l].push(_dna_queries[l][j-1]);
+                }
+                trackMatrix = TM[matrixsize * 4 + i * (length2 + 1) + j];
+                --j;
+            }else if( 3 == trackMatrix ){
+                for ( int k=0; k<_dna_refs.size(); ++k  ){
+                    SRs[k].push(_dna_refs[k][i-1]);
+                }
+                for ( int l=0; l<_dna_queries.size(); ++l  ){
+                    SQs[l].push('-');
+                }
+                trackMatrix = TM[matrixsize * 3 + i * (length2 + 1) + j];
+                --i;
+            }else if( 4 == trackMatrix ){
+                for ( int k=0; k<_dna_refs.size(); ++k  ){
+                    SRs[k].push(_dna_refs[k][i-1]);
+                }
+                for ( int l=0; l<_dna_queries.size(); ++l  ){
+                    SQs[l].push('-');
+                }
+                trackMatrix = TM[matrixsize * 5 + i * (length2 + 1) + j];
+                --i;
+            }else{
+                std::cout << "line 232" << std::endl;
+            }
+        }
+    }
+//    std::cout << "line 226" << std::endl;
+    delete[] MM;
+    //  std::cout << "line 228" << std::endl;
+    delete[] TM;
+    //std::cout << "line 229" << std::endl;
+    return maxScore;
+}
+
+
+
 int32_t alignment(const std::string& _dna_q, const std::string& _dna_d, std::stack<char> & SQ, std::stack<char> & SD,
                   const int32_t & matchingScore, int32_t mismatchingPenalty,
                   int32_t _open_gap_penalty1, int32_t _extend_gap_penalty1,
@@ -1614,7 +1871,7 @@ int64_t alignSlidingWindow_local_wfa2_v2(  std::string& dna_q,  std::string& dna
     }
 
     //check all Ns end
-//    std::cout << dna_d << std::endl << dna_q << std::endl << "line 659" << std::endl;
+    std::cout << dna_d << std::endl << dna_q << std::endl << "line 1617" << std::endl;
     int32_t longerSeqLength = max(_length_of_d, _length_of_q);
     //  std::cout << "line 830" << std::endl;
     std::string qSeq = dna_q;
@@ -1663,13 +1920,15 @@ int64_t alignSlidingWindow_local_wfa2_v2(  std::string& dna_q,  std::string& dna
                 pattern_pos++;
             }
         }
+        std::cout << "line 1666" << std::endl;
     }else{
+        std::cout << "line 1668" << std::endl;
         attributes.memory_mode = wavefront_memory_ultralow;
-        wavefront_aligner_delete(wf_aligner);
-        wavefront_aligner_t* const wf_aligner = wavefront_aligner_new(&attributes);
-        if (WF_STATUS_SUCCESSFUL == wavefront_align(wf_aligner,pattern,strlen(pattern),text,strlen(text))){ // Align
-            totalScore = wf_aligner->cigar.score;
-            cigar_t *const edit_cigar = &wf_aligner->cigar;
+
+        wavefront_aligner_t* const wf_aligner2 = wavefront_aligner_new(&attributes);
+        if (WF_STATUS_SUCCESSFUL == wavefront_align(wf_aligner2,pattern,strlen(pattern),text,strlen(text))){ // Align
+            totalScore = wf_aligner2->cigar.score;
+            cigar_t *const edit_cigar = &wf_aligner2->cigar;
             char *const operations = edit_cigar->operations;
 
             int i, pattern_pos = 0, text_pos = 0;
@@ -1694,16 +1953,19 @@ int64_t alignSlidingWindow_local_wfa2_v2(  std::string& dna_q,  std::string& dna
                     pattern_pos++;
                 }
             }
+            std::cout << "line 1699" << std::endl;
         }else {
 //        std::cout << "WFA failed, anchorwave count:" << std::to_string(wfa_code) << std::endl;
-//        std::cout << "WFA_failed:" << std::to_string(_length_of_d) << "\t" << std::to_string(_length_of_q) << std::endl;
+            std::cout << "WFA_failed:" << std::to_string(_length_of_d) << "\t" << std::to_string(_length_of_q) << std::endl;
             totalScore = alignSlidingWindow_minimap2_or_NW(dna_q, dna_d, _alignment_q, _alignment_d,
                                                            slidingWindowSize, wfaSize, matchingScore,
                                                            mismatchingPenalty, openGapPenalty1, extendGapPenalty1,
                                                            openGapPenalty2,
                                                            extendGapPenalty2, min_wavefront_length,
                                                            max_distance_threshold, m);
+            std::cout << "line 1709" << std::endl;
         }
+        wavefront_aligner_delete(wf_aligner2);
     }
     wavefront_aligner_delete(wf_aligner);
     return totalScore;

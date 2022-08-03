@@ -78,4 +78,8 @@ int64_t alignSlidingWindow_minimap2( const std::string& dna_q, const std::string
                                      std::string & _alignment_q, std::string & _alignment_d, const int64_t & slidingWindowSize,
                                      const int32_t & mismatchingPenalty, const int32_t & openGapPenalty1,
                                      const int32_t & extendGapPenalty1, const int32_t & openGapPenalty2, const int32_t & extendGapPenalty2);
+
+int32_t needleAlignment(const std::vector<std::string> & _dna_refs, const std::vector<std::string> & _dna_queries, std::vector<std::stack<char>> & SQs, std::vector<std::stack<char>> & SRs,
+                        const int32_t & mismatchingPenalty, const int32_t & _open_gap_penalty1, const int32_t & _extend_gap_penalty1, const int32_t & _open_gap_penalty2, const int32_t & _extend_gap_penalty2);
+
 #endif //PROALI_ALIGNSLIDINGWINDOW_H
