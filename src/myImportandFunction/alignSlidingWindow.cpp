@@ -536,13 +536,17 @@ int32_t needleAlignment(const std::vector<std::string> & _dna_refs, const std::v
                     mScore += _dna_refs[k][i-1] == '-' ? 0 :  _dna_queries[l][j-1] == '-' ? 0 : (_dna_refs[k][i-1] == _dna_queries[l][j-1] ? matchingScore : mismatchingPenalty);
                 }
             }
+            int32_t sizes = (_dna_refs.size() * _dna_queries.size());
             if(i ==j){
-                std::cout << "line 539 " << mScore << std::endl;
+                std::cout << "line 541 " << mScore << std::endl;
+                std::cout << "line 542 " << sizes << std::endl;
             }
-            mScore = mScore / (_dna_refs.size() * _dna_queries.size());
+
+
+            mScore = mScore / sizes;
 
             if(i ==j) {
-                std::cout << "line 541 " << mScore << std::endl;
+                std::cout << "line 548 " << mScore << std::endl;
             }
             MM[matrixsize * 1 + i * (length2 + 1) + j] = mScore + MM[matrixsize * 0 + (i-1) * (length2 + 1) + j-1];
             TM[matrixsize * 1 + i * (length2 + 1) + j] = 0;
@@ -1708,26 +1712,27 @@ int64_t alignSlidingWindow_minimap2_or_NW(  std::string& dna_q,  std::string& dn
     //check all Ns end
 //    std::cout << dna_d << std::endl << dna_q << std::endl << "line 659" << std::endl;
     int32_t longerSeqLength = max(_length_of_d, _length_of_q);
+    std::cout <<  _length_of_d*_length_of_q << "\t" << (slidingWindowSize*slidingWindowSize*30) << std::endl;
     if( _length_of_d*_length_of_q <= (slidingWindowSize*slidingWindowSize*30) ){ // this calculated via RAM cost
         /*the above parameter settings were based on RAM cost*/
         int32_t adjustBandWidth = -1;
-//        std::cout << "line 789" << std::endl;
+        std::cout << "line 789" << std::endl;
         totalScore =  alignSlidingWindow_minimap2( dna_q, dna_d, _length_of_q, _length_of_d, _alignment_q, _alignment_d, adjustBandWidth,
                                                    mismatchingPenalty, openGapPenalty1, extendGapPenalty1, openGapPenalty2, extendGapPenalty2);
-//        std::cout << "minimap2:" << std::to_string(_length_of_d) << "\t" << std::to_string(_length_of_q) << std::endl;
+        std::cout << "minimap2:" << std::to_string(_length_of_d) << "\t" << std::to_string(_length_of_q) << std::endl;
     }else if( longerSeqLength*slidingWindowSize*2 <= (slidingWindowSize*slidingWindowSize*30) ){ // this calculated with RAM cost
         /*the above parameter settings were based on RAM cost*/
         int32_t adjustBandWidth = (slidingWindowSize*slidingWindowSize*30)/2/longerSeqLength;
-    //    std::cout << "line 878 adjustBandWidth:" << std::to_string(adjustBandWidth) << std::endl;
+        std::cout << "line 878 adjustBandWidth:" << std::to_string(adjustBandWidth) << std::endl;
 
         totalScore =  alignSlidingWindow_minimap2( dna_q, dna_d, _length_of_q, _length_of_d, _alignment_q, _alignment_d, adjustBandWidth,
                                                    mismatchingPenalty, openGapPenalty1, extendGapPenalty1, openGapPenalty2, extendGapPenalty2);
-//        std::cout << "minimap2_band:" << std::to_string(_length_of_d) << "\t" << std::to_string(_length_of_q) << std::endl;
+        std::cout << "minimap2_band:" << std::to_string(_length_of_d) << "\t" << std::to_string(_length_of_q) << std::endl;
     }else{
-      //  std::cout << "line 882" << std::endl;
+        std::cout << "line 882" << std::endl;
         totalScore =  alignSlidingWindow( dna_q, dna_d, _length_of_q, _length_of_d, _alignment_q, _alignment_d, slidingWindowSize, matchingScore,
                                           mismatchingPenalty, openGapPenalty1, extendGapPenalty1, openGapPenalty2, extendGapPenalty2);
-//        std::cout << "slidingwindow:" << std::to_string(_length_of_d) << "\t" << std::to_string(_length_of_q) << std::endl;
+        std::cout << "slidingwindow:" << std::to_string(_length_of_d) << "\t" << std::to_string(_length_of_q) << std::endl;
     }
     return totalScore;
 }
@@ -1889,11 +1894,22 @@ int64_t alignSlidingWindow_local_wfa2_v2(  std::string& dna_q,  std::string& dna
     attributes.affine2p_penalties.gap_extension2 = -extendGapPenalty2; // E2 > 0
     attributes.alignment_form.span = alignment_end2end;
     attributes.alignment_scope = compute_alignment;
+    attributes.memory_mode = wavefront_memory_high;
     attributes.system.max_memory_abort = (slidingWindowSize*slidingWindowSize*30);
 
     wavefront_aligner_t* const wf_aligner = wavefront_aligner_new(&attributes);
 
-    if (WF_STATUS_SUCCESSFUL == wavefront_align(wf_aligner,pattern,strlen(pattern),text,strlen(text))){ // Align
+    if( dna_q.size() < 20 || dna_d.size()<20 || dna_q.size()/dna_d.size()>5 || dna_d.size()/dna_q.size()>5 ){
+
+        totalScore = alignSlidingWindow_minimap2_or_NW(dna_q, dna_d, _alignment_q, _alignment_d,
+                                                       slidingWindowSize, wfaSize, matchingScore,
+                                                       mismatchingPenalty, openGapPenalty1, extendGapPenalty1,
+                                                       openGapPenalty2,
+                                                       extendGapPenalty2, min_wavefront_length,
+                                                       max_distance_threshold, m);
+        std::cout << "line 1904" << std::endl;
+
+    }else if (WF_STATUS_SUCCESSFUL == wavefront_align(wf_aligner,pattern,strlen(pattern),text,strlen(text))){ // Align
         totalScore = wf_aligner->cigar.score;
         cigar_t *const edit_cigar = &wf_aligner->cigar;
         char *const operations = edit_cigar->operations;
@@ -1923,9 +1939,20 @@ int64_t alignSlidingWindow_local_wfa2_v2(  std::string& dna_q,  std::string& dna
         std::cout << "line 1666" << std::endl;
     }else{
         std::cout << "line 1668" << std::endl;
-        attributes.memory_mode = wavefront_memory_ultralow;
+        wavefront_aligner_attr_t attributes2 = wavefront_aligner_attr_default;
+        attributes2.distance_metric = gap_affine_2p;
+        attributes2.affine2p_penalties.mismatch = -mismatchingPenalty;       // X > 0
+        attributes2.affine2p_penalties.gap_opening1 = -openGapPenalty1;   // O1 >= 0
+        attributes2.affine2p_penalties.gap_extension1 = -extendGapPenalty1; // E1 > 0
+        attributes2.affine2p_penalties.gap_opening2 = -openGapPenalty2;  // O2 >= 0
+        attributes2.affine2p_penalties.gap_extension2 = -extendGapPenalty2; // E2 > 0
+        attributes2.alignment_form.span = alignment_end2end;
+        attributes2.alignment_scope = compute_alignment;
+        attributes2.memory_mode = wavefront_memory_high;
+        attributes2.system.max_memory_abort = (slidingWindowSize*slidingWindowSize*30);
+        attributes2.memory_mode = wavefront_memory_ultralow;
 
-        wavefront_aligner_t* const wf_aligner2 = wavefront_aligner_new(&attributes);
+        wavefront_aligner_t* const wf_aligner2 = wavefront_aligner_new(&attributes2);
         if (WF_STATUS_SUCCESSFUL == wavefront_align(wf_aligner2,pattern,strlen(pattern),text,strlen(text))){ // Align
             totalScore = wf_aligner2->cigar.score;
             cigar_t *const edit_cigar = &wf_aligner2->cigar;
@@ -1953,7 +1980,7 @@ int64_t alignSlidingWindow_local_wfa2_v2(  std::string& dna_q,  std::string& dna
                     pattern_pos++;
                 }
             }
-            std::cout << "line 1699" << std::endl;
+            std::cout << "line 1979" << std::endl;
         }else {
 //        std::cout << "WFA failed, anchorwave count:" << std::to_string(wfa_code) << std::endl;
             std::cout << "WFA_failed:" << std::to_string(_length_of_d) << "\t" << std::to_string(_length_of_q) << std::endl;
