@@ -149,6 +149,11 @@ add_executable(anchorwave
         WFA2-lib/wavefront/wavefront_penalties.c
         WFA2-lib/wavefront/wavefront_plot.c
         WFA2-lib/wavefront/wavefront_slab.c
+        WFA2-lib/wavefront/wavefront_unialign.c
+        WFA2-lib/wavefront/wavefront_unialign.h
+        WFA2-lib/wavefront/wavefront_bialigner.c
+        WFA2-lib/wavefront/wavefront_bialigner.h
+
         WFA2-lib/alignment/affine2p_penalties.h
         WFA2-lib/alignment/affine_penalties.h
         WFA2-lib/alignment/cigar.h
