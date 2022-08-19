@@ -154,6 +154,10 @@ add_executable(anchorwave
         WFA2-lib/wavefront/wavefront_bialigner.c
         WFA2-lib/wavefront/wavefront_bialigner.h
 
+
+
+
+
         WFA2-lib/alignment/affine2p_penalties.h
         WFA2-lib/alignment/affine_penalties.h
         WFA2-lib/alignment/cigar.h
