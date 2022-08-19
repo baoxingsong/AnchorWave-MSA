@@ -1899,7 +1899,7 @@ int64_t alignSlidingWindow_local_wfa2_v2(  std::string& dna_q,  std::string& dna
 
     wavefront_aligner_t* const wf_aligner = wavefront_aligner_new(&attributes);
 
-    if( dna_q.size() < 20 || dna_d.size()<20 || dna_q.size()/dna_d.size()>5 || dna_d.size()/dna_q.size()>5 ){
+    if( dna_q.size() < 20 || dna_d.size()<20 || dna_q.size()/dna_d.size()>3 || dna_d.size()/dna_q.size()>3 ){
 
         totalScore = alignSlidingWindow_minimap2_or_NW(dna_q, dna_d, _alignment_q, _alignment_d,
                                                        slidingWindowSize, wfaSize, matchingScore,
@@ -1907,7 +1907,7 @@ int64_t alignSlidingWindow_local_wfa2_v2(  std::string& dna_q,  std::string& dna
                                                        openGapPenalty2,
                                                        extendGapPenalty2, min_wavefront_length,
                                                        max_distance_threshold, m);
-        std::cout << "line 1904" << std::endl;
+        std::cout << "line 1904, score:" << totalScore << std::endl;
 
     }else if (WF_STATUS_SUCCESSFUL == wavefront_align(wf_aligner,pattern,strlen(pattern),text,strlen(text))){ // Align
         totalScore = wf_aligner->cigar->score;
@@ -1936,20 +1936,20 @@ int64_t alignSlidingWindow_local_wfa2_v2(  std::string& dna_q,  std::string& dna
                 pattern_pos++;
             }
         }
-        std::cout << "line 1666" << std::endl;
+        std::cout << "line 1666:" << totalScore << std::endl;
     }else {
-        if (_length_of_d * _length_of_q <=
-            (slidingWindowSize * slidingWindowSize * 30)) { // this calculated via RAM cost
-            /*the above parameter settings were based on RAM cost*/
-            int32_t adjustBandWidth = -1;
-            std::cout << "line 789" << std::endl;
-            totalScore = alignSlidingWindow_minimap2(dna_q, dna_d, _length_of_q, _length_of_d, _alignment_q,
-                                                     _alignment_d, adjustBandWidth,
-                                                     mismatchingPenalty, openGapPenalty1, extendGapPenalty1,
-                                                     openGapPenalty2, extendGapPenalty2);
-            std::cout << "minimap2:" << std::to_string(_length_of_d) << "\t" << std::to_string(_length_of_q)
-                      << std::endl;
-        } else {
+//        if (_length_of_d * _length_of_q <=
+//            (slidingWindowSize * slidingWindowSize * 30)) { // this calculated via RAM cost
+//            /*the above parameter settings were based on RAM cost*/
+//            int32_t adjustBandWidth = -1;
+//            std::cout << "line 789" << std::endl;
+//            totalScore = alignSlidingWindow_minimap2(dna_q, dna_d, _length_of_q, _length_of_d, _alignment_q,
+//                                                     _alignment_d, adjustBandWidth,
+//                                                     mismatchingPenalty, openGapPenalty1, extendGapPenalty1,
+//                                                     openGapPenalty2, extendGapPenalty2);
+//            std::cout << "minimap2:" << std::to_string(_length_of_d) << "\t" << std::to_string(_length_of_q) << " score:" << totalScore
+//                      << std::endl;
+//        } else {
             std::cout << "line 1668" << std::endl;
             wavefront_aligner_attr_t attributes2 = wavefront_aligner_attr_default;
             attributes2.distance_metric = gap_affine_2p;
@@ -1994,7 +1994,7 @@ int64_t alignSlidingWindow_local_wfa2_v2(  std::string& dna_q,  std::string& dna
                         pattern_pos++;
                     }
                 }
-                std::cout << "line 1979" << std::endl;
+                std::cout << "line 1979:" << totalScore << std::endl;
             } else {
                 //        std::cout << "WFA failed, anchorwave count:" << std::to_string(wfa_code) << std::endl;
                 std::cout << "WFA_failed:" << std::to_string(_length_of_d) << "\t" << std::to_string(_length_of_q)
@@ -2005,10 +2005,10 @@ int64_t alignSlidingWindow_local_wfa2_v2(  std::string& dna_q,  std::string& dna
                                                                openGapPenalty2,
                                                                extendGapPenalty2, min_wavefront_length,
                                                                max_distance_threshold, m);
-                std::cout << "line 1709" << std::endl;
+                std::cout << "line 1709:" << totalScore << std::endl;
             }
             wavefront_aligner_delete(wf_aligner2);
-        }
+        //}
     }
     wavefront_aligner_delete(wf_aligner);
     return totalScore;
