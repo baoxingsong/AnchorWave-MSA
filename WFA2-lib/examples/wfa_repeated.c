@@ -29,7 +29,7 @@
  * DESCRIPTION: WFA Sample-Code
  */
 
-#include "../wavefront/wavefront_align.h"
+#include "wavefront/wavefront_align.h"
 
 int main(int argc,char* argv[]) {
   // Patter & Text
