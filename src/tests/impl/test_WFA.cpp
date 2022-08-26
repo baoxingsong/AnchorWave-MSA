@@ -30,10 +30,10 @@ TEST(needleAlignment, c20){
     int32_t _open_gap_penalty2 = -80;
     int32_t _extend_gap_penalty2 = -1;
 
-    align_refs.push_back ("CCTATGGCACAGCGGTT---GCTTGCGCGGTCACCGGCGACTGGTCGATT");
-    align_refs.push_back ("CCTATGGCACAGCGGTTGGCGCTTGCGC---CACCGGCGACTGGTCGATT");
-    align_queries.push_back("CCTATGGCACAGCGGTTGGCGCTTGCGCACCGGCGACTGGTCGATT");
-    align_queries.push_back("CCTATGGCACAGCGGTTGGCG--CGGTCACCGGCGACTGGTCGATT");
+    align_refs.push_back   ("CCTATGGCACAGCGGTTGCTTGCGCGGTCACCGGCGACTGGTCGATT");
+    align_refs.push_back   ("CCTATGGCACAGCGGTTGGCGCTTGCGCCACCGGCGACTGGTCGATT");
+    align_queries.push_back("CCTATGGCACAGCGGTTGGCGCTTGCGCACCGGCGACTGGTCGATTA");
+    align_queries.push_back("CCTATGGCACAGCGGTTGGCGCGGTCACCGGCGACTGGTCGATTAAA");
 
     std::vector<std::stack<char>> SQs(align_queries.size());
     std::vector<std::stack<char>> SRs(align_refs.size());

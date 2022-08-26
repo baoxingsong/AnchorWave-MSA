@@ -92,7 +92,9 @@ int main(int argc, char** argv){
         return sdiToMaf(--argc, ++argv, parameters);
     } else if ( program.compare("ali") == 0 ) {
         return ali(--argc, ++argv, parameters);
-    } else{
+    } else if ( program.compare("ali_msa") == 0 ) {
+        return ali_msa(--argc, ++argv, parameters);
+    }else{
         usage();
     }
     return 0;

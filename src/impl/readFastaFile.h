@@ -10,7 +10,7 @@
 #include <map>
 #include "../model/model.h"
 #include <sstream>
-
+void readFastaFile( const std::string& filePath, std::map<std::string, std::string>& sequences, std::vector<std::string> & seqNames );
 void readFastaFile( const std::string& filePath, std::map<std::string, std::string>& sequences);
 
 //void readFastaFileWorkWithIUPACcode( const std::string& filePath, std::map<std::string, Fasta>& sequences);

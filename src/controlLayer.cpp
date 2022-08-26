@@ -1380,4 +1380,89 @@ int ali( int argc, char** argv, std::map<std::string, std::string>& parameters )
     }
     return 0;
 }
+int ali_msa(int argc, char** argv, std::map<std::string, std::string>& parameters ){
+    int32_t mismatchingPenalty = -3;
+    int32_t _open_gap_penalty1 = -4;
+    int32_t _extend_gap_penalty1 = -2;
+    int32_t _open_gap_penalty2 = -80;
+    int32_t _extend_gap_penalty2 = -1;
+    int8_t kmer_size = 12;
+    int32_t loopCountend = 50;
+    std::map<std::string, std::string> sequences;
+    std::vector<std::string> seqNames;
+    std::stringstream usage;
+    usage << "Usage: " << PROGRAMNAME
+          << " ali_msa -i Seq.fa -o outResultPath.fa"
+          << std::endl <<
+          "Options" << std::endl <<
+          " -h           produce help message" << std::endl <<
+          " -i   FILE    multiple sequence alignment (single sequence in FASTA format)" << std::endl <<
+          " -o   FILE    out compared sequence (single sequence in FASTA format)" << std::endl <<
+          " -k   INT     kmer size (default: " << std::to_string(kmer_size) << ")" << std::endl <<
+          " -d   INT     maximum number of iterations (default: " << loopCountend << ")" << std::endl <<
+          " -B   INT     mismatching penalty (default: " << mismatchingPenalty << ")" << std::endl <<
+          " -O1  INT     open gap penalty (default: " << _open_gap_penalty1 << ")" << std::endl <<
+          " -E1  INT     extend gap penalty (default: " << _extend_gap_penalty1 << ")" << std::endl <<
+          " -O2  INT     open gap penalty 2 (default: " << _open_gap_penalty2 << ")" << std::endl <<
+          " -E2  INT     extend gap penalty 2 (default: " << _extend_gap_penalty2 << ")" << std::endl << std::endl;
+    InputParser inputParser(argc, argv);
+    if (inputParser.cmdOptionExists("-h") || inputParser.cmdOptionExists("--help")) {
+        std::cerr << usage.str();
+    }else if (inputParser.cmdOptionExists("-i") && inputParser.cmdOptionExists("-o")) {
 
+        std::string inputSequencePath = inputParser.getCmdOption("-i");
+        std::string outResultPath = inputParser.getCmdOption("-o");
+        if( inputParser.cmdOptionExists("-k")){
+            kmer_size = std::stoi(inputParser.getCmdOption("-k"));
+        }
+        if( inputParser.cmdOptionExists("-d")){
+            loopCountend = std::stoi(inputParser.getCmdOption("-d"));
+        }
+        if( inputParser.cmdOptionExists("-B") ){
+            mismatchingPenalty = std::stoi( inputParser.getCmdOption("-B") );
+            if( mismatchingPenalty>=0 ){
+                std::cout << "parameter of B should be a negative value" << std::endl;
+                return 1;
+            }
+        }
+        if( inputParser.cmdOptionExists("-O1") ){
+            _open_gap_penalty1 = std::stoi( inputParser.getCmdOption("-O1") );
+            if( _open_gap_penalty1>=0 ){
+                std::cout << "parameter of O1 should be a negative value" << std::endl;
+                return 1;
+            }
+        }
+        if( inputParser.cmdOptionExists("-E1") ){
+            _extend_gap_penalty1 = std::stoi( inputParser.getCmdOption("-E1") );
+            if( _extend_gap_penalty1>=0 ){
+                std::cout << "parameter of E1 should be a negative value" << std::endl;
+                return 1;
+            }
+        }
+
+        if( inputParser.cmdOptionExists("-O2") ){
+            _open_gap_penalty2 = std::stoi( inputParser.getCmdOption("-O2") );
+            if( _open_gap_penalty2>=0 ){
+                std::cout << "parameter of O1 should be a negative value" << std::endl;
+                return 1;
+            }
+        }
+        if( inputParser.cmdOptionExists("-E2") ){
+            _extend_gap_penalty2 = std::stoi( inputParser.getCmdOption("-E2") );
+            if( _extend_gap_penalty2>0 ){
+                std::cout << "parameter of E1 should be a negative value" << std::endl;
+                return 1;
+            }
+        }
+
+        readFastaFile( inputSequencePath, sequences, seqNames);
+
+        mutiSequencesCompre(sequences,seqNames,kmer_size,loopCountend,mismatchingPenalty,_open_gap_penalty1,
+                            _extend_gap_penalty1,_open_gap_penalty2,_extend_gap_penalty2,outResultPath);
+
+
+    }else {
+        std::cerr << usage.str();
+    }
+    return 0;
+}

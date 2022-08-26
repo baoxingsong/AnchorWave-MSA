@@ -45,4 +45,5 @@ int sam2vcf(int argc, char** argv, std::map<std::string, std::string>& parameter
 int evaluateTEAlignment (int argc, char** argv, std::map<std::string, std::string>& parameters );
 int sdiToMaf (int argc, char** argv, std::map<std::string, std::string>& parameters );
 int ali( int argc, char** argv, std::map<std::string, std::string>& parameters );
+int ali_msa(int argc, char** argv, std::map<std::string, std::string>& parameters );
 #endif

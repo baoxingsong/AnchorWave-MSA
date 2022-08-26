@@ -2,6 +2,8 @@
 #define __DYNMATRIX
 #include <string>
 #include <vector>
+#include <map>
+#include <stack>
 struct DistanceNode {
   double distance;
   DistanceNode* nextInColumn;
@@ -33,7 +35,7 @@ void findMinimum(ClusterNode *head,ClusterNode *&C,ClusterNode *&D);
 // finds the minimum distance (between two different clusters) in the data structure 
 // and returns the two clusters via C and D
 
-void UPGMA(ClusterNode *&head, ClusterNode *&tail);
+//void UPGMA(ClusterNode *&head, ClusterNode *&tail);
 // Implements UPGMA Algorithm and calls combineCluster and useFormula
 
 void combineCluster(ClusterNode *&head,ClusterNode *&tail,ClusterNode *&C,ClusterNode *&D, std::vector<double> values);
@@ -45,6 +47,10 @@ void printRowByRow(ClusterNode *head);
 // Prints DynMatrix row by row to ensure correctly linked nodes
 void printColumnByColumn(ClusterNode *head);
 // Prints DynMatrix column by column to ensure correctly linked nodes
+//void sequencesToDifferMatrix(std::map<std::string,std::string>& sequences,int &differ_size,std::map<std::string,std::map<std::string,int>>&differCountMatrix )
+void UPGMA(ClusterNode *&head, ClusterNode *&tail,std::map<std::string, std::string> sequences,  std::vector<std::string> &Rnames,std::vector<std::string> &Qnames,    std::vector<std::string> &dna_refs,std::vector<std::string> &dna_queries);
 
+void sequencesToDifferDistanceMatrix( std::map<std::string, std::string>& sequences,std::vector<std::string> & seqNames,float  **distanceMatrix);
+void updataSequences(std::map<std::string, std::string> &sequences, std::vector<std::string> &_alignment_ds,std::vector<std::string> &_alignment_qs,std::vector<std::stack<char>> &SRs,std::vector<std::stack<char>> &SQs, std::vector<std::string> &Rnames,std::vector<std::string> &Qnames,std::vector<std::string> &dna_refs,std::vector<std::string> &dna_queries);
 
 #endif

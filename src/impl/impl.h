@@ -35,6 +35,7 @@ the methods under this folder only rely on code under model and util
 #include "WriteFasta.h"
 #include "sequencesToKmerDIstanceMatrix.h"
 #include "dynmatrix.h"
+#include "mutiSequencesCompare.h"
 //#include "findSimilarFragmentsForPairedSequence.h"
 //#include "sequenceAlignment.h"
 

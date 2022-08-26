@@ -538,15 +538,15 @@ int32_t needleAlignment(const std::vector<std::string> & _dna_refs, const std::v
             }
             int32_t sizes = (_dna_refs.size() * _dna_queries.size());
             if(i ==j){
-                std::cout << "line 541 " << mScore << std::endl;
-                std::cout << "line 542 " << sizes << std::endl;
+//                std::cout << "line 541 " << mScore << std::endl;
+//                std::cout << "line 542 " << sizes << std::endl;
             }
 
 
             mScore = mScore / sizes;
 
             if(i ==j) {
-                std::cout << "line 548 " << mScore << std::endl;
+//                std::cout << "line 548 " << mScore << std::endl;
             }
             MM[matrixsize * 1 + i * (length2 + 1) + j] = mScore + MM[matrixsize * 0 + (i-1) * (length2 + 1) + j-1];
             TM[matrixsize * 1 + i * (length2 + 1) + j] = 0;
@@ -659,7 +659,7 @@ int32_t needleAlignment(const std::vector<std::string> & _dna_refs, const std::v
                         trackMatrix = TM[matrixsize * 4 + i * (length2 + 1) + j];
                         --j;
                     }else{
-                        std::cout << "line 203" << std::endl;
+//                        std::cout << "line 203" << std::endl;
                     }
                 }
             } else if ( trackMatrix == -1 ) {
@@ -708,7 +708,7 @@ int32_t needleAlignment(const std::vector<std::string> & _dna_refs, const std::v
                 trackMatrix = TM[matrixsize * 5 + i * (length2 + 1) + j];
                 --i;
             }else{
-                std::cout << "line 232" << std::endl;
+//                std::cout << "line 232" << std::endl;
             }
         }
     }
@@ -716,7 +716,7 @@ int32_t needleAlignment(const std::vector<std::string> & _dna_refs, const std::v
     delete[] MM;
     //  std::cout << "line 228" << std::endl;
     delete[] TM;
-    //std::cout << "line 229" << std::endl;
+//    std::cout << "line 229" << std::endl;
     return maxScore;
 }
 
