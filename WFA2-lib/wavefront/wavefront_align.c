@@ -32,7 +32,6 @@
 #include "wavefront_align.h"
 #include "wavefront_unialign.h"
 #include "wavefront_bialign.h"
-#include "wavefront_bialigner.h"
 #include "wavefront_compute.h"
 #include "wavefront_compute_edit.h"
 #include "wavefront_compute_linear.h"

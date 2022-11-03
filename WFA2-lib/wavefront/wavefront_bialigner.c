@@ -71,21 +71,12 @@ wavefront_bialigner_t* wavefront_bialigner_new(
   // Return
   return wf_bialigner;
 }
-
-#ifdef __cplusplus
-extern "C" {
-#endif
 void wavefront_bialigner_reap(
     wavefront_bialigner_t* const wf_bialigner) {
   wavefront_aligner_reap(wf_bialigner->alg_forward);
   wavefront_aligner_reap(wf_bialigner->alg_reverse);
   wavefront_aligner_reap(wf_bialigner->alg_subsidiary);
 }
-#ifdef __cplusplus
-}
-#endif
-
-
 void wavefront_bialigner_delete(
     wavefront_bialigner_t* const wf_bialigner) {
   wavefront_aligner_delete(wf_bialigner->alg_forward);
@@ -102,21 +93,13 @@ uint64_t wavefront_bialigner_get_size(
       wavefront_aligner_get_size(wf_bialigner->alg_reverse) +
       wavefront_aligner_get_size(wf_bialigner->alg_subsidiary);
 }
-
-#ifdef __cplusplus
-extern "C" {
-#endif
 void wavefront_bialigner_set_heuristic(
-        wavefront_bialigner_t *const wf_bialigner,
-        wavefront_heuristic_t *const heuristic) {
-    wf_bialigner->alg_forward->heuristic = *heuristic;
-    wf_bialigner->alg_reverse->heuristic = *heuristic;
-    wf_bialigner->alg_subsidiary->heuristic = *heuristic;
+    wavefront_bialigner_t* const wf_bialigner,
+    wavefront_heuristic_t* const heuristic) {
+  wf_bialigner->alg_forward->heuristic = *heuristic;
+  wf_bialigner->alg_reverse->heuristic = *heuristic;
+  wf_bialigner->alg_subsidiary->heuristic = *heuristic;
 }
-#ifdef __cplusplus
-}
-#endif
-
 void wavefront_bialigner_set_match_funct(
     wavefront_bialigner_t* const wf_bialigner,
     int (*match_funct)(int,int,void*),

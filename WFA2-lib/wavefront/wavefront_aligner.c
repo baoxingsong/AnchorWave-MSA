@@ -236,14 +236,10 @@ void wavefront_aligner_reap(
     wavefront_slab_reap(wf_aligner->wavefront_slab);
   }
 }
-
-#ifdef __cplusplus
-extern "C" {
-#endif
 void wavefront_aligner_delete(
-        wavefront_aligner_t *const wf_aligner) {
+    wavefront_aligner_t* const wf_aligner) {
   // Parameters
-  mm_allocator_t *const mm_allocator = wf_aligner->mm_allocator;
+  mm_allocator_t* const mm_allocator = wf_aligner->mm_allocator;
   const bool mm_allocator_own = wf_aligner->mm_allocator_own;
   // Padded sequences
   if (wf_aligner->sequences != NULL) {
@@ -265,15 +261,11 @@ void wavefront_aligner_delete(
     wavefront_plot_delete(wf_aligner->plot);
   }
   // MM
-  mm_allocator_free(mm_allocator, wf_aligner);
+  mm_allocator_free(mm_allocator,wf_aligner);
   if (mm_allocator_own) {
     mm_allocator_delete(wf_aligner->mm_allocator);
   }
 }
-#ifdef __cplusplus
-}
-#endif
-
 /*
  * Span configuration
  */

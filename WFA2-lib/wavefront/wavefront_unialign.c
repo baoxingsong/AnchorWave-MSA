@@ -258,10 +258,6 @@ void wavefront_unialign_initialize_wavefronts(
     }
   }
 }
-
-#ifdef __cplusplus
-extern "C" {
-#endif
 void wavefront_unialign_init(
     wavefront_aligner_t* const wf_aligner,
     const char* const pattern,
@@ -312,9 +308,6 @@ void wavefront_unialign_init(
   // Plot (WF_0)
   if (wf_aligner->plot != NULL) wavefront_plot(wf_aligner,0,0);
 }
-#ifdef __cplusplus
-extern "C" {
-#endif
 /*
  * Limits
  */

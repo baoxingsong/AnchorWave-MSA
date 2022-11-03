@@ -31,7 +31,7 @@
 #ifndef WAVEFRONT_BIALIGNER_H_
 #define WAVEFRONT_BIALIGNER_H_
 
-#include "../utils/commons.h"
+#include "utils/commons.h"
 #include "wavefront_penalties.h"
 #include "wavefront_attributes.h"
 #include "wavefront_heuristic.h"
@@ -65,16 +65,8 @@ typedef struct {
 wavefront_bialigner_t* wavefront_bialigner_new(
     wavefront_aligner_attr_t* const attributes,
     wavefront_plot_t* const plot);
-
-#ifdef __cplusplus
-extern "C" {
-#endif
 void wavefront_bialigner_reap(
     wavefront_bialigner_t* const wf_bialigner);
-#ifdef __cplusplus
-}
-#endif
-
 void wavefront_bialigner_delete(
     wavefront_bialigner_t* const wf_bialigner);
 
@@ -83,19 +75,9 @@ void wavefront_bialigner_delete(
  */
 uint64_t wavefront_bialigner_get_size(
     wavefront_bialigner_t* const wf_bialigner);
-
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 void wavefront_bialigner_set_heuristic(
-        wavefront_bialigner_t *const wf_bialigner,
-        wavefront_heuristic_t *const heuristic);
-
-#ifdef __cplusplus
-}
-#endif
-
+    wavefront_bialigner_t* const wf_bialigner,
+    wavefront_heuristic_t* const heuristic);
 void wavefront_bialigner_set_match_funct(
     wavefront_bialigner_t* const wf_bialigner,
     int (*match_funct)(int,int,void*),

@@ -32,14 +32,14 @@
 #ifndef WAVEFRONT_ALIGNER_H_
 #define WAVEFRONT_ALIGNER_H_
 
-#include "../utils/commons.h"
-#include "../utils/heatmap.h"
-#include "../utils/string_padded.h"
-#include "../system/profiler_counter.h"
-#include "../system/profiler_timer.h"
-#include "../system/mm_allocator.h"
-#include "../system/mm_stack.h"
-#include "../alignment/cigar.h"
+#include "utils/commons.h"
+#include "utils/heatmap.h"
+#include "utils/string_padded.h"
+#include "system/profiler_counter.h"
+#include "system/profiler_timer.h"
+#include "system/mm_allocator.h"
+#include "system/mm_stack.h"
+#include "alignment/cigar.h"
 #include "wavefront_slab.h"
 #include "wavefront_penalties.h"
 #include "wavefront_attributes.h"
@@ -136,15 +136,9 @@ wavefront_aligner_t* wavefront_aligner_new(
     wavefront_aligner_attr_t* attributes);
 void wavefront_aligner_reap(
     wavefront_aligner_t* const wf_aligner);
-
-#ifdef __cplusplus
-extern "C" {
-#endif
 void wavefront_aligner_delete(
     wavefront_aligner_t* const wf_aligner);
-#ifdef __cplusplus
-}
-#endif
+
 /*
  * Span configuration
  */

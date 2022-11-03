@@ -31,7 +31,7 @@
 #ifndef WAVEFRONT_UNIALIGN_H_
 #define WAVEFRONT_UNIALIGN_H_
 
-#include "../utils/commons.h"
+#include "utils/commons.h"
 #include "wavefront_aligner.h"
 
 /*
@@ -48,20 +48,10 @@ void wavefront_unialign_resize(
 /*
  * Initialize alignment
  */
-#ifdef __cplusplus
-extern "C" {
-#endif
 void wavefront_unialign_initialize_wavefronts(
     wavefront_aligner_t* const wf_aligner,
     const int pattern_length,
     const int text_length);
-#ifdef __cplusplus
-}
-#endif
-
-#ifdef __cplusplus
-extern "C" {
-#endif
 void wavefront_unialign_init(
     wavefront_aligner_t* const wf_aligner,
     const char* const pattern,
@@ -70,21 +60,13 @@ void wavefront_unialign_init(
     const int text_length,
     const affine2p_matrix_type component_begin,
     const affine2p_matrix_type component_end);
-#ifdef __cplusplus
-}
-#endif
 
 /*
  * Classic WF-Alignment (Unidirectional)
  */
-#ifdef __cplusplus
-extern "C" {
-#endif
-    int wavefront_unialign(
-        wavefront_aligner_t *const wf_aligner);
-#ifdef __cplusplus
-}
-#endif
+int wavefront_unialign(
+    wavefront_aligner_t* const wf_aligner);
+
 /*
  * Display
  */
