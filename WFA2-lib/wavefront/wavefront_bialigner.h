@@ -31,7 +31,7 @@
 #ifndef WAVEFRONT_BIALIGNER_H_
 #define WAVEFRONT_BIALIGNER_H_
 
-#include "utils/commons.h"
+#include "../utils/commons.h"
 #include "wavefront_penalties.h"
 #include "wavefront_attributes.h"
 #include "wavefront_heuristic.h"

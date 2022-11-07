@@ -32,14 +32,14 @@
 #ifndef WAVEFRONT_ALIGNER_H_
 #define WAVEFRONT_ALIGNER_H_
 
-#include "utils/commons.h"
-#include "utils/heatmap.h"
-#include "utils/string_padded.h"
-#include "system/profiler_counter.h"
-#include "system/profiler_timer.h"
-#include "system/mm_allocator.h"
-#include "system/mm_stack.h"
-#include "alignment/cigar.h"
+#include "../utils/commons.h"
+#include "../utils/heatmap.h"
+#include "../utils/string_padded.h"
+#include "../system/profiler_counter.h"
+#include "../system/profiler_timer.h"
+#include "../system/mm_allocator.h"
+#include "../system/mm_stack.h"
+#include "../alignment/cigar.h"
 #include "wavefront_slab.h"
 #include "wavefront_penalties.h"
 #include "wavefront_attributes.h"
