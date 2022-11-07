@@ -5,7 +5,7 @@
 #include "readFastaFile.h"
 
 const char replaceCharArray[]= {'R', 'Y', 'S', 'W', 'K', 'M', 'B', 'D', 'H', 'V'};
-std::set<char> set_replaceChar(replaceCharArray, replaceCharArray + 9);
+std::set<char> set_replaceChar(replaceCharArray, replaceCharArray + 10);
 
 char char_replace(char str) {
     if(str == 'A' || str == 'C' ||str == 'T' ||str == 'G' ) {
