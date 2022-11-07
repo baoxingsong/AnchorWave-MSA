@@ -557,30 +557,19 @@ void alignmentToVcf(std::string & queryAlignSeq, std::string & refAlignSeq, std:
     alignmentToVcf(queryAlignSeq, refAlignSeq,sdiRecordsThisOne, chr, refSequences[chr], refLetterNumber);
 }
 
-void alignmentToVcf(std::string & queryAlignSeq, std::string & refAlignSeq, std::vector<Variant> & sdiRecordsThisOne, std::string chr, std::string & refSequence, int32_t refLetterNumber){
-    std::replace(refAlignSeq.begin(), refAlignSeq.end(), 'U', 'T');
-    std::replace(refAlignSeq.begin(), refAlignSeq.end(), 'R', 'N');
-    std::replace(refAlignSeq.begin(), refAlignSeq.end(), 'Y', 'N');
-    std::replace(refAlignSeq.begin(), refAlignSeq.end(), 'S', 'N');
-    std::replace(refAlignSeq.begin(), refAlignSeq.end(), 'W', 'N');
-    std::replace(refAlignSeq.begin(), refAlignSeq.end(), 'K', 'N');
-    std::replace(refAlignSeq.begin(), refAlignSeq.end(), 'M', 'N');
-    std::replace(refAlignSeq.begin(), refAlignSeq.end(), 'B', 'N');
-    std::replace(refAlignSeq.begin(), refAlignSeq.end(), 'D', 'N');
-    std::replace(refAlignSeq.begin(), refAlignSeq.end(), 'H', 'N');
-    std::replace(refAlignSeq.begin(), refAlignSeq.end(), 'V', 'N');
+bool to_T (char c) { return c == 'U'; }
 
-    std::replace(queryAlignSeq.begin(), queryAlignSeq.end(), 'U', 'T');
-    std::replace(queryAlignSeq.begin(), queryAlignSeq.end(), 'R', 'N');
-    std::replace(queryAlignSeq.begin(), queryAlignSeq.end(), 'Y', 'N');
-    std::replace(queryAlignSeq.begin(), queryAlignSeq.end(), 'S', 'N');
-    std::replace(queryAlignSeq.begin(), queryAlignSeq.end(), 'W', 'N');
-    std::replace(queryAlignSeq.begin(), queryAlignSeq.end(), 'K', 'N');
-    std::replace(queryAlignSeq.begin(), queryAlignSeq.end(), 'M', 'N');
-    std::replace(queryAlignSeq.begin(), queryAlignSeq.end(), 'B', 'N');
-    std::replace(queryAlignSeq.begin(), queryAlignSeq.end(), 'D', 'N');
-    std::replace(queryAlignSeq.begin(), queryAlignSeq.end(), 'H', 'N');
-    std::replace(queryAlignSeq.begin(), queryAlignSeq.end(), 'V', 'N');
+bool to_N (char c) {
+    return c == 'R' || c == 'Y' || c == 'S' || c == 'W' || c == 'K' || c == 'M' || c == 'B' || c == 'D' || c == 'H' || c == 'V';
+}
+
+void alignmentToVcf(std::string & queryAlignSeq, std::string & refAlignSeq, std::vector<Variant> & sdiRecordsThisOne, std::string chr, std::string & refSequence, int32_t refLetterNumber){
+
+    std::replace_if(refAlignSeq.begin(), refAlignSeq.end(), to_T, 'T');
+    std::replace_if(refAlignSeq.begin(), refAlignSeq.end(), to_N, 'N');
+
+    std::replace_if(queryAlignSeq.begin(), queryAlignSeq.end(), to_T, 'T');
+    std::replace_if(queryAlignSeq.begin(), queryAlignSeq.end(), to_N, 'N');
 
     FirstLastList sdiRecords;
     std::cout << "reference length:" << std::to_string(refAlignSeq.length()) << std::endl;
