@@ -4,16 +4,14 @@
 
 #include "deNovoGenomeVariantCalling.h"
 
+void outputLocalAlignment(const int &chrWidth, const std::string &refFileName, const std::string &queryFileName,
+                          std::vector<PairedSimilarFragment> pairedSimilarFragments0, STRAND &strand,
+                          const int &startRef, const int &startQuery, const std::string &refChr,
+                          const std::string &queryChr, const std::string &refSeq, const std::string &querySeq, std::ofstream &ofile2,
+                          std::map<std::string, Fasta> &refSequences, std::map<std::string, Fasta> &targetSequences) {
 
-
-void outputLocalAlignment(const int & chrWidth, const std::string & refFileName, const std::string & queryFileName,
-                          std::vector<PairedSimilarFragment> pairedSimilarFragments0 , STRAND & strand,
-                          const int & startRef, const int & startQuery, const std::string & refChr,
-                          const std::string & queryChr, const std::string &refSeq, const std::string &querySeq, std::ofstream & ofile2,
-                          std::map <std::string, Fasta> & refSequences, std::map <std::string, Fasta> & targetSequences ){
-
-    for( int32_t i=0; i<pairedSimilarFragments0.size(); ++i ){
-        if( strand == POSITIVE ){
+    for (int32_t i = 0; i < pairedSimilarFragments0.size(); ++i) {
+        if (strand == POSITIVE) {
 
             int32_t quePos = startQuery + pairedSimilarFragments0[i].getStart2() - 1;
             int32_t refPos = startRef + pairedSimilarFragments0[i].getStart1() - 1;
@@ -24,27 +22,27 @@ void outputLocalAlignment(const int & chrWidth, const std::string & refFileName,
             std::stringstream queryAlign;
 
             std::vector<uint32_t> newCigar;
-            for( int32_t j=0; j<pairedSimilarFragments0[i].getCigar().size(); ++j ){
-                uint32_t cigarLength = pairedSimilarFragments0[i].getCigar()[j]>>4;
-                uint32_t cigarType = pairedSimilarFragments0[i].getCigar()[j]&0xf;
-                if (  cigarType == 0 ){
-                    refAlign <<  refSeq.substr(refStart-1, cigarLength);
-                    queryAlign <<  querySeq.substr(queryStart-1, cigarLength);
+            for (int32_t j = 0; j < pairedSimilarFragments0[i].getCigar().size(); ++j) {
+                uint32_t cigarLength = pairedSimilarFragments0[i].getCigar()[j] >> 4;
+                uint32_t cigarType = pairedSimilarFragments0[i].getCigar()[j] & 0xf;
+                if (cigarType == 0) {
+                    refAlign << refSeq.substr(refStart - 1, cigarLength);
+                    queryAlign << querySeq.substr(queryStart - 1, cigarLength);
                     refStart += cigarLength;
                     queryStart += cigarLength;
-                }else if( cigarType == 1 ){
-                    queryAlign <<  querySeq.substr(queryStart-1, cigarLength);
+                } else if (cigarType == 1) {
+                    queryAlign << querySeq.substr(queryStart - 1, cigarLength);
                     queryStart += cigarLength;
-                    for ( int repeatI = 0; repeatI<cigarLength; ++repeatI ) {
+                    for (int repeatI = 0; repeatI < cigarLength; ++repeatI) {
                         refAlign << "-";
                     }
-                }else if( cigarType == 2 ){
-                    refAlign <<  refSeq.substr(refStart-1, cigarLength);
+                } else if (cigarType == 2) {
+                    refAlign << refSeq.substr(refStart - 1, cigarLength);
                     refStart += cigarLength;
-                    for ( int repeatI = 0; repeatI<cigarLength; ++repeatI ) {
+                    for (int repeatI = 0; repeatI < cigarLength; ++repeatI) {
                         queryAlign << "-";
                     }
-                }else{
+                } else {
                     std::cout << "denovogenomevariancalling cpp line 50 is not working properly, please update the source codce" << std::endl;
                 }
             }
@@ -54,16 +52,15 @@ void outputLocalAlignment(const int & chrWidth, const std::string & refFileName,
             std::string temp = refAlign.str();
             temp.erase(std::remove(temp.begin(), temp.end(), '-'), temp.end());
 //            temp.erase(std::remove(temp.begin(), temp.end(), '\0'), temp.end());
-            ofile2 << "s\t" << std::left << std::setw(chrWidth) << refFileName + "." + refChr << "\t" << std::right <<  std::setw(9) << refPos-1 << "\t" << std::setw(9) << temp.size() << "\t+\t" << refSequences[refChr].getSequence().size() << "\t" << refAlign.str() << std::endl;
+            ofile2 << "s\t" << std::left << std::setw(chrWidth) << refFileName + "." + refChr << "\t" << std::right << std::setw(9) << refPos - 1 << "\t" << std::setw(9) << temp.size() << "\t+\t" << refSequences[refChr].getSequence().size() << "\t" << refAlign.str() << std::endl;
 
             temp = queryAlign.str();
             temp.erase(std::remove(temp.begin(), temp.end(), '-'), temp.end());
 //            temp.erase(std::remove(temp.begin(), temp.end(), '\0'), temp.end());
-            ofile2 << "s\t" << std::left << std::setw(chrWidth)  << queryFileName + "." + queryChr << "\t" << std::right <<  std::setw(9) << quePos-1 << "\t" << std::setw(9) << temp.size() << "\t+\t" << targetSequences[queryChr].getSequence().size() << "\t" <<  queryAlign.str() << std::endl;
+            ofile2 << "s\t" << std::left << std::setw(chrWidth) << queryFileName + "." + queryChr << "\t" << std::right << std::setw(9) << quePos - 1 << "\t" << std::setw(9) << temp.size() << "\t+\t" << targetSequences[queryChr].getSequence().size() << "\t" << queryAlign.str()
+                   << std::endl;
             ofile2 << std::endl;
-
         } else {
-
             int32_t quePos = startQuery + querySeq.size() - 1 - pairedSimilarFragments0[i].getEnd2() + 1; // this is the position on the positive strand
             int32_t refPos = startRef + pairedSimilarFragments0[i].getStart1() - 1;
             int32_t refStart = pairedSimilarFragments0[i].getStart1();
@@ -94,9 +91,7 @@ void outputLocalAlignment(const int & chrWidth, const std::string & refFileName,
                         queryAlign << "-";
                     }
                 } else {
-                    std::cout
-                            << "denovogenomevariancalling cpp line 50 is not working properly, please update the source codce"
-                            << std::endl;
+                    std::cout << "denovogenomevariancalling cpp line 50 is not working properly, please update the source codce" << std::endl;
                 }
             }
 
@@ -109,55 +104,54 @@ void outputLocalAlignment(const int & chrWidth, const std::string & refFileName,
             temp = queryAlign.str();
             temp.erase(std::remove(temp.begin(), temp.end(), '-'), temp.end());
 //            temp.erase(std::remove(temp.begin(), temp.end(), '\0'), temp.end());
-            ofile2 << "s\t" << std::left << std::setw(chrWidth) << queryFileName + "." + queryChr << "\t" << std::right << std::setw(9) << quePos - 1 << "\t" << std::setw(9) << temp.size() << "\t-\t" << targetSequences[queryChr].getSequence().size() << "\t" << queryAlign.str() << std::endl;
+            ofile2 << "s\t" << std::left << std::setw(chrWidth) << queryFileName + "." + queryChr << "\t" << std::right << std::setw(9) << quePos - 1 << "\t" << std::setw(9) << temp.size() << "\t-\t" << targetSequences[queryChr].getSequence().size() << "\t" << queryAlign.str()
+                   << std::endl;
             ofile2 << std::endl;
         }
     }
 }
 
-
-void genomeAlignment( std::vector<std::vector<AlignmentMatch>> & alignmentMatchsMap,
-                      const std::string & refFastaFilePath, const std::string & targetFastaFilePath,
-                      const int32_t & widownWidth, const int32_t & wfaSize, const int32_t & wfaSize2,
-                      const std::string & outPutMafFile, const std::string & outPutFragedFile, /*std::string & outPutLocalalignmentFile,*/
-                      const int32_t & matchingScore, const  int32_t & mismatchingPenalty,
-                      const int32_t & openGapPenalty1, const int32_t & extendGapPenalty1,
-                      const int32_t & openGapPenalty2, const int32_t & extendGapPenalty2,
-                      int32_t & seed_window_size, const int32_t & mini_cns_score, const int32_t & step_size,
-                      const int32_t & matrix_boundary_distance, const  int32_t & scoreThreshold, const  int32_t & w, const  int32_t & xDrop,
-                      const int32_t & min_wavefront_length, const int32_t & max_distance_threshold) {
+void genomeAlignment(std::vector<std::vector<AlignmentMatch>> &alignmentMatchsMap,
+                     const std::string &refFastaFilePath, const std::string &targetFastaFilePath,
+                     const int32_t &widownWidth, const int32_t &wfaSize, const int32_t &wfaSize2,
+                     const std::string &outPutMafFile, const std::string &outPutFragedFile, /*std::string & outPutLocalalignmentFile,*/
+                     const int32_t &matchingScore, const int32_t &mismatchingPenalty,
+                     const int32_t &openGapPenalty1, const int32_t &extendGapPenalty1,
+                     const int32_t &openGapPenalty2, const int32_t &extendGapPenalty2,
+                     int32_t &seed_window_size, const int32_t &mini_cns_score, const int32_t &step_size,
+                     const int32_t &matrix_boundary_distance, const int32_t &scoreThreshold, const int32_t &w, const int32_t &xDrop,
+                     const int32_t &min_wavefront_length, const int32_t &max_distance_threshold) {
 
     Scorei m(matchingScore, mismatchingPenalty);
 
     affine2p_penalties_t penalties = {
             .match = 0,
-            .mismatch = -mismatchingPenalty+matchingScore,
-            .gap_opening1 = -openGapPenalty1+matchingScore,
-            .gap_extension1 = -extendGapPenalty1+matchingScore,
-            .gap_opening2 = -openGapPenalty2+matchingScore,
-            .gap_extension2 = -extendGapPenalty2+matchingScore,
+            .mismatch = -mismatchingPenalty + matchingScore,
+            .gap_opening1 = -openGapPenalty1 + matchingScore,
+            .gap_extension1 = -extendGapPenalty1 + matchingScore,
+            .gap_opening2 = -openGapPenalty2 + matchingScore,
+            .gap_extension2 = -extendGapPenalty2 + matchingScore,
     };
-    mm_allocator_t* const mm_allocator = mm_allocator_new(BUFFER_SIZE_8M);
-
+    mm_allocator_t *const mm_allocator = mm_allocator_new(BUFFER_SIZE_8M);
 
     bool outPutMaf = false;
     bool outPutFraged = false;
 //    bool outPutLocalalignment = false;
 
-    if ( outPutMafFile.size() > 0 ){
+    if (outPutMafFile.size() > 0) {
         outPutMaf = true;
     }
-    if ( outPutFragedFile.size() > 0 ){
+    if (outPutFragedFile.size() > 0) {
         outPutFraged = true;
     }
 //    if ( outPutLocalalignmentFile.size() > 0 ){
 //        outPutLocalalignment = true;
 //    }
 
-    std::map <std::string, Fasta> refSequences;
+    std::map<std::string, Fasta> refSequences;
     readFastaFile(refFastaFilePath, refSequences);
 
-    std::map <std::string, Fasta> targetSequences;
+    std::map<std::string, Fasta> targetSequences;
     readFastaFile(targetFastaFilePath, targetSequences);
 
     int chrWidth = 4;
@@ -170,26 +164,26 @@ void genomeAlignment( std::vector<std::vector<AlignmentMatch>> & alignmentMatchs
     split(targetFastaFilePath, delim, elems);
     queryFileName = elems.back();
 
-    for ( std::map <std::string, Fasta>::iterator itchr  =refSequences.begin(); itchr != refSequences.end(); ++itchr ){
-        if ( (refFileName + "." + itchr->first).size() > chrWidth ){
+    for (std::map<std::string, Fasta>::iterator itchr = refSequences.begin(); itchr != refSequences.end(); ++itchr) {
+        if ((refFileName + "." + itchr->first).size() > chrWidth) {
             chrWidth = (refFileName + "." + itchr->first).size();
         }
     }
-    for ( std::map <std::string, Fasta>::iterator itchr  =targetSequences.begin(); itchr != targetSequences.end(); ++itchr ){
-        if ((queryFileName + "." + itchr->first).size() > chrWidth){
+    for (std::map<std::string, Fasta>::iterator itchr = targetSequences.begin(); itchr != targetSequences.end(); ++itchr) {
+        if ((queryFileName + "." + itchr->first).size() > chrWidth) {
             chrWidth = (queryFileName + "." + itchr->first).size();
         }
     }
 
     std::ofstream omaffile;
     std::ofstream ofragfile;
-    std::ofstream  oLocalalignment;
-    if( outPutMaf ){
+    std::ofstream oLocalalignment;
+    if (outPutMaf) {
         omaffile.open(outPutMafFile);
         omaffile << "##maf version=1" << std::endl;
     }
 
-    if( outPutFraged ){
+    if (outPutFraged) {
         ofragfile.open(outPutFragedFile);
         ofragfile << "##maf version=1" << std::endl;
     }
@@ -202,10 +196,10 @@ void genomeAlignment( std::vector<std::vector<AlignmentMatch>> & alignmentMatchs
     int32_t sizei = alignmentMatchsMap.size();
     bool checkResult = false;
 
-    for(int32_t i=sizei-1; i>=0; --i){
+    for (int32_t i = sizei - 1; i >= 0; --i) {
         STRAND strand = alignmentMatchsMap[i][0].getStrand();
 
-        if(  POSITIVE == strand ){
+        if (POSITIVE == strand) {
             size_t startRef = alignmentMatchsMap[i][0].getRefStartPos();
             size_t startQuery;
             size_t endRef;
@@ -216,32 +210,32 @@ void genomeAlignment( std::vector<std::vector<AlignmentMatch>> & alignmentMatchs
             std::string queryChr = alignmentMatchsMap[i][0].getQueryChr();
             int64_t alignmentScore = 0;
             startQuery = alignmentMatchsMap[i][0].getQueryStartPos();
-            for( AlignmentMatch orthologPair : alignmentMatchsMap[i] ){
+            for (AlignmentMatch orthologPair: alignmentMatchsMap[i]) {
 
-                if (  orthologPair.getRefStartPos()==startRef && orthologPair.getQueryStartPos()!=startQuery ) {
-                    endQuery = orthologPair.getQueryStartPos()-1;
-                    std::string querySeq = getSubsequence( targetSequences, queryChr, startQuery, endQuery);
-                    for ( int repeatI = 0; repeatI<querySeq.length(); ++repeatI ){
-                        refAlign<<"-";
+                if (orthologPair.getRefStartPos() == startRef && orthologPair.getQueryStartPos() != startQuery) {
+                    endQuery = orthologPair.getQueryStartPos() - 1;
+                    std::string querySeq = getSubsequence(targetSequences, queryChr, startQuery, endQuery);
+                    for (int repeatI = 0; repeatI < querySeq.length(); ++repeatI) {
+                        refAlign << "-";
                     }
                     queryAlign << querySeq;
                     alignmentScore += openGapPenalty1 + extendGapPenalty1 * querySeq.length();
-                }else if ( orthologPair.getRefStartPos()!=startRef && orthologPair.getQueryStartPos()==startQuery ){
-                    endRef = orthologPair.getRefStartPos()-1;
-                    std::string refSeq = getSubsequence( refSequences, refChr, startRef, endRef);
-                    refAlign<<refSeq;
-                    for ( int repeatI = 0; repeatI<refSeq.length(); ++repeatI ) {
+                } else if (orthologPair.getRefStartPos() != startRef && orthologPair.getQueryStartPos() == startQuery) {
+                    endRef = orthologPair.getRefStartPos() - 1;
+                    std::string refSeq = getSubsequence(refSequences, refChr, startRef, endRef);
+                    refAlign << refSeq;
+                    for (int repeatI = 0; repeatI < refSeq.length(); ++repeatI) {
                         queryAlign << "-";
                     }
-                    alignmentScore += openGapPenalty1 + extendGapPenalty1*refSeq.length();
-                }else if ( orthologPair.getRefStartPos()==startRef && orthologPair.getQueryStartPos()==startQuery ){
+                    alignmentScore += openGapPenalty1 + extendGapPenalty1 * refSeq.length();
+                } else if (orthologPair.getRefStartPos() == startRef && orthologPair.getQueryStartPos() == startQuery) {
 
-                }else{
-                    endRef = orthologPair.getRefStartPos()-1;
-                    endQuery = orthologPair.getQueryStartPos()-1;
+                } else {
+                    endRef = orthologPair.getRefStartPos() - 1;
+                    endQuery = orthologPair.getQueryStartPos() - 1;
 
-                    std::string refSeq = getSubsequence( refSequences, refChr, startRef, endRef);
-                    std::string querySeq = getSubsequence( targetSequences, queryChr, startQuery, endQuery);
+                    std::string refSeq = getSubsequence(refSequences, refChr, startRef, endRef);
+                    std::string querySeq = getSubsequence(targetSequences, queryChr, startQuery, endQuery);
 
 //                    if ( outPutLocalalignment ){
 //
@@ -272,12 +266,13 @@ void genomeAlignment( std::vector<std::vector<AlignmentMatch>> & alignmentMatchs
 
                         std::string _alignment_q;
                         std::string _alignment_d;
-                        int64_t thiScore = alignSlidingWindow(querySeq, refSeq, _alignment_q, _alignment_d, &penalties, mm_allocator, widownWidth, wfaSize, matchingScore, mismatchingPenalty, openGapPenalty1, extendGapPenalty1, openGapPenalty2, extendGapPenalty2, min_wavefront_length, max_distance_threshold, m);
+                        int64_t thiScore = alignSlidingWindow(querySeq, refSeq, _alignment_q, _alignment_d, &penalties, mm_allocator, widownWidth, wfaSize, matchingScore, mismatchingPenalty, openGapPenalty1, extendGapPenalty1, openGapPenalty2, extendGapPenalty2,
+                                                              min_wavefront_length, max_distance_threshold, m);
 
                         alignmentScore += thiScore;
                         refAlign << _alignment_d;
                         queryAlign << _alignment_q;
-                        if (checkResult){
+                        if (checkResult) {
                             std::string temp;
 
                             temp = _alignment_d;
@@ -286,23 +281,25 @@ void genomeAlignment( std::vector<std::vector<AlignmentMatch>> & alignmentMatchs
 
                             temp = _alignment_q;
                             temp.erase(std::remove(temp.begin(), temp.end(), '-'), temp.end());
-                            assert(temp.compare(querySeq)==0);
+                            assert(temp.compare(querySeq) == 0);
                         }
-                        if (outPutFraged  ){
+                        if (outPutFraged) {
                             ofragfile << "a\tscore=" << thiScore << std::endl;
-                            ofragfile << "s\t" << std::left << std::setw(chrWidth) << refFileName + "." + refChr << "\t" << std::right <<  std::setw(9) << startRef-1 << "\t" << std::setw(9) << refSeq.size() << "\t+\t" << refSequences[refChr].getSequence().size() << "\t" << _alignment_d << std::endl;
-                            ofragfile << "s\t" << std::left << std::setw(chrWidth)  << queryFileName + "." + queryChr << "\t" << std::right <<  std::setw(9) << startQuery-1 << "\t" << std::setw(9) << querySeq.size() << "\t+\t" << targetSequences[queryChr].getSequence().size() << "\t" <<  _alignment_q << std::endl;
+                            ofragfile << "s\t" << std::left << std::setw(chrWidth) << refFileName + "." + refChr << "\t" << std::right << std::setw(9) << startRef - 1 << "\t" << std::setw(9) << refSeq.size() << "\t+\t" << refSequences[refChr].getSequence().size() << "\t"
+                                      << _alignment_d << std::endl;
+                            ofragfile << "s\t" << std::left << std::setw(chrWidth) << queryFileName + "." + queryChr << "\t" << std::right << std::setw(9) << startQuery - 1 << "\t" << std::setw(9) << querySeq.size() << "\t+\t" << targetSequences[queryChr].getSequence().size()
+                                      << "\t" << _alignment_q << std::endl;
                             ofragfile << std::endl;
                         }
                     }
                 }
                 {
                     startRef = orthologPair.getRefStartPos();
-                    startQuery= orthologPair.getQueryStartPos();
+                    startQuery = orthologPair.getQueryStartPos();
                     endRef = orthologPair.getRefEndPos();
                     endQuery = orthologPair.getQueryEndPos();
-                    std::string refSeq = getSubsequence( refSequences, refChr, startRef, endRef);
-                    std::string querySeq = getSubsequence( targetSequences, queryChr, startQuery, endQuery);
+                    std::string refSeq = getSubsequence(refSequences, refChr, startRef, endRef);
+                    std::string querySeq = getSubsequence(targetSequences, queryChr, startQuery, endQuery);
 /*
                     if ( outPutLocalalignment ){
 
@@ -331,7 +328,8 @@ void genomeAlignment( std::vector<std::vector<AlignmentMatch>> & alignmentMatchs
                         std::string _alignment_q;
                         std::string _alignment_d;
 
-                        int64_t thiScore = alignSlidingWindow(querySeq, refSeq, _alignment_q, _alignment_d, &penalties, mm_allocator, widownWidth,  wfaSize2, matchingScore, mismatchingPenalty, openGapPenalty1, extendGapPenalty1,openGapPenalty2, extendGapPenalty2,  min_wavefront_length, max_distance_threshold, m);
+                        int64_t thiScore = alignSlidingWindow(querySeq, refSeq, _alignment_q, _alignment_d, &penalties, mm_allocator, widownWidth, wfaSize2, matchingScore, mismatchingPenalty, openGapPenalty1, extendGapPenalty1, openGapPenalty2, extendGapPenalty2,
+                                                              min_wavefront_length, max_distance_threshold, m);
 
                         alignmentScore += thiScore;
                         refAlign << _alignment_d;
@@ -346,36 +344,40 @@ void genomeAlignment( std::vector<std::vector<AlignmentMatch>> & alignmentMatchs
                             temp.erase(std::remove(temp.begin(), temp.end(), '-'), temp.end());
                             assert(temp.compare(querySeq) == 0);
                         }
-                        if (outPutFraged ){
+                        if (outPutFraged) {
                             ofragfile << "a\tscore=" << thiScore << std::endl;
-                            ofragfile << "s\t" << std::left << std::setw(chrWidth) << refFileName + "." + refChr << "\t" << std::right <<  std::setw(9) << startRef-1 << "\t" << std::setw(9) << refSeq.size() << "\t+\t" << refSequences[refChr].getSequence().size() << "\t" << _alignment_d << std::endl;
-                            ofragfile << "s\t" << std::left << std::setw(chrWidth)  << queryFileName + "." + queryChr << "\t" << std::right <<  std::setw(9) << startQuery-1 << "\t" << std::setw(9) << querySeq.size() << "\t+\t" << targetSequences[queryChr].getSequence().size() << "\t" <<  _alignment_q << std::endl;
+                            ofragfile << "s\t" << std::left << std::setw(chrWidth) << refFileName + "." + refChr << "\t" << std::right << std::setw(9) << startRef - 1 << "\t" << std::setw(9) << refSeq.size() << "\t+\t" << refSequences[refChr].getSequence().size() << "\t"
+                                      << _alignment_d << std::endl;
+                            ofragfile << "s\t" << std::left << std::setw(chrWidth) << queryFileName + "." + queryChr << "\t" << std::right << std::setw(9) << startQuery - 1 << "\t" << std::setw(9) << querySeq.size() << "\t+\t" << targetSequences[queryChr].getSequence().size()
+                                      << "\t" << _alignment_q << std::endl;
                             ofragfile << std::endl;
                         }
                     }
                 }
-                startRef = orthologPair.getRefEndPos()+1;
-                startQuery = orthologPair.getQueryEndPos()+1;
+                startRef = orthologPair.getRefEndPos() + 1;
+                startQuery = orthologPair.getQueryEndPos() + 1;
             }
 
             /*if(false)*/{
-                std::string refGenomerSequence = getSubsequence( refSequences, refChr, alignmentMatchsMap[i][0].getRefStartPos(), alignmentMatchsMap[i][alignmentMatchsMap[i].size()-1].getRefEndPos());
-                std::string queryGenomerSequence = getSubsequence( targetSequences, queryChr, alignmentMatchsMap[i][0].getQueryStartPos(), alignmentMatchsMap[i][alignmentMatchsMap[i].size()-1].getQueryEndPos());
+                std::string refGenomerSequence = getSubsequence(refSequences, refChr, alignmentMatchsMap[i][0].getRefStartPos(), alignmentMatchsMap[i][alignmentMatchsMap[i].size() - 1].getRefEndPos());
+                std::string queryGenomerSequence = getSubsequence(targetSequences, queryChr, alignmentMatchsMap[i][0].getQueryStartPos(), alignmentMatchsMap[i][alignmentMatchsMap[i].size() - 1].getQueryEndPos());
 
                 if (checkResult) {
                     std::string temp = refAlign.str();
                     temp.erase(std::remove(temp.begin(), temp.end(), '-'), temp.end());
-    //                temp.erase(std::remove(temp.begin(), temp.end(), '\0'), temp.end());
-                    assert(temp.compare(refGenomerSequence)==0);
+                    //                temp.erase(std::remove(temp.begin(), temp.end(), '\0'), temp.end());
+                    assert(temp.compare(refGenomerSequence) == 0);
 
                     temp = queryAlign.str();
                     temp.erase(std::remove(temp.begin(), temp.end(), '-'), temp.end());
-    //                temp.erase(std::remove(temp.begin(), temp.end(), '\0'), temp.end());
-                    assert(temp.compare(queryGenomerSequence)==0);
+                    //                temp.erase(std::remove(temp.begin(), temp.end(), '\0'), temp.end());
+                    assert(temp.compare(queryGenomerSequence) == 0);
                 }
                 omaffile << "a\tscore=" << alignmentScore << std::endl;
-                omaffile << "s\t" << std::left << std::setw(chrWidth) << refFileName + "." + refChr << "\t" << std::right <<  std::setw(9) << alignmentMatchsMap[i][0].getRefStartPos()-1 << "\t" << std::setw(9) << refGenomerSequence.size() << "\t+\t" << refSequences[refChr].getSequence().size() << "\t" << refAlign.str() << std::endl;
-                omaffile << "s\t" << std::left << std::setw(chrWidth)  << queryFileName + "." + queryChr << "\t" << std::right <<  std::setw(9) << alignmentMatchsMap[i][0].getQueryStartPos()-1 << "\t" << std::setw(9) << queryGenomerSequence.size() << "\t+\t" << targetSequences[queryChr].getSequence().size() << "\t" <<  queryAlign.str() << std::endl;
+                omaffile << "s\t" << std::left << std::setw(chrWidth) << refFileName + "." + refChr << "\t" << std::right << std::setw(9) << alignmentMatchsMap[i][0].getRefStartPos() - 1 << "\t" << std::setw(9) << refGenomerSequence.size() << "\t+\t"
+                         << refSequences[refChr].getSequence().size() << "\t" << refAlign.str() << std::endl;
+                omaffile << "s\t" << std::left << std::setw(chrWidth) << queryFileName + "." + queryChr << "\t" << std::right << std::setw(9) << alignmentMatchsMap[i][0].getQueryStartPos() - 1 << "\t" << std::setw(9) << queryGenomerSequence.size() << "\t+\t"
+                         << targetSequences[queryChr].getSequence().size() << "\t" << queryAlign.str() << std::endl;
                 omaffile << std::endl;
             }
         } else {
@@ -389,34 +391,34 @@ void genomeAlignment( std::vector<std::vector<AlignmentMatch>> & alignmentMatchs
             std::string queryChr = alignmentMatchsMap[i][0].getQueryChr();
 
             int64_t alignmentScore = 0;
-            for( AlignmentMatch orthologPair : alignmentMatchsMap[i] ){
+            for (AlignmentMatch orthologPair: alignmentMatchsMap[i]) {
 
-                if (  orthologPair.getRefStartPos()==startRef && orthologPair.getQueryEndPos()!=endQuery ) {
-                    startQuery = orthologPair.getQueryEndPos()+1;
-                    std::string querySeq = getSubsequence( targetSequences, queryChr, startQuery, endQuery, strand);
-                    for ( int repeatI = 0; repeatI<querySeq.length(); ++repeatI ){
-                        refAlign<<"-";
+                if (orthologPair.getRefStartPos() == startRef && orthologPair.getQueryEndPos() != endQuery) {
+                    startQuery = orthologPair.getQueryEndPos() + 1;
+                    std::string querySeq = getSubsequence(targetSequences, queryChr, startQuery, endQuery, strand);
+                    for (int repeatI = 0; repeatI < querySeq.length(); ++repeatI) {
+                        refAlign << "-";
                     }
-                    queryAlign<<querySeq;
+                    queryAlign << querySeq;
                     alignmentScore += openGapPenalty1 + extendGapPenalty1 * querySeq.length();
-  //                  std::cout << "line 395" << std::endl;
-                }else if ( orthologPair.getRefStartPos()!=startRef && orthologPair.getQueryEndPos()==endQuery ){
-                    endRef = orthologPair.getRefStartPos()-1;
-                    std::string refSeq = getSubsequence( refSequences, refChr, startRef, endRef);
-                    refAlign<<refSeq;
-                    for ( int repeatI = 0; repeatI<refSeq.length(); ++repeatI ) {
+                    //                  std::cout << "line 395" << std::endl;
+                } else if (orthologPair.getRefStartPos() != startRef && orthologPair.getQueryEndPos() == endQuery) {
+                    endRef = orthologPair.getRefStartPos() - 1;
+                    std::string refSeq = getSubsequence(refSequences, refChr, startRef, endRef);
+                    refAlign << refSeq;
+                    for (int repeatI = 0; repeatI < refSeq.length(); ++repeatI) {
                         queryAlign << "-";
                     }
-                    alignmentScore += openGapPenalty1 + extendGapPenalty1*refSeq.length();
+                    alignmentScore += openGapPenalty1 + extendGapPenalty1 * refSeq.length();
 //                    std::cout << "line 404" << std::endl;
-                }else if ( orthologPair.getRefStartPos()==startRef && orthologPair.getQueryEndPos()==endQuery ){
+                } else if (orthologPair.getRefStartPos() == startRef && orthologPair.getQueryEndPos() == endQuery) {
 
-                }else{
-                    endRef = orthologPair.getRefStartPos()-1;
-                    startQuery = orthologPair.getQueryEndPos()+1;
+                } else {
+                    endRef = orthologPair.getRefStartPos() - 1;
+                    startQuery = orthologPair.getQueryEndPos() + 1;
 //                    std::cout << "line 410 " << refChr << "\t" << startRef << "\t" << endRef << ":\t:" << queryChr << "\t" << startQuery << "\t" << endQuery << std::endl;
-                    std::string refSeq = getSubsequence( refSequences, refChr, startRef, endRef);
-                    std::string querySeq = getSubsequence( targetSequences, queryChr, startQuery, endQuery, strand);
+                    std::string refSeq = getSubsequence(refSequences, refChr, startRef, endRef);
+                    std::string querySeq = getSubsequence(targetSequences, queryChr, startQuery, endQuery, strand);
 //                    std::cout << "line 413 " << refSeq << std::endl;
 //                    std::cout << "line 414 " << querySeq << std::endl;
 /*
@@ -450,7 +452,8 @@ void genomeAlignment( std::vector<std::vector<AlignmentMatch>> & alignmentMatchs
                         std::string _alignment_d;
 
                         //int64_t thiScore = alignSlidingWindow(querySeq, refSeq, _alignment_q, _alignment_d, &affine_penalties, mm_allocator, widownWidth, wfaSize, wfaSize2, matchingScore, mismatchingPenalty, openGapPenalty1, extendGapPenalty1, min_wavefront_length, max_distance_threshold, m, true  );
-                        int64_t thiScore = alignSlidingWindow(querySeq, refSeq, _alignment_q, _alignment_d, &penalties, mm_allocator, widownWidth, wfaSize,  matchingScore, mismatchingPenalty, openGapPenalty1, extendGapPenalty1, openGapPenalty2, extendGapPenalty2, min_wavefront_length, max_distance_threshold, m);
+                        int64_t thiScore = alignSlidingWindow(querySeq, refSeq, _alignment_q, _alignment_d, &penalties, mm_allocator, widownWidth, wfaSize, matchingScore, mismatchingPenalty, openGapPenalty1, extendGapPenalty1, openGapPenalty2, extendGapPenalty2,
+                                                              min_wavefront_length, max_distance_threshold, m);
 
                         alignmentScore += thiScore;
                         refAlign << _alignment_d;
@@ -465,21 +468,23 @@ void genomeAlignment( std::vector<std::vector<AlignmentMatch>> & alignmentMatchs
                             temp.erase(std::remove(temp.begin(), temp.end(), '-'), temp.end());
                             assert(temp.compare(querySeq) == 0);
                         }
-                        if (outPutFraged  ){
+                        if (outPutFraged) {
                             ofragfile << "a\tscore=" << thiScore << std::endl;
-                            ofragfile << "s\t" << std::left << std::setw(chrWidth) << refFileName + "." + refChr << "\t" << std::right <<  std::setw(9) << startRef-1 << "\t" << std::setw(9) << refSeq.size() << "\t+\t" << refSequences[refChr].getSequence().size() << "\t" << _alignment_d << std::endl;
-                            ofragfile << "s\t" << std::left << std::setw(chrWidth)  << queryFileName + "." + queryChr << "\t" << std::right <<  std::setw(9) << startQuery-1 << "\t" << std::setw(9) << querySeq.size() << "\t-\t" << targetSequences[queryChr].getSequence().size() << "\t" <<  _alignment_q << std::endl;
+                            ofragfile << "s\t" << std::left << std::setw(chrWidth) << refFileName + "." + refChr << "\t" << std::right << std::setw(9) << startRef - 1 << "\t" << std::setw(9) << refSeq.size() << "\t+\t" << refSequences[refChr].getSequence().size() << "\t"
+                                      << _alignment_d << std::endl;
+                            ofragfile << "s\t" << std::left << std::setw(chrWidth) << queryFileName + "." + queryChr << "\t" << std::right << std::setw(9) << startQuery - 1 << "\t" << std::setw(9) << querySeq.size() << "\t-\t" << targetSequences[queryChr].getSequence().size()
+                                      << "\t" << _alignment_q << std::endl;
                             ofragfile << std::endl;
                         }
                     }
                 }
                 {
                     startRef = orthologPair.getRefStartPos();
-                    endQuery= orthologPair.getQueryEndPos();
+                    endQuery = orthologPair.getQueryEndPos();
                     endRef = orthologPair.getRefEndPos();
                     startQuery = orthologPair.getQueryStartPos();
-                    std::string refSeq = getSubsequence( refSequences, refChr, startRef, endRef);
-                    std::string querySeq = getSubsequence( targetSequences, queryChr, startQuery, endQuery, strand);
+                    std::string refSeq = getSubsequence(refSequences, refChr, startRef, endRef);
+                    std::string querySeq = getSubsequence(targetSequences, queryChr, startQuery, endQuery, strand);
 /*
                     if ( outPutLocalalignment ){
 
@@ -507,7 +512,8 @@ void genomeAlignment( std::vector<std::vector<AlignmentMatch>> & alignmentMatchs
                         std::string _alignment_q;
                         std::string _alignment_d;
 
-                        int64_t thiScore = alignSlidingWindow(querySeq, refSeq, _alignment_q, _alignment_d, &penalties, mm_allocator, widownWidth, wfaSize2, matchingScore, mismatchingPenalty, openGapPenalty1, extendGapPenalty1, openGapPenalty2, extendGapPenalty2, min_wavefront_length, max_distance_threshold, m);
+                        int64_t thiScore = alignSlidingWindow(querySeq, refSeq, _alignment_q, _alignment_d, &penalties, mm_allocator, widownWidth, wfaSize2, matchingScore, mismatchingPenalty, openGapPenalty1, extendGapPenalty1, openGapPenalty2, extendGapPenalty2,
+                                                              min_wavefront_length, max_distance_threshold, m);
 
                         alignmentScore += thiScore;
                         refAlign << _alignment_d;
@@ -522,48 +528,52 @@ void genomeAlignment( std::vector<std::vector<AlignmentMatch>> & alignmentMatchs
                             temp.erase(std::remove(temp.begin(), temp.end(), '-'), temp.end());
                             assert(temp.compare(querySeq) == 0);
                         }
-                        if (outPutFraged ){
+                        if (outPutFraged) {
                             ofragfile << "a\tscore=" << thiScore << std::endl;
-                            ofragfile << "s\t" << std::left << std::setw(chrWidth) << refFileName + "." + refChr << "\t" << std::right <<  std::setw(9) << startRef-1 << "\t" << std::setw(9) << refSeq.size() << "\t+\t" << refSequences[refChr].getSequence().size() << "\t" << _alignment_d << std::endl;
-                            ofragfile << "s\t" << std::left << std::setw(chrWidth)  << queryFileName + "." + queryChr << "\t" << std::right <<  std::setw(9) << startQuery-1 << "\t" << std::setw(9) << querySeq.size() << "\t-\t" << targetSequences[queryChr].getSequence().size() << "\t" <<  _alignment_q << std::endl;
+                            ofragfile << "s\t" << std::left << std::setw(chrWidth) << refFileName + "." + refChr << "\t" << std::right << std::setw(9) << startRef - 1 << "\t" << std::setw(9) << refSeq.size() << "\t+\t" << refSequences[refChr].getSequence().size() << "\t"
+                                      << _alignment_d << std::endl;
+                            ofragfile << "s\t" << std::left << std::setw(chrWidth) << queryFileName + "." + queryChr << "\t" << std::right << std::setw(9) << startQuery - 1 << "\t" << std::setw(9) << querySeq.size() << "\t-\t" << targetSequences[queryChr].getSequence().size()
+                                      << "\t" << _alignment_q << std::endl;
                             ofragfile << std::endl;
                         }
                     }
                 }
-                startRef = orthologPair.getRefEndPos()+1;
-                endQuery= orthologPair.getQueryStartPos()-1;
+                startRef = orthologPair.getRefEndPos() + 1;
+                endQuery = orthologPair.getQueryStartPos() - 1;
             }
 //            std::cout << refChr << " last align" << std::endl;
 
 
             /*if(false)*/{
-                std::string refGenomerSequence = getSubsequence( refSequences, refChr, alignmentMatchsMap[i][0].getRefStartPos(), alignmentMatchsMap[i][alignmentMatchsMap[i].size()-1].getRefEndPos());
-                std::string queryGenomerSequence = getSubsequence( targetSequences, queryChr, alignmentMatchsMap[i][0].getQueryEndPos(), alignmentMatchsMap[i][alignmentMatchsMap[i].size()-1].getQueryStartPos(), strand);
+                std::string refGenomerSequence = getSubsequence(refSequences, refChr, alignmentMatchsMap[i][0].getRefStartPos(), alignmentMatchsMap[i][alignmentMatchsMap[i].size() - 1].getRefEndPos());
+                std::string queryGenomerSequence = getSubsequence(targetSequences, queryChr, alignmentMatchsMap[i][0].getQueryEndPos(), alignmentMatchsMap[i][alignmentMatchsMap[i].size() - 1].getQueryStartPos(), strand);
 
                 if (checkResult) {
                     std::string temp = refAlign.str();
                     temp.erase(std::remove(temp.begin(), temp.end(), '-'), temp.end());
-    //                temp.erase(std::remove(temp.begin(), temp.end(), '\0'), temp.end());
-                    assert(temp.compare(refGenomerSequence)==0);
+                    //                temp.erase(std::remove(temp.begin(), temp.end(), '\0'), temp.end());
+                    assert(temp.compare(refGenomerSequence) == 0);
 
                     temp = queryAlign.str();
                     temp.erase(std::remove(temp.begin(), temp.end(), '-'), temp.end());
-    //                temp.erase(std::remove(temp.begin(), temp.end(), '\0'), temp.end());
-                    assert(temp.compare(queryGenomerSequence)==0);
-                 }
+                    //                temp.erase(std::remove(temp.begin(), temp.end(), '\0'), temp.end());
+                    assert(temp.compare(queryGenomerSequence) == 0);
+                }
 
                 omaffile << "a\tscore=" << alignmentScore << std::endl;
-                omaffile << "s\t" << std::left << std::setw(chrWidth) << refFileName + "." + refChr << "\t" << std::right <<  std::setw(9) << alignmentMatchsMap[i][0].getRefStartPos()-1 << "\t" << std::setw(9) << refGenomerSequence.size() << "\t+\t" << refSequences[refChr].getSequence().size() << "\t" << refAlign.str() << std::endl;
-                omaffile << "s\t" << std::left << std::setw(chrWidth)  << queryFileName + "." + queryChr << "\t" << std::right <<  std::setw(9) << alignmentMatchsMap[i][alignmentMatchsMap[i].size()-1].getQueryStartPos()-1 << "\t" << std::setw(9) << queryGenomerSequence.size() << "\t-\t" << targetSequences[queryChr].getSequence().size() << "\t" <<  queryAlign.str() << std::endl;
+                omaffile << "s\t" << std::left << std::setw(chrWidth) << refFileName + "." + refChr << "\t" << std::right << std::setw(9) << alignmentMatchsMap[i][0].getRefStartPos() - 1 << "\t" << std::setw(9) << refGenomerSequence.size() << "\t+\t"
+                         << refSequences[refChr].getSequence().size() << "\t" << refAlign.str() << std::endl;
+                omaffile << "s\t" << std::left << std::setw(chrWidth) << queryFileName + "." + queryChr << "\t" << std::right << std::setw(9) << alignmentMatchsMap[i][alignmentMatchsMap[i].size() - 1].getQueryStartPos() - 1 << "\t" << std::setw(9) << queryGenomerSequence.size()
+                         << "\t-\t" << targetSequences[queryChr].getSequence().size() << "\t" << queryAlign.str() << std::endl;
                 omaffile << std::endl;
             }
 
         }
     }
-    if( outPutMaf ){
+    if (outPutMaf) {
         omaffile.close();
     }
-    if( outPutFraged ){
+    if (outPutFraged) {
         ofragfile.close();
     }
 //    if(outPutLocalalignment){
@@ -572,19 +582,20 @@ void genomeAlignment( std::vector<std::vector<AlignmentMatch>> & alignmentMatchs
     mm_allocator_delete(mm_allocator);
 }
 
-void alignmentToVcf(std::string & queryAlignSeq, std::string & refAlignSeq, std::ofstream & ovcffile, std::string chr, std::map <std::string, Fasta> & refSequences){
+void alignmentToVcf(std::string &queryAlignSeq, std::string &refAlignSeq, std::ofstream &ovcffile, std::string chr, std::map<std::string, Fasta> &refSequences) {
     alignmentToVcf(queryAlignSeq, refAlignSeq, ovcffile, chr, refSequences, 0);
 }
 
-void alignmentToVcf(std::string & queryAlignSeq, std::string & refAlignSeq, std::ofstream & ovcffile, std::string chr, std::map <std::string, Fasta> & refSequences, int32_t refLetterNumber) {
+void alignmentToVcf(std::string &queryAlignSeq, std::string &refAlignSeq, std::ofstream &ovcffile, std::string chr, std::map<std::string, Fasta> &refSequences, int32_t refLetterNumber) {
     std::vector<Variant> sdiRecordsThisOne;
     alignmentToVcf(queryAlignSeq, refAlignSeq, sdiRecordsThisOne, chr, refSequences, refLetterNumber);
     for (std::vector<Variant>::iterator itVariant = sdiRecordsThisOne.begin(); itVariant != sdiRecordsThisOne.end(); ++itVariant) {
-        ovcffile << itVariant->getChromosome() << "\t" << itVariant->getPosition() << "\t" << itVariant->getChromosome() << "_" << itVariant->getPosition() <<"\t"+ itVariant->getReference() << "\t" << itVariant->getAlternative() << "\t50\tPASS\tDP=1\tGT:GQ:DP\t1|1:50:1" << std::endl;
+        ovcffile << itVariant->getChromosome() << "\t" << itVariant->getPosition() << "\t" << itVariant->getChromosome() << "_" << itVariant->getPosition() << "\t" + itVariant->getReference() << "\t" << itVariant->getAlternative() << "\t50\tPASS\tDP=1\tGT:GQ:DP\t1|1:50:1"
+                 << std::endl;
     }
 }
-void alignmentToVcf(std::string & queryAlignSeq, std::string & refAlignSeq, std::vector<Variant> & sdiRecordsThisOne, std::string chr, std::map <std::string, Fasta> & refSequences, int32_t refLetterNumber){
 
+void alignmentToVcf(std::string &queryAlignSeq, std::string &refAlignSeq, std::vector<Variant> &sdiRecordsThisOne, std::string chr, std::map<std::string, Fasta> &refSequences, int32_t refLetterNumber) {
     std::replace(refAlignSeq.begin(), refAlignSeq.end(), 'U', 'T');
     std::replace(refAlignSeq.begin(), refAlignSeq.end(), 'R', 'N');
     std::replace(refAlignSeq.begin(), refAlignSeq.end(), 'Y', 'N');
@@ -629,7 +640,7 @@ void alignmentToVcf(std::string & queryAlignSeq, std::string & refAlignSeq, std:
                     sdiRecords.deleteLast();
                     sdiRecords.insertLast(data);
 
-                }else{
+                } else {
                     std::string ori(1, refAlignSeq[ai]);
                     std::string result = "-";
                     Variant mapSingleRecord = Variant(chr, refLetterNumber, ori, result);
@@ -837,9 +848,9 @@ void alignmentToVcf(std::string & queryAlignSeq, std::string & refAlignSeq, std:
         std::vector<int> sdiRecordsToRomove;
         int oldSize = sdiRecordsThisOne.size();
         for (int j = 1; j < oldSize; j++) {
-            if (sdiRecordsThisOne[j-1].getChanginglength() < 0 && sdiRecordsThisOne[j-1].getAlternative().compare("-") == 0 &&
+            if (sdiRecordsThisOne[j - 1].getChanginglength() < 0 && sdiRecordsThisOne[j - 1].getAlternative().compare("-") == 0 &&
                 sdiRecordsThisOne[j].getChanginglength() > 0 && sdiRecordsThisOne[j].getReference().compare("-") == 0 &&
-                ( (sdiRecordsThisOne[j-1].getPosition() + sdiRecordsThisOne[j-1].getReference().size()) == sdiRecordsThisOne[j].getPosition()) ){
+                ((sdiRecordsThisOne[j - 1].getPosition() + sdiRecordsThisOne[j - 1].getReference().size()) == sdiRecordsThisOne[j].getPosition())) {
                 int position = sdiRecordsThisOne[j - 1].getPosition();
 
                 std::string ori = sdiRecordsThisOne[j - 1].getReference() + sdiRecordsThisOne[j].getReference();
@@ -853,7 +864,7 @@ void alignmentToVcf(std::string & queryAlignSeq, std::string & refAlignSeq, std:
                 sdiRecordsThisOne[j] = mapSingleRecord2;
                 j++;
                 ifChanged = true;
-            }else if (sdiRecordsThisOne[j].getReference().compare(sdiRecordsThisOne[j].getAlternative()) == 0) {
+            } else if (sdiRecordsThisOne[j].getReference().compare(sdiRecordsThisOne[j].getAlternative()) == 0) {
                 sdiRecordsToRomove.push_back(j); // it does not affect sorting
             }
         }
@@ -871,10 +882,10 @@ void alignmentToVcf(std::string & queryAlignSeq, std::string & refAlignSeq, std:
         std::vector<int> sdiRecordsToRomove;
         int oldSize = sdiRecordsThisOne.size();
         for (int j = 1; j < oldSize; j++) {
-            if (sdiRecordsThisOne[j].getChanginglength() < 0 &&  sdiRecordsThisOne[j].getAlternative().compare("-") == 0 &&
+            if (sdiRecordsThisOne[j].getChanginglength() < 0 && sdiRecordsThisOne[j].getAlternative().compare("-") == 0 &&
                 ( //(sdiRecordsThisOne[j - 1].getPosition() == (sdiRecordsThisOne[j].getPosition()-1)  && sdiRecordsThisOne[j - 1].getReference() != "-" ) ||
-                (sdiRecordsThisOne[j - 1].getReference()[0]!='-' &&
-                sdiRecordsThisOne[j - 1].getPosition() + sdiRecordsThisOne[j - 1].getReference().size() == sdiRecordsThisOne[j].getPosition() ) ) ){
+                        (sdiRecordsThisOne[j - 1].getReference()[0] != '-' &&
+                         sdiRecordsThisOne[j - 1].getPosition() + sdiRecordsThisOne[j - 1].getReference().size() == sdiRecordsThisOne[j].getPosition()))) {
                 int position = sdiRecordsThisOne[j - 1].getPosition();
                 std::string ori = sdiRecordsThisOne[j - 1].getReference() + sdiRecordsThisOne[j].getReference();
                 std::string result = sdiRecordsThisOne[j - 1].getAlternative() + sdiRecordsThisOne[j].getAlternative();
@@ -887,20 +898,20 @@ void alignmentToVcf(std::string & queryAlignSeq, std::string & refAlignSeq, std:
                 sdiRecordsThisOne[j] = mapSingleRecord2;
                 j++;
                 ifChanged = true;
-            }else if (sdiRecordsThisOne[j].getChanginglength() < 0 &&
-                      sdiRecordsThisOne[j].getAlternative().compare("-") == 0 && (
-                              (sdiRecordsThisOne[j - 1].getReference() != "-" && ( sdiRecordsThisOne[j - 1].getPosition() + (sdiRecordsThisOne[j - 1].getReference().size()) ) < (sdiRecordsThisOne[j].getPosition() ))
-                        ||  (sdiRecordsThisOne[j - 1].getReference() == "-" &&  sdiRecordsThisOne[j - 1].getPosition() != (sdiRecordsThisOne[j].getPosition() ))    )
-                      ){
-                int position = sdiRecordsThisOne[j].getPosition()-1;
-                std::string ori(1, refSequences[chr].getSequence()[position-1]);
+            } else if (sdiRecordsThisOne[j].getChanginglength() < 0 &&
+                       sdiRecordsThisOne[j].getAlternative().compare("-") == 0 && (
+                               (sdiRecordsThisOne[j - 1].getReference() != "-" && (sdiRecordsThisOne[j - 1].getPosition() + (sdiRecordsThisOne[j - 1].getReference().size())) < (sdiRecordsThisOne[j].getPosition()))
+                               || (sdiRecordsThisOne[j - 1].getReference() == "-" && sdiRecordsThisOne[j - 1].getPosition() != (sdiRecordsThisOne[j].getPosition())))
+                    ) {
+                int position = sdiRecordsThisOne[j].getPosition() - 1;
+                std::string ori(1, refSequences[chr].getSequence()[position - 1]);
                 std::string result = ori;
                 ori = ori + sdiRecordsThisOne[j].getReference();
                 Variant mapSingleRecord2(chr, position, ori, result);
                 sdiRecordsThisOne[j] = mapSingleRecord2;
             } else if (sdiRecordsThisOne[j].getChanginglength() < 0 &&
-                       sdiRecordsThisOne[j].getAlternative().compare("-") == 0 &&  (sdiRecordsThisOne[j - 1].getReference() == "-" &&  sdiRecordsThisOne[j - 1].getPosition() == (sdiRecordsThisOne[j].getPosition() )    )
-                    ){
+                       sdiRecordsThisOne[j].getAlternative().compare("-") == 0 && (sdiRecordsThisOne[j - 1].getReference() == "-" && sdiRecordsThisOne[j - 1].getPosition() == (sdiRecordsThisOne[j].getPosition()))
+                    ) {
                 int position = sdiRecordsThisOne[j - 1].getPosition();
                 std::string ori = sdiRecordsThisOne[j - 1].getReference() + sdiRecordsThisOne[j].getReference();
                 std::string result = sdiRecordsThisOne[j - 1].getAlternative() + sdiRecordsThisOne[j].getAlternative();
@@ -915,8 +926,8 @@ void alignmentToVcf(std::string & queryAlignSeq, std::string & refAlignSeq, std:
                 ifChanged = true;
             } else if (sdiRecordsThisOne[j].getChanginglength() > 0 &&
                        sdiRecordsThisOne[j].getReference().compare("-") == 0 &&
-                    sdiRecordsThisOne[j-1].getReference().compare("-") != 0 &&
-                    ( sdiRecordsThisOne[j - 1].getPosition() + sdiRecordsThisOne[j - 1].getReference().size() ) == (sdiRecordsThisOne[j].getPosition())  ){
+                       sdiRecordsThisOne[j - 1].getReference().compare("-") != 0 &&
+                       (sdiRecordsThisOne[j - 1].getPosition() + sdiRecordsThisOne[j - 1].getReference().size()) == (sdiRecordsThisOne[j].getPosition())) {
                 int position = sdiRecordsThisOne[j - 1].getPosition();
                 std::string ori = sdiRecordsThisOne[j - 1].getReference() + sdiRecordsThisOne[j].getReference();
                 std::string result = sdiRecordsThisOne[j - 1].getAlternative() + sdiRecordsThisOne[j].getAlternative();
@@ -927,12 +938,12 @@ void alignmentToVcf(std::string & queryAlignSeq, std::string & refAlignSeq, std:
                 sdiRecordsThisOne[j] = mapSingleRecord2;
                 j++;
                 ifChanged = true;
-            }else if (sdiRecordsThisOne[j].getChanginglength() > 0 &&
-                      sdiRecordsThisOne[j].getReference().compare("-") == 0 &&
-                    sdiRecordsThisOne[j - 1].getReference() != "-" &&
-                    ( sdiRecordsThisOne[j - 1].getPosition() + (sdiRecordsThisOne[j - 1].getReference().size()) ) < (sdiRecordsThisOne[j].getPosition()) ){
-                int position = sdiRecordsThisOne[j].getPosition()-1;
-                std::string ori(1, refSequences[chr].getSequence()[position-1]);
+            } else if (sdiRecordsThisOne[j].getChanginglength() > 0 &&
+                       sdiRecordsThisOne[j].getReference().compare("-") == 0 &&
+                       sdiRecordsThisOne[j - 1].getReference() != "-" &&
+                       (sdiRecordsThisOne[j - 1].getPosition() + (sdiRecordsThisOne[j - 1].getReference().size())) < (sdiRecordsThisOne[j].getPosition())) {
+                int position = sdiRecordsThisOne[j].getPosition() - 1;
+                std::string ori(1, refSequences[chr].getSequence()[position - 1]);
                 std::string result = ori + sdiRecordsThisOne[j].getAlternative();
                 Variant mapSingleRecord2(chr, position, ori, result);
                 sdiRecordsThisOne[j] = mapSingleRecord2;
@@ -979,15 +990,15 @@ void alignmentToVcf(std::string & queryAlignSeq, std::string & refAlignSeq, std:
         sdiRecordsThisOne.shrink_to_fit();
     }
 
-    if (sdiRecordsThisOne.size() >0 && sdiRecordsThisOne[0].getChanginglength() > 0 &&
-        sdiRecordsThisOne[0].getReference().compare("-") == 0){
-        if( sdiRecordsThisOne[0].getPosition() != 1 ){
-            int position = sdiRecordsThisOne[0].getPosition()-1;
-            std::string ori(1, refSequences[chr].getSequence()[position-1]);
+    if (sdiRecordsThisOne.size() > 0 && sdiRecordsThisOne[0].getChanginglength() > 0 &&
+        sdiRecordsThisOne[0].getReference().compare("-") == 0) {
+        if (sdiRecordsThisOne[0].getPosition() != 1) {
+            int position = sdiRecordsThisOne[0].getPosition() - 1;
+            std::string ori(1, refSequences[chr].getSequence()[position - 1]);
             std::string result = ori + sdiRecordsThisOne[0].getAlternative();
             Variant mapSingleRecord2(chr, position, ori, result);
             sdiRecordsThisOne[0] = mapSingleRecord2;
-        }else if ( sdiRecordsThisOne[0].getPosition() == 1 && sdiRecordsThisOne.size() >1 && sdiRecordsThisOne[1].getPosition() == 1  ) {
+        } else if (sdiRecordsThisOne[0].getPosition() == 1 && sdiRecordsThisOne.size() > 1 && sdiRecordsThisOne[1].getPosition() == 1) {
             int position = 1;
             std::string ori = sdiRecordsThisOne[0].getReference() + sdiRecordsThisOne[1].getReference();
             std::string result = sdiRecordsThisOne[0].getAlternative() + sdiRecordsThisOne[1].getAlternative();
@@ -999,7 +1010,7 @@ void alignmentToVcf(std::string & queryAlignSeq, std::string & refAlignSeq, std:
             sdiRecordsThisOne.erase(sdiRecordsThisOne.begin() + 1);
             sdiRecordsThisOne.shrink_to_fit();
             sdiRecordsThisOne[0] = mapSingleRecord2;
-        }else{
+        } else {
             int position = 1;
             std::string ori(1, refSequences[chr].getSequence()[0]);
             std::string result = sdiRecordsThisOne[0].getAlternative() + ori;
@@ -1010,16 +1021,16 @@ void alignmentToVcf(std::string & queryAlignSeq, std::string & refAlignSeq, std:
         }
     }
 
-    if (sdiRecordsThisOne.size() >0 && sdiRecordsThisOne[0].getChanginglength() < 0 &&
-        sdiRecordsThisOne[0].getAlternative().compare("-") == 0){
-        if( sdiRecordsThisOne[0].getPosition() != 1 ){
-            int position = sdiRecordsThisOne[0].getPosition()-1;
-            std::string ori(1, refSequences[chr].getSequence()[position-1]);
+    if (sdiRecordsThisOne.size() > 0 && sdiRecordsThisOne[0].getChanginglength() < 0 &&
+        sdiRecordsThisOne[0].getAlternative().compare("-") == 0) {
+        if (sdiRecordsThisOne[0].getPosition() != 1) {
+            int position = sdiRecordsThisOne[0].getPosition() - 1;
+            std::string ori(1, refSequences[chr].getSequence()[position - 1]);
             std::string result = ori;
             ori += sdiRecordsThisOne[0].getReference();
             Variant mapSingleRecord2(chr, position, ori, result);
             sdiRecordsThisOne[0] = mapSingleRecord2;
-        }else if ( sdiRecordsThisOne[0].getPosition() == 1 && sdiRecordsThisOne.size() >1 && sdiRecordsThisOne[1].getPosition() == sdiRecordsThisOne[0].getPosition()+sdiRecordsThisOne[0].getReference().size()  ) {
+        } else if (sdiRecordsThisOne[0].getPosition() == 1 && sdiRecordsThisOne.size() > 1 && sdiRecordsThisOne[1].getPosition() == sdiRecordsThisOne[0].getPosition() + sdiRecordsThisOne[0].getReference().size()) {
             int position = 1;
             std::string ori = sdiRecordsThisOne[0].getReference() + sdiRecordsThisOne[1].getReference();
             std::string result = sdiRecordsThisOne[0].getAlternative() + sdiRecordsThisOne[1].getAlternative();
@@ -1031,7 +1042,7 @@ void alignmentToVcf(std::string & queryAlignSeq, std::string & refAlignSeq, std:
             sdiRecordsThisOne.erase(sdiRecordsThisOne.begin() + 1);
             sdiRecordsThisOne.shrink_to_fit();
             sdiRecordsThisOne[0] = mapSingleRecord2;
-        }else{
+        } else {
             int position = 1;
             std::string result(1, refSequences[chr].getSequence()[sdiRecordsThisOne[0].getReference().length()]);
             std::string ori = sdiRecordsThisOne[0].getReference() + result;
@@ -1044,9 +1055,7 @@ void alignmentToVcf(std::string & queryAlignSeq, std::string & refAlignSeq, std:
 }
 
 
-
-
-void alignmentToVcfBackup(std::string & queryAlignSeq, std::string & refAlignSeq, std::ofstream & ovcffile, std::string chr, std::map <std::string, Fasta> & refSequences, int32_t refLetterNumber){
+void alignmentToVcfBackup(std::string &queryAlignSeq, std::string &refAlignSeq, std::ofstream &ovcffile, std::string chr, std::map<std::string, Fasta> &refSequences, int32_t refLetterNumber) {
 
     std::replace(refAlignSeq.begin(), refAlignSeq.end(), 'U', 'T');
     std::replace(refAlignSeq.begin(), refAlignSeq.end(), 'R', 'N');
@@ -1301,10 +1310,10 @@ void alignmentToVcfBackup(std::string & queryAlignSeq, std::string & refAlignSeq
         std::vector<int> sdiRecordsToRomove;
         int oldSize = sdiRecordsThisOne.size();
         for (int j = 1; j < oldSize; j++) {
-            if (sdiRecordsThisOne[j-1].getChanginglength() < 0 &&
-                sdiRecordsThisOne[j-1].getAlternative().compare("-") == 0 &&
-                sdiRecordsThisOne[j].getChanginglength() >0 && sdiRecordsThisOne[j].getReference().compare("-") == 0 &&
-                ( (sdiRecordsThisOne[j-1].getPosition() + sdiRecordsThisOne[j-1].getReference().size()) == sdiRecordsThisOne[j].getPosition()) ){
+            if (sdiRecordsThisOne[j - 1].getChanginglength() < 0 &&
+                sdiRecordsThisOne[j - 1].getAlternative().compare("-") == 0 &&
+                sdiRecordsThisOne[j].getChanginglength() > 0 && sdiRecordsThisOne[j].getReference().compare("-") == 0 &&
+                ((sdiRecordsThisOne[j - 1].getPosition() + sdiRecordsThisOne[j - 1].getReference().size()) == sdiRecordsThisOne[j].getPosition())) {
 
                 int position = sdiRecordsThisOne[j - 1].getPosition();
 
@@ -1319,7 +1328,7 @@ void alignmentToVcfBackup(std::string & queryAlignSeq, std::string & refAlignSeq
                 sdiRecordsThisOne[j] = mapSingleRecord2;
                 j++;
                 ifChanged = true;
-            }else if (sdiRecordsThisOne[j].getReference().compare(sdiRecordsThisOne[j].getAlternative()) == 0) {
+            } else if (sdiRecordsThisOne[j].getReference().compare(sdiRecordsThisOne[j].getAlternative()) == 0) {
                 sdiRecordsToRomove.push_back(j); // it does not affect sorting
             }
         }
@@ -1345,8 +1354,8 @@ void alignmentToVcfBackup(std::string & queryAlignSeq, std::string & refAlignSeq
         for (int j = 1; j < oldSize; j++) {
             if (sdiRecordsThisOne[j].getChanginglength() < 0 &&
                 sdiRecordsThisOne[j].getAlternative().compare("-") == 0 &&
-                (sdiRecordsThisOne[j - 1].getPosition() == (sdiRecordsThisOne[j].getPosition()-1) ||
-                 (sdiRecordsThisOne[j - 1].getReference()[0]!='-' && sdiRecordsThisOne[j - 1].getPosition() + sdiRecordsThisOne[j - 1].getReference().size() == sdiRecordsThisOne[j].getPosition() ) ) ){
+                (sdiRecordsThisOne[j - 1].getPosition() == (sdiRecordsThisOne[j].getPosition() - 1) ||
+                 (sdiRecordsThisOne[j - 1].getReference()[0] != '-' && sdiRecordsThisOne[j - 1].getPosition() + sdiRecordsThisOne[j - 1].getReference().size() == sdiRecordsThisOne[j].getPosition()))) {
                 int position = sdiRecordsThisOne[j - 1].getPosition();
                 std::string ori = sdiRecordsThisOne[j - 1].getReference() + sdiRecordsThisOne[j].getReference();
                 std::string result = sdiRecordsThisOne[j - 1].getAlternative() + sdiRecordsThisOne[j].getAlternative();
@@ -1359,19 +1368,19 @@ void alignmentToVcfBackup(std::string & queryAlignSeq, std::string & refAlignSeq
                 sdiRecordsThisOne[j] = mapSingleRecord2;
                 j++;
                 ifChanged = true;
-            }else if (sdiRecordsThisOne[j].getChanginglength() < 0 &&
-                      sdiRecordsThisOne[j].getAlternative().compare("-") == 0 &&
-                      sdiRecordsThisOne[j - 1].getPosition() != (sdiRecordsThisOne[j].getPosition()-1) ){
+            } else if (sdiRecordsThisOne[j].getChanginglength() < 0 &&
+                       sdiRecordsThisOne[j].getAlternative().compare("-") == 0 &&
+                       sdiRecordsThisOne[j - 1].getPosition() != (sdiRecordsThisOne[j].getPosition() - 1)) {
 
-                int position = sdiRecordsThisOne[j].getPosition()-1;
-                std::string ori(1, refSequences[chr].getSequence()[position-1]);
+                int position = sdiRecordsThisOne[j].getPosition() - 1;
+                std::string ori(1, refSequences[chr].getSequence()[position - 1]);
                 std::string result = ori;
                 ori += sdiRecordsThisOne[j].getReference();
                 Variant mapSingleRecord2(chr, position, ori, result);
                 sdiRecordsThisOne[j] = mapSingleRecord2;
             } else if (sdiRecordsThisOne[j].getChanginglength() > 0 &&
                        sdiRecordsThisOne[j].getReference().compare("-") == 0 &&
-                       sdiRecordsThisOne[j - 1].getPosition() == (sdiRecordsThisOne[j].getPosition()-1) ){
+                       sdiRecordsThisOne[j - 1].getPosition() == (sdiRecordsThisOne[j].getPosition() - 1)) {
                 int position = sdiRecordsThisOne[j - 1].getPosition();
                 std::string ori = sdiRecordsThisOne[j - 1].getReference() + sdiRecordsThisOne[j].getReference();
                 std::string result = sdiRecordsThisOne[j - 1].getAlternative() + sdiRecordsThisOne[j].getAlternative();
@@ -1384,11 +1393,11 @@ void alignmentToVcfBackup(std::string & queryAlignSeq, std::string & refAlignSeq
                 sdiRecordsThisOne[j] = mapSingleRecord2;
                 j++;
                 ifChanged = true;
-            }else if (sdiRecordsThisOne[j].getChanginglength() > 0 &&
-                      sdiRecordsThisOne[j].getReference().compare("-") == 0 &&
-                      sdiRecordsThisOne[j - 1].getPosition() != (sdiRecordsThisOne[j].getPosition()-1) ){
-                int position = sdiRecordsThisOne[j].getPosition()-1;
-                std::string ori(1, refSequences[chr].getSequence()[position-1]);
+            } else if (sdiRecordsThisOne[j].getChanginglength() > 0 &&
+                       sdiRecordsThisOne[j].getReference().compare("-") == 0 &&
+                       sdiRecordsThisOne[j - 1].getPosition() != (sdiRecordsThisOne[j].getPosition() - 1)) {
+                int position = sdiRecordsThisOne[j].getPosition() - 1;
+                std::string ori(1, refSequences[chr].getSequence()[position - 1]);
                 std::string result = ori + sdiRecordsThisOne[j].getAlternative();
                 Variant mapSingleRecord2(chr, position, ori, result);
                 sdiRecordsThisOne[j] = mapSingleRecord2;
@@ -1405,15 +1414,15 @@ void alignmentToVcfBackup(std::string & queryAlignSeq, std::string & refAlignSeq
     }
 //                std::cout << "merge nearby indels end" << std::endl;
 
-    if (sdiRecordsThisOne.size() >0 && sdiRecordsThisOne[0].getChanginglength() > 0 &&
-        sdiRecordsThisOne[0].getReference().compare("-") == 0){
-        if( sdiRecordsThisOne[0].getPosition() != 1 ){
-            int position = sdiRecordsThisOne[0].getPosition()-1;
-            std::string ori(1, refSequences[chr].getSequence()[position-1]);
+    if (sdiRecordsThisOne.size() > 0 && sdiRecordsThisOne[0].getChanginglength() > 0 &&
+        sdiRecordsThisOne[0].getReference().compare("-") == 0) {
+        if (sdiRecordsThisOne[0].getPosition() != 1) {
+            int position = sdiRecordsThisOne[0].getPosition() - 1;
+            std::string ori(1, refSequences[chr].getSequence()[position - 1]);
             std::string result = ori + sdiRecordsThisOne[0].getAlternative();
             Variant mapSingleRecord2(chr, position, ori, result);
             sdiRecordsThisOne[0] = mapSingleRecord2;
-        }else if ( sdiRecordsThisOne[0].getPosition() == 1 && sdiRecordsThisOne.size() >1 && sdiRecordsThisOne[1].getPosition() == 1  ) {
+        } else if (sdiRecordsThisOne[0].getPosition() == 1 && sdiRecordsThisOne.size() > 1 && sdiRecordsThisOne[1].getPosition() == 1) {
             int position = 1;
             std::string ori = sdiRecordsThisOne[0].getReference() + sdiRecordsThisOne[1].getReference();
             std::string result = sdiRecordsThisOne[0].getAlternative() + sdiRecordsThisOne[1].getAlternative();
@@ -1425,7 +1434,7 @@ void alignmentToVcfBackup(std::string & queryAlignSeq, std::string & refAlignSeq
             sdiRecordsThisOne.erase(sdiRecordsThisOne.begin() + 1);
             sdiRecordsThisOne.shrink_to_fit();
             sdiRecordsThisOne[0] = mapSingleRecord2;
-        }else{
+        } else {
             int position = 1;
             std::string ori(1, refSequences[chr].getSequence()[0]);
             std::string result = sdiRecordsThisOne[0].getAlternative() + ori;
@@ -1435,16 +1444,16 @@ void alignmentToVcfBackup(std::string & queryAlignSeq, std::string & refAlignSeq
             sdiRecordsThisOne[0] = mapSingleRecord2;
         }
     }
-    if (sdiRecordsThisOne.size() >0 && sdiRecordsThisOne[0].getChanginglength() < 0 &&
-        sdiRecordsThisOne[0].getAlternative().compare("-") == 0){
-        if( sdiRecordsThisOne[0].getPosition() != 1 ){
-            int position = sdiRecordsThisOne[0].getPosition()-1;
-            std::string ori(1, refSequences[chr].getSequence()[position-1]);
+    if (sdiRecordsThisOne.size() > 0 && sdiRecordsThisOne[0].getChanginglength() < 0 &&
+        sdiRecordsThisOne[0].getAlternative().compare("-") == 0) {
+        if (sdiRecordsThisOne[0].getPosition() != 1) {
+            int position = sdiRecordsThisOne[0].getPosition() - 1;
+            std::string ori(1, refSequences[chr].getSequence()[position - 1]);
             std::string result = ori;
             ori += sdiRecordsThisOne[0].getReference();
             Variant mapSingleRecord2(chr, position, ori, result);
             sdiRecordsThisOne[0] = mapSingleRecord2;
-        }else if ( sdiRecordsThisOne[0].getPosition() == 1 && sdiRecordsThisOne.size() >1 && sdiRecordsThisOne[1].getPosition() == sdiRecordsThisOne[0].getPosition()+sdiRecordsThisOne[0].getReference().size()  ) {
+        } else if (sdiRecordsThisOne[0].getPosition() == 1 && sdiRecordsThisOne.size() > 1 && sdiRecordsThisOne[1].getPosition() == sdiRecordsThisOne[0].getPosition() + sdiRecordsThisOne[0].getReference().size()) {
             int position = 1;
             std::string ori = sdiRecordsThisOne[0].getReference() + sdiRecordsThisOne[1].getReference();
             std::string result = sdiRecordsThisOne[0].getAlternative() + sdiRecordsThisOne[1].getAlternative();
@@ -1456,7 +1465,7 @@ void alignmentToVcfBackup(std::string & queryAlignSeq, std::string & refAlignSeq
             sdiRecordsThisOne.erase(sdiRecordsThisOne.begin() + 1);
             sdiRecordsThisOne.shrink_to_fit();
             sdiRecordsThisOne[0] = mapSingleRecord2;
-        }else{
+        } else {
             int position = 1;
             std::string result(1, refSequences[chr].getSequence()[sdiRecordsThisOne[0].getReference().length()]);
             std::string ori = sdiRecordsThisOne[0].getReference() + ori;
@@ -1469,29 +1478,29 @@ void alignmentToVcfBackup(std::string & queryAlignSeq, std::string & refAlignSeq
 
     for (std::vector<Variant>::iterator itVariant = sdiRecordsThisOne.begin();
          itVariant != sdiRecordsThisOne.end(); ++itVariant) {
-        ovcffile << itVariant->getChromosome() << "\t" << itVariant->getPosition() << "\t" << itVariant->getChromosome() << "_" << itVariant->getPosition() <<"\t"+
-        itVariant->getReference() << "\t" << itVariant->getAlternative() << "\t50\tPASS\tDP=1\tGT:GQ:DP\t1|1:50:1" << std::endl;
+        ovcffile << itVariant->getChromosome() << "\t" << itVariant->getPosition() << "\t" << itVariant->getChromosome() << "_" << itVariant->getPosition() << "\t" +
+                                                                                                                                                               itVariant->getReference() << "\t" << itVariant->getAlternative() << "\t50\tPASS\tDP=1\tGT:GQ:DP\t1|1:50:1" << std::endl;
     }
 }
 
 
-void genomeAlignmentAndVariantCalling(std::map<std::string, std::vector<AlignmentMatch>> & alignmentMatchsMap,
-                                      const std::string & refFastaFilePath, const std::string & targetFastaFilePath,
-                                      const int32_t & widownWidth, const int32_t & wfaSize, const int32_t & wfaSize2, const std::string & outPutMafFile, const std::string & outPutVcfFile,
-                                      const std::string & outPutFragedFile, /*std::string & outPutLocalalignmentFile, */const int32_t & matchingScore, const  int32_t & mismatchingPenalty,
-                                      const  int32_t & openGapPenalty1, const int32_t & extendGapPenalty1, const  int32_t & openGapPenalty2, const int32_t & extendGapPenalty2,
-                                      const int32_t & min_wavefront_length, const int32_t & max_distance_threshold, int32_t & seed_window_size, const int32_t & mini_cns_score, const int32_t & step_size,
-                                      const int32_t & matrix_boundary_distance, const int32_t & scoreThreshold, const  int32_t & w, const  int32_t & xDrop) {
+void genomeAlignmentAndVariantCalling(std::map<std::string, std::vector<AlignmentMatch>> &alignmentMatchsMap,
+                                      const std::string &refFastaFilePath, const std::string &targetFastaFilePath,
+                                      const int32_t &widownWidth, const int32_t &wfaSize, const int32_t &wfaSize2, const std::string &outPutMafFile, const std::string &outPutVcfFile,
+                                      const std::string &outPutFragedFile, /*std::string & outPutLocalalignmentFile, */const int32_t &matchingScore, const int32_t &mismatchingPenalty,
+                                      const int32_t &openGapPenalty1, const int32_t &extendGapPenalty1, const int32_t &openGapPenalty2, const int32_t &extendGapPenalty2,
+                                      const int32_t &min_wavefront_length, const int32_t &max_distance_threshold, int32_t &seed_window_size, const int32_t &mini_cns_score, const int32_t &step_size,
+                                      const int32_t &matrix_boundary_distance, const int32_t &scoreThreshold, const int32_t &w, const int32_t &xDrop) {
 
     Scorei m(matchingScore, mismatchingPenalty);
 
     affine2p_penalties_t penalties = {
             .match = 0,
-            .mismatch = -mismatchingPenalty+matchingScore,
-            .gap_opening1 = -openGapPenalty1+matchingScore,
-            .gap_extension1 = -extendGapPenalty1+matchingScore,
-            .gap_opening2 = -openGapPenalty2+matchingScore,
-            .gap_extension2 = -extendGapPenalty2+matchingScore,
+            .mismatch = -mismatchingPenalty + matchingScore,
+            .gap_opening1 = -openGapPenalty1 + matchingScore,
+            .gap_extension1 = -extendGapPenalty1 + matchingScore,
+            .gap_opening2 = -openGapPenalty2 + matchingScore,
+            .gap_extension2 = -extendGapPenalty2 + matchingScore,
     };
     std::cout << "match:" << penalties.match << std::endl;
     std::cout << "mismatch:" << penalties.mismatch << std::endl;
@@ -1500,30 +1509,30 @@ void genomeAlignmentAndVariantCalling(std::map<std::string, std::vector<Alignmen
     std::cout << "gap_opening2:" << penalties.gap_opening2 << std::endl;
     std::cout << "gap_extension2:" << penalties.gap_extension2 << std::endl;
     std::cout << "line 1501" << std::endl;
-    mm_allocator_t* const mm_allocator = mm_allocator_new(BUFFER_SIZE_512M);
+    mm_allocator_t *const mm_allocator = mm_allocator_new(BUFFER_SIZE_512M);
 
     bool outPutMaf = false;
     bool outPutVcf = false;
     bool outPutFraged = false;
 //    bool outPutLocalalignment = false;
 
-    if ( outPutMafFile.size() > 0 ){
+    if (outPutMafFile.size() > 0) {
         outPutMaf = true;
     }
-    if ( outPutVcfFile.size() > 0 ){
+    if (outPutVcfFile.size() > 0) {
         outPutVcf = true;
     }
-    if ( outPutFragedFile.size() > 0 ){
+    if (outPutFragedFile.size() > 0) {
         outPutFraged = true;
     }
 //    if ( outPutLocalalignmentFile.size() > 0 ){
 //        outPutLocalalignment = true;
 //    }
 
-    std::map <std::string, Fasta> refSequences;
+    std::map<std::string, Fasta> refSequences;
     readFastaFile(refFastaFilePath, refSequences);
 
-    std::map <std::string, Fasta> targetSequences;
+    std::map<std::string, Fasta> targetSequences;
     readFastaFile(targetFastaFilePath, targetSequences);
 
     int chrWidth = 4;
@@ -1536,13 +1545,13 @@ void genomeAlignmentAndVariantCalling(std::map<std::string, std::vector<Alignmen
     split(targetFastaFilePath, delim, elems);
     queryFileName = elems.back();
 
-    for ( std::map <std::string, Fasta>::iterator itchr  =refSequences.begin(); itchr != refSequences.end(); ++itchr ){
-        if ( (refFileName + "." + itchr->first).size() > chrWidth ){
+    for (std::map<std::string, Fasta>::iterator itchr = refSequences.begin(); itchr != refSequences.end(); ++itchr) {
+        if ((refFileName + "." + itchr->first).size() > chrWidth) {
             chrWidth = (refFileName + "." + itchr->first).size();
         }
     }
-    for ( std::map <std::string, Fasta>::iterator itchr  =targetSequences.begin(); itchr != targetSequences.end(); ++itchr ){
-        if ((queryFileName + "." + itchr->first).size() > chrWidth){
+    for (std::map<std::string, Fasta>::iterator itchr = targetSequences.begin(); itchr != targetSequences.end(); ++itchr) {
+        if ((queryFileName + "." + itchr->first).size() > chrWidth) {
             chrWidth = (queryFileName + "." + itchr->first).size();
         }
     }
@@ -1550,8 +1559,8 @@ void genomeAlignmentAndVariantCalling(std::map<std::string, std::vector<Alignmen
     std::ofstream omaffile;
     std::ofstream ovcffile;
     std::ofstream ofragfile;
-    std::ofstream  oLocalalignment;
-    if( outPutMaf ){
+    std::ofstream oLocalalignment;
+    if (outPutMaf) {
         omaffile.open(outPutMafFile);
         omaffile << "##maf version=1" << std::endl;
     }
@@ -1561,23 +1570,23 @@ void genomeAlignmentAndVariantCalling(std::map<std::string, std::vector<Alignmen
     time_t now = time(0);
     tm *ltm = localtime(&now);
     std::string filedate = std::to_string((1900 + ltm->tm_year)) + std::to_string((1 + ltm->tm_mon));
-    if( ltm->tm_mday < 10 ){
+    if (ltm->tm_mday < 10) {
         filedate = filedate + "0" + std::to_string((ltm->tm_mday));
-    }else{
+    } else {
         filedate = filedate + std::to_string((ltm->tm_mday));
     }
 
-    if( outPutVcf ){
+    if (outPutVcf) {
         ovcffile.open(outPutVcfFile);
         ovcffile << "##fileformat=VCFv4.3" << std::endl;
         ovcffile << "##fileDate=" << filedate << std::endl;
         ovcffile << "##source=proali" << std::endl;
-        ovcffile <<"##reference=" << refFileName << std::endl;
-        ovcffile <<"##INFO=<ID=DP,Number=1,Type=Integer,Description=\"Total Depth\">" << std::endl;
-        ovcffile <<"##FORMAT=<ID=GT,Number=1,Type=String,Description=\"Genotype\">" << std::endl;
-        ovcffile <<"##FORMAT=<ID=GQ,Number=1,Type=Integer,Description=\"Genotype Quality\">" << std::endl;
-        ovcffile <<"##FORMAT=<ID=DP,Number=1,Type=Integer,Description=\"Read Depth\">" << std::endl;
-        ovcffile <<"##FILTER=<ID=q30,Description=\"Quality below 30\">" << std::endl;
+        ovcffile << "##reference=" << refFileName << std::endl;
+        ovcffile << "##INFO=<ID=DP,Number=1,Type=Integer,Description=\"Total Depth\">" << std::endl;
+        ovcffile << "##FORMAT=<ID=GT,Number=1,Type=String,Description=\"Genotype\">" << std::endl;
+        ovcffile << "##FORMAT=<ID=GQ,Number=1,Type=Integer,Description=\"Genotype Quality\">" << std::endl;
+        ovcffile << "##FORMAT=<ID=DP,Number=1,Type=Integer,Description=\"Read Depth\">" << std::endl;
+        ovcffile << "##FILTER=<ID=q30,Description=\"Quality below 30\">" << std::endl;
         std::string accession = queryFileName;
         accession = songStrReplaceAll(accession, ".fasta", "");
         accession = songStrReplaceAll(accession, ".fa", "");
@@ -1585,7 +1594,7 @@ void genomeAlignmentAndVariantCalling(std::map<std::string, std::vector<Alignmen
         ovcffile << "#CHROM\tPOS\tID\tREF\tALT\tQUAL\tFILTER\tINFO\tFORMAT\t" << accession << std::endl;
     }
 
-    if( outPutFraged ){
+    if (outPutFraged) {
         ofragfile.open(outPutFragedFile);
         ofragfile << "##maf version=1" << std::endl;
     }
@@ -1594,8 +1603,8 @@ void genomeAlignmentAndVariantCalling(std::map<std::string, std::vector<Alignmen
 //        oLocalalignment<< "##maf version=1" << std::endl;
 //    }
 
-    for (std::map<std::string, std::vector<AlignmentMatch>>::iterator it0=alignmentMatchsMap.begin(); it0 != alignmentMatchsMap.end(); ++it0 ) {
-        if( it0->second.size() > 0 ){
+    for (std::map<std::string, std::vector<AlignmentMatch>>::iterator it0 = alignmentMatchsMap.begin(); it0 != alignmentMatchsMap.end(); ++it0) {
+        if (it0->second.size() > 0) {
             size_t startRef = 1;
             size_t startQuery = 1;
             size_t endRef;
@@ -1616,12 +1625,12 @@ void genomeAlignmentAndVariantCalling(std::map<std::string, std::vector<Alignmen
             std::string mafStrand = "+";
             bool hasInversion = false;
 
-            for (AlignmentMatch alignmentMatch : it0->second) {
-                if( alignmentMatch.getStrand() == NEGATIVE ){
+            for (AlignmentMatch alignmentMatch: it0->second) {
+                if (alignmentMatch.getStrand() == NEGATIVE) {
                     hasInversion = true;
                 }
 
-                if( lastStrand == POSITIVE && alignmentMatch.getStrand() == POSITIVE ){
+                if (lastStrand == POSITIVE && alignmentMatch.getStrand() == POSITIVE) {
 //                    std::cout << "line 1625" << std::endl;
                     if (alignmentMatch.getRefStartPos() == startRef && alignmentMatch.getQueryStartPos() != startQuery) {
                         endQuery = alignmentMatch.getQueryStartPos() - 1;
@@ -1630,7 +1639,7 @@ void genomeAlignmentAndVariantCalling(std::map<std::string, std::vector<Alignmen
                             refAlign << "-";
                         }
                         queryAlign << querySeq;
-                        alignmentScore -= openGapPenalty1 + extendGapPenalty1*querySeq.length();
+                        alignmentScore -= openGapPenalty1 + extendGapPenalty1 * querySeq.length();
                     } else if (alignmentMatch.getRefStartPos() != startRef && alignmentMatch.getQueryStartPos() == startQuery) {
                         endRef = alignmentMatch.getRefStartPos() - 1;
                         std::string refSeq = getSubsequence(refSequences, refChr, startRef, endRef);
@@ -1639,7 +1648,7 @@ void genomeAlignmentAndVariantCalling(std::map<std::string, std::vector<Alignmen
                         for (int repeatI = 0; repeatI < refSeq.length(); ++repeatI) {
                             queryAlign << "-";
                         }
-                        alignmentScore -= openGapPenalty1 + extendGapPenalty1*refSeq.length();
+                        alignmentScore -= openGapPenalty1 + extendGapPenalty1 * refSeq.length();
                     } else if (alignmentMatch.getRefStartPos() == startRef && alignmentMatch.getQueryStartPos() == startQuery) {
 
                     } else {
@@ -1652,7 +1661,8 @@ void genomeAlignmentAndVariantCalling(std::map<std::string, std::vector<Alignmen
                         std::string _alignment_q;
                         std::string _alignment_d;
 
-                        int64_t thiScore = alignSlidingWindow(querySeq, refSeq, _alignment_q, _alignment_d, &penalties, mm_allocator, widownWidth, wfaSize, matchingScore, mismatchingPenalty, openGapPenalty1, extendGapPenalty1, openGapPenalty2, extendGapPenalty2, min_wavefront_length, max_distance_threshold, m);
+                        int64_t thiScore = alignSlidingWindow(querySeq, refSeq, _alignment_q, _alignment_d, &penalties, mm_allocator, widownWidth, wfaSize, matchingScore, mismatchingPenalty, openGapPenalty1, extendGapPenalty1, openGapPenalty2, extendGapPenalty2,
+                                                              min_wavefront_length, max_distance_threshold, m);
                         std::string temp;
 
                         temp = _alignment_d;
@@ -1668,10 +1678,12 @@ void genomeAlignmentAndVariantCalling(std::map<std::string, std::vector<Alignmen
 
                         //assert(temp.compare(querySeq) == 0);
 
-                        if (outPutFraged  ){
+                        if (outPutFraged) {
                             ofragfile << "a\tscore=" << thiScore << std::endl;
-                            ofragfile << "s\t" << std::left << std::setw(chrWidth) << refFileName + "." + refChr << "\t" << std::right <<  std::setw(9) << startRef-1 << "\t" << std::setw(9) << refSeq.size() << "\t+\t" << refSequences[refChr].getSequence().size() << "\t" << _alignment_d << std::endl;
-                            ofragfile << "s\t" << std::left << std::setw(chrWidth)  << queryFileName + "." + queryChr << "\t" << std::right <<  std::setw(9) << startQuery-1 << "\t" << std::setw(9) << querySeq.size() << "\t+\t" << targetSequences[queryChr].getSequence().size() << "\t" <<  _alignment_q << std::endl;
+                            ofragfile << "s\t" << std::left << std::setw(chrWidth) << refFileName + "." + refChr << "\t" << std::right << std::setw(9) << startRef - 1 << "\t" << std::setw(9) << refSeq.size() << "\t+\t" << refSequences[refChr].getSequence().size() << "\t"
+                                      << _alignment_d << std::endl;
+                            ofragfile << "s\t" << std::left << std::setw(chrWidth) << queryFileName + "." + queryChr << "\t" << std::right << std::setw(9) << startQuery - 1 << "\t" << std::setw(9) << querySeq.size() << "\t+\t" << targetSequences[queryChr].getSequence().size()
+                                      << "\t" << _alignment_q << std::endl;
                             ofragfile << std::endl;
                         }
 /*
@@ -1700,11 +1712,11 @@ void genomeAlignmentAndVariantCalling(std::map<std::string, std::vector<Alignmen
                         }
                         */
                     }
-                    mafStrand="+";
-                }else if ( lastStrand == NEGATIVE && alignmentMatch.getStrand() == NEGATIVE
-                             && lastAlignmentMatch.getRefStartPos() > alignmentMatch.getRefEndPos()
-                             && lastAlignmentMatch.getQueryEndPos() < alignmentMatch.getQueryStartPos()
-                         ){
+                    mafStrand = "+";
+                } else if (lastStrand == NEGATIVE && alignmentMatch.getStrand() == NEGATIVE
+                           && lastAlignmentMatch.getRefStartPos() > alignmentMatch.getRefEndPos()
+                           && lastAlignmentMatch.getQueryEndPos() < alignmentMatch.getQueryStartPos()
+                        ) {
                     if (alignmentMatch.getRefStartPos() == startRef && alignmentMatch.getQueryEndPos() != startQuery) {
                         endQuery = alignmentMatch.getQueryEndPos() + 1;
                         std::string querySeq = getSubsequence(targetSequences, queryChr, startQuery, endQuery, alignmentMatch.getStrand());
@@ -1712,7 +1724,7 @@ void genomeAlignmentAndVariantCalling(std::map<std::string, std::vector<Alignmen
                             refAlign << "-";
                         }
                         queryAlign << querySeq;
-                        alignmentScore -= openGapPenalty1 + extendGapPenalty1*querySeq.length();
+                        alignmentScore -= openGapPenalty1 + extendGapPenalty1 * querySeq.length();
                     } else if (alignmentMatch.getRefStartPos() != startRef && alignmentMatch.getQueryEndPos() == startQuery) {
                         endRef = alignmentMatch.getRefStartPos() - 1;
                         std::string refSeq = getSubsequence(refSequences, refChr, startRef, endRef);
@@ -1720,7 +1732,7 @@ void genomeAlignmentAndVariantCalling(std::map<std::string, std::vector<Alignmen
                         for (int repeatI = 0; repeatI < refSeq.length(); ++repeatI) {
                             queryAlign << "-";
                         }
-                        alignmentScore -= openGapPenalty1 + extendGapPenalty1*refSeq.length();
+                        alignmentScore -= openGapPenalty1 + extendGapPenalty1 * refSeq.length();
                     } else if (alignmentMatch.getRefStartPos() == startRef && alignmentMatch.getQueryEndPos() == startQuery) {
 
                     } else {
@@ -1733,7 +1745,8 @@ void genomeAlignmentAndVariantCalling(std::map<std::string, std::vector<Alignmen
                         std::string _alignment_q;
                         std::string _alignment_d;
 
-                        int64_t thiScore = alignSlidingWindow(querySeq, refSeq, _alignment_q, _alignment_d, &penalties, mm_allocator, widownWidth, wfaSize,  matchingScore, mismatchingPenalty, openGapPenalty1, extendGapPenalty1, openGapPenalty2, extendGapPenalty2, min_wavefront_length, max_distance_threshold, m);
+                        int64_t thiScore = alignSlidingWindow(querySeq, refSeq, _alignment_q, _alignment_d, &penalties, mm_allocator, widownWidth, wfaSize, matchingScore, mismatchingPenalty, openGapPenalty1, extendGapPenalty1, openGapPenalty2, extendGapPenalty2,
+                                                              min_wavefront_length, max_distance_threshold, m);
                         std::string temp;
 
                         temp = _alignment_d;
@@ -1747,10 +1760,12 @@ void genomeAlignmentAndVariantCalling(std::map<std::string, std::vector<Alignmen
                         refAlign << _alignment_d;
                         queryAlign << _alignment_q;
 
-                        if (outPutFraged ){
+                        if (outPutFraged) {
                             ofragfile << "a\tscore=" << thiScore << std::endl;
-                            ofragfile << "s\t" << std::left << std::setw(chrWidth) << refFileName + "." + refChr << "\t" << std::right <<  std::setw(9) << startRef-1 << "\t" << std::setw(9) << refSeq.size() << "\t+\t" << refSequences[refChr].getSequence().size() << "\t" << _alignment_d << std::endl;
-                            ofragfile << "s\t" << std::left << std::setw(chrWidth)  << queryFileName + "." + queryChr << "\t" << std::right <<  std::setw(9) << endQuery-1 << "\t" << std::setw(9) << querySeq.size() << "\t-\t" << targetSequences[queryChr].getSequence().size() << "\t" <<  _alignment_q << std::endl;
+                            ofragfile << "s\t" << std::left << std::setw(chrWidth) << refFileName + "." + refChr << "\t" << std::right << std::setw(9) << startRef - 1 << "\t" << std::setw(9) << refSeq.size() << "\t+\t" << refSequences[refChr].getSequence().size() << "\t"
+                                      << _alignment_d << std::endl;
+                            ofragfile << "s\t" << std::left << std::setw(chrWidth) << queryFileName + "." + queryChr << "\t" << std::right << std::setw(9) << endQuery - 1 << "\t" << std::setw(9) << querySeq.size() << "\t-\t" << targetSequences[queryChr].getSequence().size()
+                                      << "\t" << _alignment_q << std::endl;
                             ofragfile << std::endl;
                         }
                         /*
@@ -1779,14 +1794,14 @@ void genomeAlignmentAndVariantCalling(std::map<std::string, std::vector<Alignmen
                         }
                          */
                     }
-                    if ( mafQueryStart > alignmentMatch.getQueryStartPos() ){
+                    if (mafQueryStart > alignmentMatch.getQueryStartPos()) {
                         mafQueryStart = alignmentMatch.getQueryStartPos();
                     }
-                }else{
+                } else {
 //                    std::cout << "line 710" << std::endl;
                     std::string temp1 = refAlign.str();
                     std::string temp2 = queryAlign.str();
-                    if( outPutMaf && temp1.size()>0 ) {
+                    if (outPutMaf && temp1.size() > 0) {
                         temp1.erase(std::remove(temp1.begin(), temp1.end(), '-'), temp1.end());
                         temp2.erase(std::remove(temp2.begin(), temp2.end(), '-'), temp2.end());
                         omaffile << "a\tscore=" << alignmentScore << std::endl;
@@ -1797,7 +1812,7 @@ void genomeAlignmentAndVariantCalling(std::map<std::string, std::vector<Alignmen
 
                         omaffile << "s\t" << std::left << std::setw(chrWidth) << queryFileName + "." + queryChr << "\t" << std::right
                                  << std::setw(9) << mafQueryStart << "\t" << std::setw(9)
-                                 << temp2.size() << "\t" << mafStrand << "\t"<< targetSequences[queryChr].getSequence().size() << "\t"
+                                 << temp2.size() << "\t" << mafStrand << "\t" << targetSequences[queryChr].getSequence().size() << "\t"
                                  << queryAlign.str() << std::endl;
                         omaffile << std::endl;
                     }
@@ -1810,9 +1825,9 @@ void genomeAlignmentAndVariantCalling(std::map<std::string, std::vector<Alignmen
                 }
                 {
 //                    std::cout << "line 751" << std::endl;
-                    if( POSITIVE == alignmentMatch.getStrand() ){
+                    if (POSITIVE == alignmentMatch.getStrand()) {
                         mafStrand = "+";
-                    }else{
+                    } else {
                         mafStrand = "-";
                     }
                     startRef = alignmentMatch.getRefStartPos();
@@ -1825,7 +1840,8 @@ void genomeAlignmentAndVariantCalling(std::map<std::string, std::vector<Alignmen
                     std::string _alignment_q;
                     std::string _alignment_d;
 
-                    int64_t thiScore = alignSlidingWindow(querySeq, refSeq, _alignment_q, _alignment_d, &penalties, mm_allocator, widownWidth,  wfaSize2, matchingScore, mismatchingPenalty, openGapPenalty1, extendGapPenalty1, openGapPenalty2, extendGapPenalty2, min_wavefront_length, max_distance_threshold, m);
+                    int64_t thiScore = alignSlidingWindow(querySeq, refSeq, _alignment_q, _alignment_d, &penalties, mm_allocator, widownWidth, wfaSize2, matchingScore, mismatchingPenalty, openGapPenalty1, extendGapPenalty1, openGapPenalty2, extendGapPenalty2,
+                                                          min_wavefront_length, max_distance_threshold, m);
 
                     std::string temp;
 
@@ -1840,10 +1856,12 @@ void genomeAlignmentAndVariantCalling(std::map<std::string, std::vector<Alignmen
                     refAlign << _alignment_d;
                     queryAlign << _alignment_q;
 
-                    if (outPutFraged){
+                    if (outPutFraged) {
                         ofragfile << "a\tscore=" << thiScore << std::endl;
-                        ofragfile << "s\t" << std::left << std::setw(chrWidth) << refFileName + "." + refChr << "\t" << std::right <<  std::setw(9) << startRef-1 << "\t" << std::setw(9) << refSeq.size() << "\t+\t" << refSequences[refChr].getSequence().size() << "\t" << _alignment_d << std::endl;
-                        ofragfile << "s\t" << std::left << std::setw(chrWidth)  << queryFileName + "." + queryChr << "\t" << std::right <<  std::setw(9) << startQuery-1 << "\t" << std::setw(9) << querySeq.size() << "\t+\t" << targetSequences[queryChr].getSequence().size() << "\t" <<  _alignment_q << std::endl;
+                        ofragfile << "s\t" << std::left << std::setw(chrWidth) << refFileName + "." + refChr << "\t" << std::right << std::setw(9) << startRef - 1 << "\t" << std::setw(9) << refSeq.size() << "\t+\t" << refSequences[refChr].getSequence().size() << "\t"
+                                  << _alignment_d << std::endl;
+                        ofragfile << "s\t" << std::left << std::setw(chrWidth) << queryFileName + "." + queryChr << "\t" << std::right << std::setw(9) << startQuery - 1 << "\t" << std::setw(9) << querySeq.size() << "\t+\t" << targetSequences[queryChr].getSequence().size() << "\t"
+                                  << _alignment_q << std::endl;
                         ofragfile << std::endl;
                     }
                     /*
@@ -1874,14 +1892,14 @@ void genomeAlignmentAndVariantCalling(std::map<std::string, std::vector<Alignmen
                 }
                 startRef = alignmentMatch.getRefEndPos() + 1;
                 startQuery = alignmentMatch.getQueryEndPos() + 1;
-                if(alignmentMatch.getStrand() == NEGATIVE){
+                if (alignmentMatch.getStrand() == NEGATIVE) {
                     startQuery = alignmentMatch.getQueryStartPos() - 1;
                     std::cout << "line 775" << std::endl;
                 }
                 lastStrand = alignmentMatch.getStrand();
                 lastAlignmentMatch = alignmentMatch;
             }
-            if( !hasInversion ){
+            if (!hasInversion) {
 
                 std::cout << refChr << " last align" << std::endl;
                 endRef = refSequences[refChr].getSequence().length();
@@ -1892,14 +1910,14 @@ void genomeAlignmentAndVariantCalling(std::map<std::string, std::vector<Alignmen
                         refAlign << "-";
                     }
                     queryAlign << querySeq;
-                    alignmentScore += -6 + -2*querySeq.length();
+                    alignmentScore += -6 + -2 * querySeq.length();
                 } else if (startRef <= endRef && startQuery > endQuery) {
                     std::string refSeq = getSubsequence(refSequences, refChr, startRef, endRef);
                     refAlign << refSeq;
                     for (int repeatI = 0; repeatI < refSeq.length(); ++repeatI) {
                         queryAlign << "-";
                     }
-                    alignmentScore += -6 + -2*refSeq.length();
+                    alignmentScore += -6 + -2 * refSeq.length();
 
                 } else if (startRef > endRef && startQuery > endQuery) {
 
@@ -1910,7 +1928,8 @@ void genomeAlignmentAndVariantCalling(std::map<std::string, std::vector<Alignmen
                     std::string _alignment_q;
                     std::string _alignment_d;
 
-                    int64_t thiScore = alignSlidingWindow(querySeq, refSeq, _alignment_q, _alignment_d, &penalties, mm_allocator, widownWidth, wfaSize,  matchingScore, mismatchingPenalty, openGapPenalty1, extendGapPenalty1, openGapPenalty2, extendGapPenalty2, min_wavefront_length, max_distance_threshold, m);
+                    int64_t thiScore = alignSlidingWindow(querySeq, refSeq, _alignment_q, _alignment_d, &penalties, mm_allocator, widownWidth, wfaSize, matchingScore, mismatchingPenalty, openGapPenalty1, extendGapPenalty1, openGapPenalty2, extendGapPenalty2, min_wavefront_length,
+                                                          max_distance_threshold, m);
                     std::string temp;
 
                     temp = _alignment_d;
@@ -1924,10 +1943,12 @@ void genomeAlignmentAndVariantCalling(std::map<std::string, std::vector<Alignmen
                     refAlign << _alignment_d;
                     queryAlign << _alignment_q;
 
-                    if (outPutFraged ){
+                    if (outPutFraged) {
                         ofragfile << "a\tscore=" << thiScore << std::endl;
-                        ofragfile << "s\t" << std::left << std::setw(chrWidth) << refFileName + "." + refChr << "\t" << std::right <<  std::setw(9) << startRef-1 << "\t" << std::setw(9) << refSeq.size() << "\t+\t" << refSequences[refChr].getSequence().size() << "\t" << _alignment_d << std::endl;
-                        ofragfile << "s\t" << std::left << std::setw(chrWidth)  << queryFileName + "." + queryChr << "\t" << std::right <<  std::setw(9) << startQuery-1 << "\t" << std::setw(9) << querySeq.size() << "\t+\t" << targetSequences[queryChr].getSequence().size() << "\t" <<  _alignment_q << std::endl;
+                        ofragfile << "s\t" << std::left << std::setw(chrWidth) << refFileName + "." + refChr << "\t" << std::right << std::setw(9) << startRef - 1 << "\t" << std::setw(9) << refSeq.size() << "\t+\t" << refSequences[refChr].getSequence().size() << "\t"
+                                  << _alignment_d << std::endl;
+                        ofragfile << "s\t" << std::left << std::setw(chrWidth) << queryFileName + "." + queryChr << "\t" << std::right << std::setw(9) << startQuery - 1 << "\t" << std::setw(9) << querySeq.size() << "\t+\t" << targetSequences[queryChr].getSequence().size() << "\t"
+                                  << _alignment_q << std::endl;
                         ofragfile << std::endl;
                     }/*
                     if ( outPutLocalalignment ){
@@ -1968,20 +1989,20 @@ void genomeAlignmentAndVariantCalling(std::map<std::string, std::vector<Alignmen
             std::cout << refChr << " align done" << std::endl;
 
 
-            if( outPutMaf ) {
+            if (outPutMaf) {
                 std::string temp1 = refAlign.str();
                 std::string temp2 = queryAlign.str();
                 temp1.erase(std::remove(temp1.begin(), temp1.end(), '-'), temp1.end());
                 temp2.erase(std::remove(temp2.begin(), temp2.end(), '-'), temp2.end());
                 omaffile << "a\tscore=" << alignmentScore << std::endl;
                 omaffile << "s\t" << std::left << std::setw(chrWidth) << refFileName + "." + refChr << "\t" << std::right
-                      << std::setw(9) << mafRefStart << "\t" << std::setw(9)
-                      << temp1.size() << "\t+\t" << refSequences[refChr].getSequence().size() << "\t"
-                      << refAlign.str() << std::endl;
+                         << std::setw(9) << mafRefStart << "\t" << std::setw(9)
+                         << temp1.size() << "\t+\t" << refSequences[refChr].getSequence().size() << "\t"
+                         << refAlign.str() << std::endl;
                 omaffile << "s\t" << std::left << std::setw(chrWidth) << queryFileName + "." + queryChr << "\t" << std::right
-                     << std::setw(9) << mafQueryStart << "\t" << std::setw(9)
-                     << temp2.size() << "\t+\t" << targetSequences[queryChr].getSequence().size() << "\t"
-                     << queryAlign.str() << std::endl;
+                         << std::setw(9) << mafQueryStart << "\t" << std::setw(9)
+                         << temp2.size() << "\t+\t" << targetSequences[queryChr].getSequence().size() << "\t"
+                         << queryAlign.str() << std::endl;
                 omaffile << std::endl;
             }
 
@@ -1993,13 +2014,13 @@ void genomeAlignmentAndVariantCalling(std::map<std::string, std::vector<Alignmen
         }
     }
 
-    if( outPutMaf ){
+    if (outPutMaf) {
         omaffile.close();
     }
-    if( outPutVcf ){
+    if (outPutVcf) {
         ovcffile.close();
     }
-    if( outPutFraged ){
+    if (outPutFraged) {
         ofragfile.close();
     }
 //    if(outPutLocalalignment){

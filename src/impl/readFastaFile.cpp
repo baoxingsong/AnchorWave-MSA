@@ -4,29 +4,29 @@
 
 #include "readFastaFile.h"
 
-const char replaceCharArray[]= {'R', 'Y', 'S', 'W', 'K', 'M', 'B', 'D', 'H', 'V'};
+const char replaceCharArray[] = {'R', 'Y', 'S', 'W', 'K', 'M', 'B', 'D', 'H', 'V'};
 std::set<char> set_replaceChar(replaceCharArray, replaceCharArray + 10);
 
 char char_replace(char str) {
-    if(str == 'A' || str == 'C' ||str == 'T' ||str == 'G' ) {
+    if (str == 'A' || str == 'C' || str == 'T' || str == 'G') {
         return str;
     }
 
-    if(str >= 'a' && str <= 'z')
+    if (str >= 'a' && str <= 'z')
         str = str - 32; // toupper, 32 = 'a' - 'A'
 
-    if(set_replaceChar.find(str) != set_replaceChar.end()) {
+    if (set_replaceChar.find(str) != set_replaceChar.end()) {
         return 'N';
     }
 
-    if(str == 'U') {
+    if (str == 'U') {
         return 'T';
     }
 
     return str;
 }
 
-void readFastaFile(const std::string &filePath, std::map <std::string, std::string> &sequences) {
+void readFastaFile(const std::string &filePath, std::map<std::string, std::string> &sequences) {
     std::ifstream infile(filePath);
     if (!infile.good()) {
         std::cerr << "error in opening fasta file " << filePath << std::endl;
@@ -69,7 +69,7 @@ void readFastaFile(const std::string &filePath, std::map <std::string, std::stri
     infile.close();
 }
 
-void readFastaFileWorkWithIUPACcode(const std::string &filePath, std::map <std::string, std::string> &sequences) {
+void readFastaFileWorkWithIUPACcode(const std::string &filePath, std::map<std::string, std::string> &sequences) {
     std::ifstream infile(filePath);
     if (!infile.good()) {
         std::cerr << "error in opening fasta file " << filePath << std::endl;
