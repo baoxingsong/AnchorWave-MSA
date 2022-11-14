@@ -1539,21 +1539,22 @@ int64_t alignSlidingWindow_local_wfa2_v2(std::string &dna_q, std::string &dna_d,
     int64_t _length_of_d = dna_d.size();
 
     //check all Ns begin
-    std::string temp2 = dna_q;
-    temp2.erase(std::remove(temp2.begin(), temp2.end(), 'N'), temp2.end());
+    bool flag_q_all_N = std::all_of(dna_q.begin(), dna_q.end(), [](char c) { return c == 'N'; });
+    bool flag_d_all_N = std::all_of(dna_d.begin(), dna_d.end(), [](char c) { return c == 'N'; });
 
-    std::string temp1 = dna_d;
-    temp1.erase(std::remove(temp1.begin(), temp1.end(), 'N'), temp1.end());
-
-    if (temp1.size() == 0 || temp2.size() == 0) {
+    if (flag_q_all_N || flag_d_all_N) {
         _alignment_q = dna_q;
         _alignment_d = dna_d;
-        while (_alignment_q.size() < _alignment_d.size()) {
-            _alignment_q = _alignment_q + "-";
+
+        int64_t count_ = abs(_length_of_q - _length_of_d);
+        if(_length_of_q < _length_of_d) {
+            _alignment_q += std::string(count_, '-');
         }
-        while (_alignment_d.size() < _alignment_q.size()) {
-            _alignment_d = _alignment_d + "-";
+
+        if(_length_of_d < _length_of_q) {
+            _alignment_d += std::string(count_, '-');
         }
+
         return totalScore;
     }
 
