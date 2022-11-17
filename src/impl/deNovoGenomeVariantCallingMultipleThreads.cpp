@@ -22,7 +22,7 @@ void genomeAlignmentSingleThread(std::vector<AlignmentMatch> alignmentMatchs,
     Scorei m(matchingScore, mismatchingPenalty);
 
 
-    bool checkResult = true;
+    bool checkResult = false;
 
     STRAND strand = alignmentMatchs[0].getStrand();
 
@@ -1184,7 +1184,7 @@ void genomeAlignmentAndVariantCallingSingleThread(
     std::string mafStrand = "+";
     bool hasInversion = false;
 //    std::cout << "line 913" << std::endl;
-    bool checkResult = true;
+    bool checkResult = false;
     for (AlignmentMatch alignmentMatch: it0) {
         if (alignmentMatch.getStrand() == NEGATIVE) {
             hasInversion = true;

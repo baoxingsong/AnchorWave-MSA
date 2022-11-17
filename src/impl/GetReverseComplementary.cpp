@@ -40,5 +40,6 @@ std::string getReverseComplementary(const std::string &sequence) {
         }
         reversecomplementary << c;
     }
+
     return reversecomplementary.str();
 }

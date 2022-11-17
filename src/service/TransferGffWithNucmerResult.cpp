@@ -605,7 +605,6 @@ void setupAnchorsWithSpliceAlignmentResult(const std::string &gffFilePath, const
 
     for (std::string chr: toRemoveChrs) {
 //        std::cout << "remove:" << chr << std::endl;
-
         if (transcriptHashSet.find(chr) != transcriptHashSet.end()) {
             transcriptHashSet.erase(chr);
         }
@@ -622,6 +621,7 @@ void setupAnchorsWithSpliceAlignmentResult(const std::string &gffFilePath, const
     } else {
 //        CheckAndUpdateTranscriptsEnds(transcriptHashSet, referenceGenome, nucleotideCodeSubstitutionMatrix);
     }
+
     std::map<std::string, Transcript> transcriptHashMap; // key is transcript name, value is a transcript structure
     for (std::map<std::string, std::vector<Transcript> >::iterator it = transcriptHashSet.begin(); it != transcriptHashSet.end(); ++it) {
         for (Transcript transcript: it->second) {
@@ -709,26 +709,6 @@ void setupAnchorsWithSpliceAlignmentResult(const std::string &gffFilePath, const
         std::vector<AlignmentMatch> temp;
         {
             myAlignmentMatchSort(it->second, inversion_PENALTY, MIN_ALIGNMENT_SCORE, keepTandemDuplication, considerInversion);
-
-//            std::cout << "line 599" << std::endl;
-//            for (int rangeIndex = 0; rangeIndex <  it->second.size(); ++rangeIndex) {
-//                std::string thisStrand = "+";
-//                if( it->second[rangeIndex].getStrand() == NEGATIVE ){
-//                    thisStrand = "-";
-//                }
-//                std::cout << it->second[rangeIndex].getRefChr() << "\t"
-//                          << it->second[rangeIndex].getRefStartPos() << "\t"
-//                          << it->second[rangeIndex].getRefEndPos() << "\t"
-//                          << it->second[rangeIndex].getQueryChr() << "\t"
-//                          << it->second[rangeIndex].getQueryStartPos() << "\t"
-//                          << it->second[rangeIndex].getQueryEndPos() << "\t"
-//                          << thisStrand << "\t"
-//                          << it->second[rangeIndex].getReferenceGeneName() << "\t"
-//                          << it->second[rangeIndex].getScore() << std::endl;
-//            }
-//            std::cout << "line 615" << std::endl;
-
-            //std::vector<AlignmentMatch> sortedAlignmentMatchs;
             if (it->second.size() > 1) {
 //                std::cout << "chr: " << it->first << std::endl;
                 longestPath(it->second, temp, keepTandemDuplication, MIN_ALIGNMENT_SCORE);

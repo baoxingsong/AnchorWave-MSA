@@ -252,7 +252,6 @@ void longestPath(std::vector<AlignmentMatch> &pairedSimilarFragments, std::vecto
 //                  i <<"\t" << sortedOrthologPairs[i].getScore() << std::endl;
 
         if (sortedOrthologPairs[i].getStrand() == NEGATIVE &&
-
             (i == 0 || (sortedOrthologPairs[i - 1].getStrand() == POSITIVE) ||
              (sortedOrthologPairs[i - 1].getStrand() == NEGATIVE && sortedOrthologPairs[i - 1].getRefStartPos() > sortedOrthologPairs[i].getRefEndPos()
               && sortedOrthologPairs[i - 1].getQueryEndPos() < sortedOrthologPairs[i].getQueryStartPos())

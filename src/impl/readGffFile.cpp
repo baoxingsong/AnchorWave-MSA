@@ -29,6 +29,7 @@ void get_transcript_to_gene_map_from_gff(const std::string &filePath, std::map<s
         std::cerr << "error in opening GFF/GTF file " << filePath << std::endl;
         exit(1);
     }
+
     std::string line;
     while (std::getline(infile, line)) {
         std::smatch match;
@@ -60,6 +61,7 @@ void readGffFile(const std::string &filePath, std::map<std::string, std::vector<
         std::cerr << "error in opening GFF/GTF file " << filePath << std::endl;
         exit(1);
     }
+
     std::regex reg("^(\\S*)\t([\\s\\S]*)\tCDS\t(\\S*)\t(\\S*)\t(\\S*)\t(\\S*)\t(\\S*)\t" + cdsParentRegex);
     std::string line;
     while (std::getline(infile, line)) {
@@ -156,6 +158,7 @@ void readGffFile_exon(const std::string &filePath, std::map<std::string, std::ve
         }
     }
     infile.close();
+    
     for (std::map<std::string, Transcript>::iterator it = transcriptHashMap.begin(); it != transcriptHashMap.end(); ++it) {
         if (transcriptHashSet.find(it->second.getChromeSomeName()) == transcriptHashSet.end()) {
             transcriptHashSet[it->second.getChromeSomeName()] = std::vector<Transcript>();
@@ -163,6 +166,7 @@ void readGffFile_exon(const std::string &filePath, std::map<std::string, std::ve
         it->second.updateInforCds();
         transcriptHashSet[it->second.getChromeSomeName()].push_back(it->second);
     }
+
     for (std::map<std::string, std::vector<Transcript>>::iterator it = transcriptHashSet.begin();
          it != transcriptHashSet.end(); ++it) {
         std::sort(it->second.begin(), it->second.end(), [](Transcript a, Transcript b) {

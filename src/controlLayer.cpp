@@ -347,12 +347,16 @@ int genomeAlignment(int argc, char **argv, std::map<std::string, std::string> &p
 
         std::map<std::string, std::string> queryGenome;
         readFastaFile(targetGenomeSequence, queryGenome);
+
         std::map<std::string, std::vector<AlignmentMatch>> alignmentMatchsMap;
         setupAnchorsWithSpliceAlignmentResult(refGffFilePath, cdsSequenceFile, samFilePath, alignmentMatchsMap,
                                               inversion_PENALTY, MIN_ALIGNMENT_SCORE, considerInversion, minExon, windownWidth, minimumSimilarity, minimumSimilarity2, parameters, referenceGenome,
                                               queryGenome, expectedCopies, maximumSimilarity, referenceSamFilePath, wfaSize3, searchForNewAnchors, exonModel
                 /*, matchingScore, mismatchingPenalty, openGapPenalty1, extendGapPenalty1, k, mw, H*/);
-//        std::cout << "control line 363" << std::endl;
+
+
+        //        std::cout << "control line 363" << std::endl;
+
         for (std::map<std::string, std::vector<AlignmentMatch>>::iterator it = alignmentMatchsMap.begin(); it != alignmentMatchsMap.end(); ++it) {
             //         std::cout << "control line 365\t" << it->first << "\t" << it->first.size() << std::endl;
             myAlignmentMatchSort(it->second, inversion_PENALTY, MIN_ALIGNMENT_SCORE, false, false);
@@ -418,6 +422,7 @@ int genomeAlignment(int argc, char **argv, std::map<std::string, std::string> &p
                         thisStrand = "-";
                         hasInversion = true;
                     }
+
                     ofile << it->second[rangeIndex].getRefChr() << "\t"
                           << it->second[rangeIndex].getRefStartPos() << "\t"
                           << it->second[rangeIndex].getRefEndPos() << "\t"
@@ -434,6 +439,7 @@ int genomeAlignment(int argc, char **argv, std::map<std::string, std::string> &p
                     }
 //                          blockIndex <<"\t" << it->second[rangeIndex].getScore() << std::endl;
                 }
+
                 int rangeIndex = it->second.size() - 1;
                 if (!hasInversion) {
                     ofile << it->second[rangeIndex].getRefChr() << "\t"
@@ -450,17 +456,10 @@ int genomeAlignment(int argc, char **argv, std::map<std::string, std::string> &p
             }
             ofile.close();
         }
+
         if (inputParser.cmdOptionExists("-f") || inputParser.cmdOptionExists("-v")
             || inputParser.cmdOptionExists("-o") || inputParser.cmdOptionExists("-l")) {
 
-/*
-            mismatchingPenalty -= matchingScore;
-            openGapPenalty1 -= matchingScore;
-            extendGapPenalty1 -= matchingScore;
-
-            openGapPenalty2 -= matchingScore;
-            extendGapPenalty2 -= matchingScore;
-*/
             genomeAlignmentAndVariantCalling(alignmentMatchsMap, referenceGenomeSequence, targetGenomeSequence,
                                              windownWidth, wfaSize, wfaSize2,
                                              outPutMafFile, outPutVcfFile, outPutFragedFile, /*outPutLocalalignmentFile,*/
@@ -477,10 +476,8 @@ int genomeAlignment(int argc, char **argv, std::map<std::string, std::string> &p
     return 0;
 }
 
-
 int proportationalAlignment(int argc, char **argv, std::map<std::string, std::string> &parameters) {
     bool useAlignmentScore = false;
-
 
     int32_t matchingScore = 0;
     int32_t mismatchingPenalty = -4;

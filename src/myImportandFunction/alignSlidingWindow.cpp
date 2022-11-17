@@ -1503,8 +1503,8 @@ int64_t alignSlidingWindow_minimap2_or_NW(std::string &dna_q, std::string &dna_d
     int64_t totalScore = 0;
     _alignment_q = "";
     _alignment_d = "";
-    int64_t _length_of_q = dna_q.size();
-    int64_t _length_of_d = dna_d.size();
+    int32_t _length_of_q = dna_q.size();
+    int32_t _length_of_d = dna_d.size();
 
     //check all Ns end
     int32_t longerSeqLength = max(_length_of_d, _length_of_q);
@@ -1514,7 +1514,7 @@ int64_t alignSlidingWindow_minimap2_or_NW(std::string &dna_q, std::string &dna_d
         int32_t adjustBandWidth = -1;
         totalScore = alignSlidingWindow_minimap2(dna_q, dna_d, _length_of_q, _length_of_d, _alignment_q, _alignment_d, adjustBandWidth,
                                                  mismatchingPenalty, openGapPenalty1, extendGapPenalty1, openGapPenalty2, extendGapPenalty2);
-    } else if (longerSeqLength * slidingWindowSize * 2 <= (slidingWindowSize * slidingWindowSize * 30)) { // this calculated with RAM cost
+    } else if (longerSeqLength <= slidingWindowSize * 15) { // this calculated with RAM cost
         /*the above parameter settings were based on RAM cost*/
         int32_t adjustBandWidth = (slidingWindowSize * slidingWindowSize * 30) / 2 / longerSeqLength;
         totalScore = alignSlidingWindow_minimap2(dna_q, dna_d, _length_of_q, _length_of_d, _alignment_q, _alignment_d, adjustBandWidth,
@@ -1535,8 +1535,8 @@ int64_t alignSlidingWindow_local_wfa2_v2(std::string &dna_q, std::string &dna_d,
     _alignment_q = "";
     _alignment_d = "";
 
-    int64_t _length_of_q = dna_q.size();
-    int64_t _length_of_d = dna_d.size();
+    int32_t _length_of_q = dna_q.size();
+    int32_t _length_of_d = dna_d.size();
 
     //check all Ns begin
     bool flag_q_all_N = std::all_of(dna_q.begin(), dna_q.end(), [](char c) { return c == 'N'; });
@@ -1546,7 +1546,7 @@ int64_t alignSlidingWindow_local_wfa2_v2(std::string &dna_q, std::string &dna_d,
         _alignment_q = dna_q;
         _alignment_d = dna_d;
 
-        int64_t count_ = abs(_length_of_q - _length_of_d);
+        int32_t count_ = abs(_length_of_q - _length_of_d);
         if(_length_of_q < _length_of_d) {
             _alignment_q += std::string(count_, '-');
         }
@@ -1558,70 +1558,76 @@ int64_t alignSlidingWindow_local_wfa2_v2(std::string &dna_q, std::string &dna_d,
         return totalScore;
     }
 
-    //check all Ns end
-    int32_t longerSeqLength = max(_length_of_d, _length_of_q);
-    std::string qSeq = dna_q;
-    std::string dSeq = dna_d;
-    const char *pattern = dna_d.c_str();
-    const char *text = dna_q.c_str();
-
-    wavefront_aligner_attr_t attributes = wavefront_aligner_attr_default;
-    attributes.distance_metric = gap_affine_2p;
-    attributes.affine2p_penalties.mismatch = -mismatchingPenalty;       // X > 0
-    attributes.affine2p_penalties.gap_opening1 = -openGapPenalty1;   // O1 >= 0
-    attributes.affine2p_penalties.gap_extension1 = -extendGapPenalty1; // E1 > 0
-    attributes.affine2p_penalties.gap_opening2 = -openGapPenalty2;  // O2 >= 0
-    attributes.affine2p_penalties.gap_extension2 = -extendGapPenalty2; // E2 > 0
-    attributes.alignment_form.span = alignment_end2end;
-    attributes.alignment_scope = compute_alignment;
-    attributes.memory_mode = wavefront_memory_high;
-    attributes.system.max_memory_abort = (slidingWindowSize * slidingWindowSize * 30);
-
-    wavefront_aligner_t *const wf_aligner = wavefront_aligner_new(&attributes);
-
-    if (dna_q.size() < 20 || dna_d.size() < 20 || dna_q.size() / dna_d.size() > 3 || dna_d.size() / dna_q.size() > 3) {
+    double ratio = _length_of_q * 1.0 / _length_of_d;
+    if(_length_of_q < _length_of_d) 
+        ratio = _length_of_d * 1.0 / _length_of_q;
+    
+    if (_length_of_q < 20 || _length_of_d < 20 || ratio > 3.0) {
+        std::cout << " minimap2 1 " << std::endl;
         totalScore = alignSlidingWindow_minimap2_or_NW(dna_q, dna_d, _alignment_q, _alignment_d,
                                                        slidingWindowSize, wfaSize, matchingScore,
                                                        mismatchingPenalty, openGapPenalty1, extendGapPenalty1,
                                                        openGapPenalty2,
                                                        extendGapPenalty2, min_wavefront_length,
                                                        max_distance_threshold, m);
-    } else if (WF_STATUS_SUCCESSFUL == wavefront_align(wf_aligner, pattern, strlen(pattern), text, strlen(text))) { // Align
-        totalScore = wf_aligner->cigar->score;
-        cigar_t *const edit_cigar = wf_aligner->cigar;
-        char *const operations = edit_cigar->operations;
-
-        int i, pattern_pos = 0, text_pos = 0;
-        for (i = edit_cigar->begin_offset; i < edit_cigar->end_offset; ++i) {
-            if (operations[i] == 'M') {
-                _alignment_q += qSeq[text_pos];
-                _alignment_d += dSeq[pattern_pos];
-                pattern_pos++;
-                text_pos++;
-            } else if (operations[i] == 'X') {
-                _alignment_q += qSeq[text_pos];
-                _alignment_d += dSeq[pattern_pos];
-                pattern_pos++;
-                text_pos++;
-            } else if (operations[i] == 'I') {
-                _alignment_q += qSeq[text_pos];
-                _alignment_d += '-';
-                text_pos++;
-            } else if (operations[i] == 'D') {
-                _alignment_q += '-';
-                _alignment_d += dSeq[pattern_pos];
-                pattern_pos++;
-            }
-        }
     } else {
-        totalScore = alignSlidingWindow_minimap2_or_NW(dna_q, dna_d, _alignment_q, _alignment_d,
-                                                       slidingWindowSize, wfaSize, matchingScore,
-                                                       mismatchingPenalty, openGapPenalty1, extendGapPenalty1,
-                                                       openGapPenalty2,
-                                                       extendGapPenalty2, min_wavefront_length,
-                                                       max_distance_threshold, m);
+        //check all Ns end
+        std::string qSeq = dna_q;
+        std::string dSeq = dna_d;
+        const char *pattern = dna_d.c_str();
+        const char *text = dna_q.c_str();
+        wavefront_aligner_attr_t attributes = wavefront_aligner_attr_default;
+        attributes.distance_metric = gap_affine_2p;
+        attributes.affine2p_penalties.mismatch = -mismatchingPenalty;       // X > 0
+        attributes.affine2p_penalties.gap_opening1 = -openGapPenalty1;      // O1 >= 0
+        attributes.affine2p_penalties.gap_extension1 = -extendGapPenalty1;  // E1 > 0
+        attributes.affine2p_penalties.gap_opening2 = -openGapPenalty2;      // O2 >= 0
+        attributes.affine2p_penalties.gap_extension2 = -extendGapPenalty2;  // E2 > 0
+        attributes.alignment_form.span = alignment_end2end;
+        attributes.alignment_scope = compute_alignment;
+        attributes.memory_mode = wavefront_memory_high;
+        attributes.system.max_memory_abort = slidingWindowSize * slidingWindowSize * 30;
+
+        wavefront_aligner_t *const wf_aligner = wavefront_aligner_new(&attributes);
+
+        if (WF_STATUS_SUCCESSFUL == wavefront_align(wf_aligner, pattern, strlen(pattern), text, strlen(text))) { // Align
+            totalScore = wf_aligner->cigar->score;
+            cigar_t *const edit_cigar = wf_aligner->cigar;
+            char *const operations = edit_cigar->operations;
+
+            int pattern_pos = 0, text_pos = 0;
+            for (int i = edit_cigar->begin_offset; i < edit_cigar->end_offset; ++i) {
+                if (operations[i] == 'M') {
+                    _alignment_q += qSeq[text_pos];
+                    _alignment_d += dSeq[pattern_pos];
+                    pattern_pos++;
+                    text_pos++;
+                } else if (operations[i] == 'X') {
+                    _alignment_q += qSeq[text_pos];
+                    _alignment_d += dSeq[pattern_pos];
+                    pattern_pos++;
+                    text_pos++;
+                } else if (operations[i] == 'I') {
+                    _alignment_q += qSeq[text_pos];
+                    _alignment_d += '-';
+                    text_pos++;
+                } else if (operations[i] == 'D') {
+                    _alignment_q += '-';
+                    _alignment_d += dSeq[pattern_pos];
+                    pattern_pos++;
+                }
+            }
+        } else {
+            totalScore = alignSlidingWindow_minimap2_or_NW(dna_q, dna_d, _alignment_q, _alignment_d,
+                                                        slidingWindowSize, wfaSize, matchingScore,
+                                                        mismatchingPenalty, openGapPenalty1, extendGapPenalty1,
+                                                        openGapPenalty2,
+                                                        extendGapPenalty2, min_wavefront_length,
+                                                        max_distance_threshold, m);
+        }
+
+        wavefront_aligner_delete(wf_aligner);
     }
-    wavefront_aligner_delete(wf_aligner);
     return totalScore;
 }
 
@@ -1641,28 +1647,26 @@ int64_t alignSlidingWindowNW(std::string &dna_q, std::string &dna_d, std::string
     int64_t totalScore = 0;
     _alignment_q = "";
     _alignment_d = "";
-    int64_t _length_of_q = dna_q.size();
-    int64_t _length_of_d = dna_d.size();
+    int32_t _length_of_q = dna_q.size();
+    int32_t _length_of_d = dna_d.size();
 
     //check all Ns begin
-    std::string temp2 = dna_q;
-    temp2.erase(std::remove(temp2.begin(), temp2.end(), 'N'), temp2.end());
+    bool flag_q_all_N = std::all_of(dna_q.begin(), dna_q.end(), [](char c) { return c == 'N'; });
+    bool flag_d_all_N = std::all_of(dna_d.begin(), dna_d.end(), [](char c) { return c == 'N'; });
 
-    std::string temp1 = dna_d;
-    temp1.erase(std::remove(temp1.begin(), temp1.end(), 'N'), temp1.end());
-
-    if (temp1.size() == 0 || temp2.size() == 0) {
+    if (flag_q_all_N || flag_d_all_N) {
         _alignment_q = dna_q;
         _alignment_d = dna_d;
-        int32_t _alignment_q_length = _alignment_q.length();
-        int32_t _alignment_d_length = _alignment_d.length();
-        if (_alignment_q_length < _alignment_d_length) {
-            int32_t dis = _alignment_d_length - _alignment_q_length;
-            _alignment_q = _alignment_q + std::string(dis, '-');
-        } else if (_alignment_d_length < _alignment_q_length) {
-            int32_t dis = _alignment_q_length - _alignment_d_length;
-            _alignment_d = _alignment_d + std::string(dis, '-');
+
+        int32_t count_ = abs(_length_of_q - _length_of_d);
+        if(_length_of_q < _length_of_d) {
+            _alignment_q += std::string(count_, '-');
         }
+
+        if(_length_of_d < _length_of_q) {
+            _alignment_d += std::string(count_, '-');
+        }
+
         return totalScore;
     }
 
