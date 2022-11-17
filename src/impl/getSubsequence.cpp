@@ -7,10 +7,10 @@
 std::string getSubsequence(std::map<std::string, std::string> &sequences, const std::string &seqName, const int &_start, const int &_end) {
 //    std::cout << seqName << " : " <<_start << "-" << _end  << std::endl;
     if (sequences.find(seqName) != sequences.end()) {
-        size_t start = _start;
-        size_t end = _end;
+        int start = _start;
+        int end = _end;
         if (start > end) {
-            size_t temp = start;
+            int temp = start;
             start = end;
             end = temp;
         }
@@ -31,10 +31,10 @@ std::string getSubsequence(std::map<std::string, std::string> &sequences, const 
 }
 
 std::string getSubsequence(const std::string &sequence, const int &_start, const int &_end) {
-    size_t start = _start;
-    size_t end = _end;
+    int start = _start;
+    int end = _end;
     if (start > end) {
-        size_t temp = start;
+        int temp = start;
         start = end;
         end = temp;
     }
