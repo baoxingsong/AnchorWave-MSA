@@ -1509,17 +1509,19 @@ int64_t alignSlidingWindow_minimap2_or_NW(std::string &dna_q, std::string &dna_d
     //check all Ns end
     int32_t longerSeqLength = max(_length_of_d, _length_of_q);
 
-    if (_length_of_d * _length_of_q <= (slidingWindowSize * slidingWindowSize * 30)) { // this calculated via RAM cost
+    if ((_length_of_d*1.0/slidingWindowSize) * (_length_of_q*1.0/slidingWindowSize) <= 30) { // this calculated via RAM cost
         /*the above parameter settings were based on RAM cost*/
         int32_t adjustBandWidth = -1;
         totalScore = alignSlidingWindow_minimap2(dna_q, dna_d, _length_of_q, _length_of_d, _alignment_q, _alignment_d, adjustBandWidth,
                                                  mismatchingPenalty, openGapPenalty1, extendGapPenalty1, openGapPenalty2, extendGapPenalty2);
-    } else if (longerSeqLength <= slidingWindowSize * 15) { // this calculated with RAM cost
+    }
+    else if (longerSeqLength*1.0/slidingWindowSize <= 15) { // this calculated with RAM cost
         /*the above parameter settings were based on RAM cost*/
-        int32_t adjustBandWidth = (slidingWindowSize * slidingWindowSize * 30) / 2 / longerSeqLength;
+        int32_t adjustBandWidth = (slidingWindowSize * 15 / longerSeqLength) * slidingWindowSize;
         totalScore = alignSlidingWindow_minimap2(dna_q, dna_d, _length_of_q, _length_of_d, _alignment_q, _alignment_d, adjustBandWidth,
                                                  mismatchingPenalty, openGapPenalty1, extendGapPenalty1, openGapPenalty2, extendGapPenalty2);
-    } else {
+    }
+    else {
         totalScore = alignSlidingWindow(dna_q, dna_d, _length_of_q, _length_of_d, _alignment_q, _alignment_d, slidingWindowSize, matchingScore,
                                         mismatchingPenalty, openGapPenalty1, extendGapPenalty1, openGapPenalty2, extendGapPenalty2);
     }
