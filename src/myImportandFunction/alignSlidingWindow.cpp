@@ -1261,18 +1261,20 @@ int64_t alignSlidingWindow(const std::string &dna_q, const std::string &dna_d, i
     }
 
     int32_t final_indel_length = 0;
-    while (databaseStart <= _length_of_d) {
-        _alignment_q += '-';
-        _alignment_d += dna_d[databaseStart - 1];
-        ++databaseStart;
-        ++final_indel_length;
+    int32_t count_1 = _length_of_d - databaseStart;
+    if (count_1 >= 0) {
+        _alignment_q += std::string(count_1, '-');
+        _alignment_d += dna_d.substr(databaseStart - 1, count_1 + 1);
+        final_indel_length += count_1;
     }
-    while (queryStart <= _length_of_q) {
-        _alignment_q += dna_q[queryStart - 1];
-        _alignment_d += '-';
-        ++queryStart;
-        ++final_indel_length;
+
+    int32_t count_2 = _length_of_q - queryStart;
+    if (count_2 >= 0) {
+        _alignment_q += dna_q.substr(queryStart - 1, count_2 + 1);;
+        _alignment_d += std::string(count_2, '-');
+        final_indel_length += count_2;
     }
+
     if (final_indel_length > 0) {
         totalScore += max(openGapPenalty1 + extendGapPenalty1 * final_indel_length, openGapPenalty2 + extendGapPenalty2 * final_indel_length);
     }
@@ -1363,20 +1365,20 @@ int64_t alignSlidingWindow(std::string &align_ref2, std::string &align_query, co
 
     int32_t final_indel_length = 0;
 
-    int32_t final_indel_length1 = _length_of_d - databaseStart;
-    if (final_indel_length1 >= 0) {
-        align_query += std::string(final_indel_length1, '-');
-        align_ref2 += std::string(final_indel_length1, '-');
-        align_ref1 += dna_ref1.substr(databaseStart - 1, final_indel_length1 + 1);
-        final_indel_length += final_indel_length1;
+    int32_t count_1 = _length_of_d - databaseStart;
+    if (count_1 >= 0) {
+        align_query += std::string(count_1, '-');
+        align_ref2 += std::string(count_1, '-');
+        align_ref1 += dna_ref1.substr(databaseStart - 1, count_1 + 1);
+        final_indel_length += count_1;
     }
 
-    int32_t final_indel_length2 = _length_of_q - queryStart;
-    if (final_indel_length2 >= 0) {
-        align_query += dna_query.substr(queryStart - 1, final_indel_length2 + 1);;
-        align_ref2 += dna_ref2.substr(queryStart - 1, final_indel_length2 + 1);
-        align_ref1 += std::string(final_indel_length2, '-');
-        final_indel_length += final_indel_length2;
+    int32_t count_2 = _length_of_q - queryStart;
+    if (count_2 >= 0) {
+        align_query += dna_query.substr(queryStart - 1, count_2 + 1);;
+        align_ref2 += dna_ref2.substr(queryStart - 1, count_2 + 1);
+        align_ref1 += std::string(count_2, '-');
+        final_indel_length += count_2;
     }
     if (final_indel_length > 0) {
         totalScore += max(openGapPenalty1 + extendGapPenalty1 * final_indel_length, openGapPenalty2 + extendGapPenalty2 * final_indel_length);
@@ -1442,31 +1444,24 @@ int64_t alignSlidingWindow_minimap2(const std::string &dna_q, const std::string 
         char cLetter = cVal[cVal.length() - 1];
         int cLen = stoi(cVal.substr(0, cVal.length() - 1));
 
-        if (cLetter == 'M') {
-            for (int j = 1; j <= cLen; ++j) {
-                _alignment_q += dna_q[text_pos];
-                _alignment_d += dna_d[pattern_pos];
-                pattern_pos++;
-                text_pos++;
-            }
-        } else if (cLetter == 'X') {
-            for (int j = 1; j <= cLen; ++j) {
-                _alignment_q += dna_q[text_pos];
-                _alignment_d += dna_d[pattern_pos];
-                pattern_pos++;
-                text_pos++;
+        if (cLetter == 'M' || cLetter == 'X') {
+            if (cLen >= 1) {
+                _alignment_q += dna_q.substr(text_pos, cLen);
+                _alignment_d += dna_d.substr(pattern_pos, cLen);
+                pattern_pos += cLen;
+                text_pos += cLen;
             }
         } else if (cLetter == 'I') {
-            for (int j = 1; j <= cLen; ++j) {
-                _alignment_q += dna_q[text_pos];
-                _alignment_d += '-';
-                text_pos++;
+            if (cLen >= 1) {
+                _alignment_q += dna_q.substr(text_pos, cLen);
+                _alignment_d += std::string(cLen, '-');
+                text_pos += cLen;
             }
         } else if (cLetter == 'D') {
-            for (int j = 1; j <= cLen; ++j) {
-                _alignment_q += '-';
-                _alignment_d += dna_d[pattern_pos];
-                pattern_pos++;
+            if (cLen >= 1) {
+                _alignment_q += std::string(cLen, '-');
+                _alignment_d += dna_d.substr(pattern_pos, cLen);
+                pattern_pos += cLen;
             }
         }
     }
@@ -1601,12 +1596,7 @@ int64_t alignSlidingWindow_local_wfa2_v2(std::string &dna_q, std::string &dna_d,
 
             int pattern_pos = 0, text_pos = 0;
             for (int i = edit_cigar->begin_offset; i < edit_cigar->end_offset; ++i) {
-                if (operations[i] == 'M') {
-                    _alignment_q += qSeq[text_pos];
-                    _alignment_d += dSeq[pattern_pos];
-                    pattern_pos++;
-                    text_pos++;
-                } else if (operations[i] == 'X') {
+                if (operations[i] == 'M' || operations[i] == 'X') {
                     _alignment_q += qSeq[text_pos];
                     _alignment_d += dSeq[pattern_pos];
                     pattern_pos++;
