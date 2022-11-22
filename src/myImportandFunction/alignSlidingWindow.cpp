@@ -1297,7 +1297,7 @@ int64_t alignSlidingWindow(std::string &align_ref2, std::string &align_query, co
     align_ref2 = "";
     align_query = "";
 
-    if (_length_of_d * _length_of_q <= slidingWindowSize * slidingWindowSize) {
+    if (sqrt(_length_of_d) * sqrt(_length_of_q) <= slidingWindowSize) {
         std::stack<char> SQ;
         std::stack<char> SR1;
         std::stack<char> SR2;
