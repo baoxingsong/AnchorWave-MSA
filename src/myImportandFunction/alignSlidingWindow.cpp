@@ -1362,19 +1362,21 @@ int64_t alignSlidingWindow(std::string &align_ref2, std::string &align_query, co
     }
 
     int32_t final_indel_length = 0;
-    while (databaseStart <= _length_of_d) {
-        align_query += '-';
-        align_ref2 += '-';
-        align_ref1 += dna_ref1[databaseStart - 1];
-        ++databaseStart;
-        ++final_indel_length;
+
+    int32_t final_indel_length1 = _length_of_d - databaseStart;
+    if (final_indel_length1 >= 0) {
+        align_query += std::string(final_indel_length1, '-');
+        align_ref2 += std::string(final_indel_length1, '-');
+        align_ref1 += dna_ref1.substr(databaseStart - 1, final_indel_length1 + 1);
+        final_indel_length += final_indel_length1;
     }
-    while (queryStart <= _length_of_q) {
-        align_query += dna_query[queryStart - 1];
-        align_ref2 += dna_ref2[queryStart - 1];
-        align_ref1 += '-';
-        ++queryStart;
-        ++final_indel_length;
+
+    int32_t final_indel_length2 = _length_of_q - queryStart;
+    if (final_indel_length2 >= 0) {
+        align_query += dna_query.substr(queryStart - 1, final_indel_length2 + 1);;
+        align_ref2 += dna_ref2.substr(queryStart - 1, final_indel_length2 + 1);
+        align_ref1 += std::string(final_indel_length2, '-');
+        final_indel_length += final_indel_length2;
     }
     if (final_indel_length > 0) {
         totalScore += max(openGapPenalty1 + extendGapPenalty1 * final_indel_length, openGapPenalty2 + extendGapPenalty2 * final_indel_length);
