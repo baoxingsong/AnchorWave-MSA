@@ -1202,7 +1202,8 @@ int64_t alignSlidingWindow(const std::string &dna_q, const std::string &dna_d, i
     int32_t queryStart = 1;
     int32_t queryEnd = 0;
     int64_t totalScore = 0;
-    if (_length_of_d * _length_of_q <= slidingWindowSize * slidingWindowSize) {
+
+    if (sqrt(_length_of_d) * sqrt(_length_of_q) <= slidingWindowSize) {
         std::stack<char> SQ;
         std::stack<char> SD;
 

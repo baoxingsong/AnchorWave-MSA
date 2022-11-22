@@ -1184,7 +1184,7 @@ void genomeAlignmentAndVariantCallingSingleThread(
     std::string mafStrand = "+";
     bool hasInversion = false;
 //    std::cout << "line 913" << std::endl;
-    bool checkResult = false;
+    bool checkResult = true;
     for (AlignmentMatch alignmentMatch: it0) {
         if (alignmentMatch.getStrand() == NEGATIVE) {
             hasInversion = true;
