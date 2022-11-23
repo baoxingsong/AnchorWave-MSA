@@ -66,14 +66,14 @@ int32_t needleAlignment(const std::string &_dna_q, const std::string &_dna_d, st
     int64_t matrixsize = (length1 + 1) * (length2 + 1);
 
     int32_t *MM = new int32_t[matrixsize * 6];
-    int8_t *TM = new int8_t[matrixsize * 6];
+    memset(MM, 0, matrixsize * 6);
 
-    std::fill_n(MM, matrixsize * 6, 0);
-    std::fill_n(TM + matrixsize * 0, matrixsize * 2, 0); //V and M
-    std::fill_n(TM + matrixsize * 2, matrixsize, 1); //E1
-    std::fill_n(TM + matrixsize * 3, matrixsize, 3); //F1
-    std::fill_n(TM + matrixsize * 4, matrixsize, 2); //E2
-    std::fill_n(TM + matrixsize * 5, matrixsize, 4); //F2
+    int8_t *TM = new int8_t[matrixsize * 6];
+    memset(TM, 0, matrixsize * 2);              //V and M
+    memset(TM + matrixsize * 2, 1, matrixsize); //E1
+    memset(TM + matrixsize * 3, 3, matrixsize); //F1
+    memset(TM + matrixsize * 4, 2, matrixsize); //E2
+    memset(TM + matrixsize * 5, 4, matrixsize); //F2
 
     int32_t i = 0, j;
     for (j = 0; j < (length2 + 1); ++j) {
@@ -252,14 +252,14 @@ int32_t needleAlignment(const std::string &_dna_ref2, const std::string &_dna_qu
     int64_t matrixsize = (length1 + 1) * (length2 + 1);
 
     int32_t *MM = new int32_t[matrixsize * 6];
-    int8_t *TM = new int8_t[matrixsize * 6];
+    memset(MM, 0, matrixsize * 6);
 
-    std::fill_n(MM, matrixsize * 6, 0);
-    std::fill_n(TM + matrixsize * 0, matrixsize * 2, 0); //V and M
-    std::fill_n(TM + matrixsize * 2, matrixsize, 1); //E1
-    std::fill_n(TM + matrixsize * 3, matrixsize, 3); //F1
-    std::fill_n(TM + matrixsize * 4, matrixsize, 2); //E2
-    std::fill_n(TM + matrixsize * 5, matrixsize, 4); //F2
+    int8_t *TM = new int8_t[matrixsize * 6];
+    memset(TM, 0, matrixsize * 2);              //V and M
+    memset(TM + matrixsize * 2, 1, matrixsize); //E1
+    memset(TM + matrixsize * 3, 3, matrixsize); //F1
+    memset(TM + matrixsize * 4, 2, matrixsize); //E2
+    memset(TM + matrixsize * 5, 4, matrixsize); //F2
 
     int32_t i = 0, j;
     for (j = 0; j < (length2 + 1); ++j) {
@@ -454,14 +454,14 @@ int32_t needleAlignment(const std::vector<std::string> &_dna_refs, const std::ve
     int64_t matrixsize = (length1 + 1) * (length2 + 1);
 
     int32_t *MM = new int32_t[matrixsize * 6];
-    int8_t *TM = new int8_t[matrixsize * 6];
+    memset(MM, 0, matrixsize * 6);
 
-    std::fill_n(MM, matrixsize * 6, 0);
-    std::fill_n(TM + matrixsize * 0, matrixsize * 2, 0); //V and M
-    std::fill_n(TM + matrixsize * 2, matrixsize, 1); //E1
-    std::fill_n(TM + matrixsize * 3, matrixsize, 3); //F1
-    std::fill_n(TM + matrixsize * 4, matrixsize, 2); //E2
-    std::fill_n(TM + matrixsize * 5, matrixsize, 4); //F2
+    int8_t *TM = new int8_t[matrixsize * 6];
+    memset(TM,                  0, matrixsize * 2); //V and M
+    memset(TM + matrixsize * 2, 1, matrixsize); //E1
+    memset(TM + matrixsize * 3, 3, matrixsize); //F1
+    memset(TM + matrixsize * 4, 2, matrixsize); //E2
+    memset(TM + matrixsize * 5, 4, matrixsize); //F2
 
     int32_t i = 0, j;
     for (j = 0; j < (length2 + 1); ++j) {
@@ -706,14 +706,14 @@ int32_t alignment(const std::string &_dna_q, const std::string &_dna_d, std::sta
     int64_t matrixsize = (length1 + 1) * (length2 + 1);
 
     int32_t *MM = new int32_t[matrixsize * 6];
-    int8_t *TM = new int8_t[matrixsize * 6];
+    memset(MM, 0, matrixsize * 6);
 
-    std::fill_n(MM, matrixsize * 6, 0);
-    std::fill_n(TM + matrixsize * 0, matrixsize * 2, 0); //V and M
-    std::fill_n(TM + matrixsize * 2, matrixsize, 1); //E1
-    std::fill_n(TM + matrixsize * 3, matrixsize, 3); //F1
-    std::fill_n(TM + matrixsize * 4, matrixsize, 2); //E2
-    std::fill_n(TM + matrixsize * 5, matrixsize, 4); //F2
+    int8_t *TM = new int8_t[matrixsize * 6];
+    memset(TM, 0, matrixsize * 2);              //V and M
+    memset(TM + matrixsize * 2, 1, matrixsize); //E1
+    memset(TM + matrixsize * 3, 3, matrixsize); //F1
+    memset(TM + matrixsize * 4, 2, matrixsize); //E2
+    memset(TM + matrixsize * 5, 4, matrixsize); //F2
 
     int32_t i = 0, j;
     for (j = 0; j < (length2 + 1); ++j) {
@@ -910,14 +910,14 @@ int32_t alignment(const std::string &_dna_ref2, const std::string &_dna_query, c
 
     int64_t matrixsize = (length1 + 1) * (length2 + 1);
     int32_t *MM = new int32_t[matrixsize * 6];
-    int8_t *TM = new int8_t[matrixsize * 6];
+    memset(MM, 0, matrixsize * 6);
 
-    std::fill_n(MM, matrixsize * 6, 0);
-    std::fill_n(TM + matrixsize * 0, matrixsize * 2, 0); //V and M
-    std::fill_n(TM + matrixsize * 2, matrixsize, 1); //E1
-    std::fill_n(TM + matrixsize * 3, matrixsize, 3); //F1
-    std::fill_n(TM + matrixsize * 4, matrixsize, 2); //E2
-    std::fill_n(TM + matrixsize * 5, matrixsize, 4); //F2
+    int8_t *TM = new int8_t[matrixsize * 6];
+    memset(TM, 0, matrixsize * 2);              //V and M
+    memset(TM + matrixsize * 2, 1, matrixsize); //E1
+    memset(TM + matrixsize * 3, 3, matrixsize); //F1
+    memset(TM + matrixsize * 4, 2, matrixsize); //E2
+    memset(TM + matrixsize * 5, 4, matrixsize); //F2
 
     int32_t i = 0, j;
     for (j = 0; j < (length2 + 1); ++j) {
@@ -1136,10 +1136,10 @@ int32_t alignment_position(const std::string &_dna_q, const std::string &_dna_d,
     int32_t *E1 = new int32_t[length1 + 1];
     int32_t *E2 = new int32_t[length1 + 1];
 
-    std::fill_n(MP, length1 + 1, 0);
-    std::fill_n(MC, length1 + 1, 0);
-    std::fill_n(E1, length1 + 1, 0);
-    std::fill_n(E2, length1 + 1, 0);
+    memset(MP, 0, length1 + 1);
+    memset(MC, 0, length1 + 1);
+    memset(E1, 0, length1 + 1);
+    memset(E2, 0, length1 + 1);
 
 
     for (i = 0; i < (length1 + 1); ++i) {
