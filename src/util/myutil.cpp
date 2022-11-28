@@ -50,7 +50,7 @@ int32_t min(const int32_t &a, const int32_t &b) {
     return b;
 }
 
-void splitCIGAR(std::string &cigarString, std::vector<std::string> &cigarElems) {
+void splitCIGAR(std::string cigarString, std::vector<std::string> &cigarElems) {
     std::regex reg("([0-9]+[MIDNSHPX=])");
     std::smatch match;
     while (regex_search(cigarString, match, reg)) {

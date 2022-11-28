@@ -29,7 +29,7 @@ std::string songStrReplaceAll(std::string &str, const std::string &pattern, cons
 
 int32_t min(const int32_t &a, const int32_t &b);
 
-void splitCIGAR(std::string &cigarString, std::vector<std::string> &cigarElems);
+void splitCIGAR(std::string cigarString, std::vector<std::string> &cigarElems);
 
 // trim from start (in place)
 inline void ltrim(std::string &s) {
