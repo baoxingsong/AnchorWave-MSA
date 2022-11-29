@@ -32,10 +32,14 @@ void get_transcript_to_gene_map_from_gff(const std::string &filePath, std::map<s
 
     std::string line;
     while (std::getline(infile, line)) {
+        if (line[0] == '#') {
+            continue;
+        }
+
         std::smatch match;
         for (std::regex reg: regTranscriptParents) {
             regex_search(line, match, reg);
-            if (match.empty() || line[0] == '#') {
+            if (match.empty()) {
             } else {
                 std::string transcript_id = match[1];
                 std::string gene_id = match[2];
@@ -43,9 +47,17 @@ void get_transcript_to_gene_map_from_gff(const std::string &filePath, std::map<s
                 transcript_to_gene_map[transcript_id] = gene_id;
             }
         }
+    }
+
+    while (std::getline(infile, line)) {
+        if (line[0] == '#') {
+            continue;
+        }
+
+        std::smatch match;
         std::regex reg("Parent=(\\S+?);ID=(\\S+?);");
         regex_search(line, match, reg);
-        if (match.empty() || line[0] == '#') {
+        if (match.empty()) {
         } else {
             std::string transcript_id = match[2];
             std::string gene_id = match[1];
