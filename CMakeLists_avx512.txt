@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.0)
-project(anchorwave)
+project(anchorwave-MSA)
 
 #include(CheckCXXCompilerFlag)
 set(CMAKE_CXX_STANDARD 14)
@@ -252,7 +252,7 @@ add_executable(anchorwave
 #        ksw2/ksw2_gg2_sse.c
 #        ksw2/ksw2_gg.c
 
-        src/service/Reformat.cpp src/service/Reformat.h src/service/evaluation.cpp src/service/evaluation.h src/version.h src/service/callVariantFromSamFile.h src/model/BlocksForMsa.cpp src/model/BlocksForMsa.h src/impl/readMafForMsa.cpp src/impl/readMafForMsa.h src/model/AlignmentBlock.cpp src/model/AlignmentBlock.h src/model/PhylogeneticTreeNode.cpp src/model/PhylogeneticTreeNode.h src/model/PhylogeneticTree.cpp src/model/PhylogeneticTree.h src/tests/model/PhylogeneticTree.cpp src/service/TreeManip.cpp src/service/TreeManip.h src/impl/reconstructAncestorUsingThree.cpp src/impl/reconstructAncestorUsingThree.h src/model/Range.cpp src/model/Range.h src/model/TwoVectorsOfRanges.cpp src/model/TwoVectorsOfRanges.h src/impl/sequencesToKmerDIstanceMatrix.cpp src/impl/sequencesToKmerDIstanceMatrix.h)
+        src/service/Reformat.cpp src/service/Reformat.h src/service/evaluation.cpp src/service/evaluation.h src/version.h src/service/callVariantFromSamFile.h src/model/BlocksForMsa.cpp src/model/BlocksForMsa.h src/impl/readMafForMsa.cpp src/impl/readMafForMsa.h src/model/AlignmentBlock.cpp src/model/AlignmentBlock.h src/model/PhylogeneticTreeNode.cpp src/model/PhylogeneticTreeNode.h src/model/PhylogeneticTree.cpp src/model/PhylogeneticTree.h src/tests/model/PhylogeneticTree.cpp src/service/TreeManip.cpp src/service/TreeManip.h src/model/Range.cpp src/model/Range.h src/model/TwoVectorsOfRanges.cpp src/model/TwoVectorsOfRanges.h src/impl/sequencesToKmerDIstanceMatrix.cpp src/impl/sequencesToKmerDIstanceMatrix.h)
 
 target_link_libraries(anchorwave gtest gtest_main ZLIB::ZLIB)
 
