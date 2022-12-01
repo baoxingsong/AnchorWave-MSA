@@ -158,7 +158,6 @@ int genomeAlignment(int argc, char **argv, std::map<std::string, std::string> &p
           //          " -u   INT     local alignment band width (default: " << w2 << ")" << std::endl <<
           std::endl;
 
-    //TODO: update novel anchor searching by extract parameter from minimap2 output
     InputParser inputParser(argc, argv);
     if (inputParser.cmdOptionExists("-h") || inputParser.cmdOptionExists("--help")) {
         std::cerr << usage.str();

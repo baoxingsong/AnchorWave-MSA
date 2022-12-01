@@ -12,7 +12,7 @@
 #include "../impl/impl.h"
 #include "../util/nucleotideCodeSubstitutionMatrix.h"
 #include "../util/parameters.h"
-
+#include "../../WFA2-lib/bindings/cpp/WFAligner.hpp"
 #include <stdlib.h>
 #include "../../minimap2/ksw2.h"
 
