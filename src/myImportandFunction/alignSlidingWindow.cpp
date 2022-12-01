@@ -1422,18 +1422,19 @@ int64_t alignSlidingWindow(const std::string &dna_q, const std::string &dna_d, i
     }
 
     int32_t final_indel_length = 0;
-    while( databaseStart<=_length_of_d ){
-        _alignment_q += '-';
-        _alignment_d += dna_d[databaseStart-1];
-        ++databaseStart;
-        ++final_indel_length;
+    int32_t count_1 = _length_of_d - databaseStart;
+    if (count_1 >= 0) {
+        _alignment_q += std::string(count_1 + 1, '-');
+        _alignment_d += dna_d.substr(databaseStart - 1, count_1 + 1);
+        final_indel_length += count_1 + 1;
     }
     assert(_alignment_d.size() == _alignment_q.size());
-    while( queryStart<=_length_of_q ){
-        _alignment_q += dna_q[queryStart-1];
-        _alignment_d += '-';
-        ++queryStart;
-        ++final_indel_length;
+
+    int32_t count_2 = _length_of_q - queryStart;
+    if (count_2 >= 0) {
+        _alignment_q += dna_q.substr(queryStart - 1, count_2 + 1);
+        _alignment_d += std::string(count_2 + 1, '-');
+        final_indel_length += count_2 + 1;
     }
     assert(_alignment_d.size() == _alignment_q.size());
     if( final_indel_length > 0 ){
