@@ -10,17 +10,6 @@ void readGffFile(const std::string &filePath, std::map <std::string, std::vector
 }
 
 void get_transcript_to_gene_map_from_gff(const std::string &filePath, std::map <std::string, std::string> &transcript_to_gene_map) {
-    std::vector <std::string> transcriptParentRegex;
-    transcriptParentRegex.push_back("ID=(\\S+?);.*Parent=(\\S+?);");
-    transcriptParentRegex.push_back("ID=(\\S+?);.*Parent=(\\S+?)$");
-    transcriptParentRegex.push_back("ID=(\\S+?);.*geneID=(\\S+?)$");
-
-    std::vector <std::regex> regTranscriptParents;
-    for (std::string transcript: transcriptParentRegex) {
-        std::regex regTranscript(transcript);
-        regTranscriptParents.push_back(regTranscript);
-    }
-
     std::ifstream infile(filePath);
     if (!infile.good()) {
         std::cerr << "error in opening GFF/GTF file " << filePath << std::endl;
@@ -29,49 +18,39 @@ void get_transcript_to_gene_map_from_gff(const std::string &filePath, std::map <
 
     std::string line;
     while (std::getline(infile, line)) {
-        if (line[0] == '#') {
+        if (line.size() < 19 || line[0] == '#') {
             continue;
         }
 
-        std::smatch match;
-        for (size_t i = 0; i < regTranscriptParents.size(); i++) {
-            std::regex reg = regTranscriptParents[i];
-            while (regex_search(line, match, reg)) {
-                std::string transcript_id = match[1];
-                std::string gene_id = match[2];
-                transcript_to_gene_map[transcript_id] = gene_id;
-
-                if (i == 0) {
-                    line = match.suffix();
-                } else {
-                    break;
-                }
-            }
-        }
-    }
-
-    while (std::getline(infile, line)) {
-        if (line[0] == '#') {
+        std::string id;
+        size_t p_id_b = line.find("ID=");
+        if (p_id_b != std::string::npos) {
+            std::string line_s = line.substr(p_id_b + 3);
+            size_t p_id_e = line_s.find(";");
+            id = line_s.substr(0, p_id_e);
+        } else {
             continue;
         }
 
-        std::smatch match;
-        std::regex reg("Parent=(\\S+?);ID=(\\S+?);");
-        while (regex_search(line, match, reg)) {
-            std::string transcript_id = match[2];
-            std::string gene_id = match[1];
-            transcript_to_gene_map[transcript_id] = gene_id;
-            line = match.suffix();
+        size_t p_p_b = line.find("Parent=");
+        if (p_p_b != std::string::npos) {
+            std::string line_s = line.substr(p_p_b + 7);
+            size_t p_p_e = line_s.find(";");
+            std::string parent = line_s.substr(0, p_p_e);
+            transcript_to_gene_map[id] = parent;
+            continue;
         }
 
-        std::regex reg2("Parent=(\\S+?);ID=(\\S+?)$");
-        while (regex_search(line, match, reg2)) {
-            std::string transcript_id = match[2];
-            std::string gene_id = match[1];
-            transcript_to_gene_map[transcript_id] = gene_id;
-            line = match.suffix();
+        size_t p_g_b = line.find("geneID=");
+        if (p_g_b != std::string::npos) {
+            std::string line_s = line.substr(p_g_b + 7);
+            size_t p_g_e = line_s.find(";");
+            std::string gene_id = line_s.substr(0, p_g_e);
+            transcript_to_gene_map[id] = gene_id;
         }
     }
+
+    infile.close();
 }
 
 void readGffFile(const std::string &filePath, std::map <std::string, std::vector<Transcript>> &transcriptHashSet, const std::string &cdsParentRegex, const int &minExon) {
@@ -82,42 +61,64 @@ void readGffFile(const std::string &filePath, std::map <std::string, std::vector
         exit(1);
     }
 
-    std::regex reg("^(\\S*)\t([\\s\\S]*)\tCDS\t(\\S*)\t(\\S*)\t(\\S*)\t(\\S*)\t(\\S*)\t" + cdsParentRegex);
     std::string line;
     while (std::getline(infile, line)) {
-        std::smatch match;
-        regex_search(line, match, reg);
+        size_t pos_cds = line.find("CDS");
+        if (pos_cds == std::string::npos || line.size() < 19 || line[0] == '#') {
+            continue;
+        }
 
-        if (match.empty() || line[0] == '#' || line.size() < 9) {
-        } else {
-//            std::cout << line << std::endl;
-            int start = stoi(match[3]);
-            int end = stoi(match[4]);
+        const char *ss = line.c_str();
+        int size = line.size();
+        char name[size];
+        char type[size];
+        int start, end;
+        char str6[1];
+        char str8[size];
+
+        int ret = sscanf(ss, "%s%*s%s%d%d%*s%s%*s%s", name, type, &start, &end, str6, str8);
+        if (ret == 6 && std::string(type) == "CDS") {
             if (start > end) {
                 int temp = start;
                 start = end;
                 end = temp;
             }
+
             if ((end - start + 1) >= minExon) {
-                std::string information = match[9];
+                std::string str8_ = std::string(str8);
+                // --1 like :    chr1	NAM	CDS	34722	35318	.	+	0	ID=Zm00001eb000010_P001;Parent=Zm00001eb000010_T001;protein_id=Zm00001eb000010_P001
+                size_t p_p_b = str8_.find("Parent=");
+                if (p_p_b == std::string::npos)
+                    continue;
+                str8_ = str8_.substr(p_p_b + 7);
+                size_t p_p_e = str8_.find_first_of(";");
+                str8_ = str8_.substr(0, p_p_e);
+
+                // --2
+
+                std::string information = str8_;
                 if (transcriptHashMap.find(information) != transcriptHashMap.end()) {
                 } else {
-                    std::string chromosomeName = match[1];
+                    std::string chromosomeName = std::string(name);
+
                     STRAND strand;
-                    if (match[6].compare("-") == 0) {
+                    if (str6[0] == '-') {
                         strand = NEGATIVE;
                     } else {
                         strand = POSITIVE;
                     }
+
                     Transcript transcript1(information, chromosomeName, strand);
                     transcriptHashMap[information] = transcript1;
                 }
+
                 GenomeBasicFeature cds(start, end);
-                //cds.setTranscript(transcriptHashMap[information]);
                 transcriptHashMap[information].addCds(cds);
             }
         }
     }
+
+    infile.close();
 
     for (std::map<std::string, Transcript>::iterator it = transcriptHashMap.begin(); it != transcriptHashMap.end(); ++it) {
         if (transcriptHashSet.find(it->second.getChromeSomeName()) == transcriptHashSet.end()) {
@@ -142,43 +143,64 @@ void readGffFile_exon(const std::string &filePath, std::map <std::string, std::v
         std::cerr << "error in opening GFF/GTF file " << filePath << std::endl;
         exit(1);
     }
-    std::regex reg("^(\\S*)\t([\\s\\S]*)\texon\t(\\S*)\t(\\S*)\t(\\S*)\t(\\S*)\t(\\S*)\t" + cdsParentRegex);
+
     std::string line;
     while (std::getline(infile, line)) {
-        std::smatch match;
-        regex_search(line, match, reg);
+        size_t pos_exon = line.find("exon");
+        if (pos_exon == std::string::npos || line.size() < 19 || line[0] == '#') {
+            continue;
+        }
 
-        if (match.empty() || line[0] == '#' || line.size() < 9) {
-        } else {
-            int start = stoi(match[3]);
-            int end = stoi(match[4]);
+        const char *ss = line.c_str();
+        int size = line.size();
+        char name[size];
+        char type[size];
+        int start, end;
+        char str6[1];
+        char str8[size];
+
+        int ret = sscanf(ss, "%s%*s%s%d%d%*s%s%*s%s", name, type, &start, &end, str6, str8);
+        if (ret == 6 && std::string(type) == "exon") {
             if (start > end) {
                 int temp = start;
                 start = end;
                 end = temp;
             }
-            //std::cout << start << "\t" << end << std::endl;
+
             if ((end - start + 1) >= minExon) {
-                std::string information = match[9];
+                std::string str8_ = std::string(str8);
+                // --1 like :    chr1	NAM	exon	34617	35318	.	+	.	Parent=Zm00001eb000010_T001;Name=Zm00001eb000010_T001.exon.1;ensembl_end_phase=0;ensembl_phase=0;exon_id=Zm00001eb000010_T001.exon.1;rank=1
+                size_t p_p_b = str8_.find("Parent=");
+                if (p_p_b == std::string::npos)
+                    continue;
+                str8_ = str8_.substr(p_p_b + 7);
+                size_t p_p_e = str8_.find_first_of(";");
+                str8_ = str8_.substr(0, p_p_e);
+
+                // --2
+
+                std::string information = str8_;
                 if (transcriptHashMap.find(information) != transcriptHashMap.end()) {
                 } else {
-                    std::string chromosomeName = match[1];
+                    std::string chromosomeName = std::string(name);
+
                     STRAND strand;
-                    if (match[6].compare("-") == 0) {
+                    if (str6[0] == '-') {
                         strand = NEGATIVE;
                     } else {
                         strand = POSITIVE;
                     }
+
                     Transcript transcript1(information, chromosomeName, strand);
                     transcriptHashMap[information] = transcript1;
                 }
+
                 GenomeBasicFeature cds(start, end);
-                //cds.setTranscript(transcriptHashMap[information]);
                 transcriptHashMap[information].addCds(cds);
-//                std::cout << information << "\t" << start << "\t" << end << std::endl;
             }
         }
     }
+
     infile.close();
 
     for (std::map<std::string, Transcript>::iterator it = transcriptHashMap.begin(); it != transcriptHashMap.end(); ++it) {
