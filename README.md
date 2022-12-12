@@ -54,7 +54,7 @@ cd anchorwave
 cmake ./
 make
 ```
-You will get an executable file named ```anchorwave ```. If you would like to move ```anchorwave``` to a new path, please always put ```configure``` and ```anchorwave``` into the same folder.
+You will get an executable file named ```anchorwave```. 
 The code has been tested under Ubuntu 20.2 and CentOS 7 with intel/AMD CPU. It should work well on other REDHAT or Debian based Linux Distributions.
 ### Installation using conda
 ```

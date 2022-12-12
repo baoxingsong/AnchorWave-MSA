@@ -15,27 +15,11 @@
  * =====================================================================================
  */
 #include <stdlib.h>
-/*************************************************************************
-
-
-
-
- ************************************************************************/
-
 #include "src/controlLayer.h"
 #include "./googletest/googletest/include/gtest/gtest.h"
-#include<string.h>
-#include<cstring>
-
-#include <stdlib.h>
-#include <assert.h>
-#include <stdio.h>
-#include <zlib.h>
-#include "./minimap2/minimap.h"
-#include "./minimap2/kseq.h"
 
 int main(int argc, char **argv) {
-//
+
 //    testing::InitGoogleTest(&argc, argv);
 //    RUN_ALL_TESTS();
 //    return 0;
