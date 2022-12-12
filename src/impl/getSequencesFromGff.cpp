@@ -7,7 +7,6 @@
 
 void getSequences(const std::string &gffFile, const std::string &genomeFile,
                   const std::string &outputCdsSequences, std::map<std::string, std::string> &parameters, const int &minExon, const bool &exonModel) {
-    std::string regex = get_parameters("cdsParentRegex", parameters);
     NucleotideCodeSubstitutionMatrix nucleotideCodeSubstitutionMatrix;
 
     std::map<std::string, std::string> genome;
@@ -15,10 +14,11 @@ void getSequences(const std::string &gffFile, const std::string &genomeFile,
 
     std::map<std::string, std::vector<Transcript> > transcriptHashSet;
     if (exonModel) {
-        readGffFile_exon(gffFile, transcriptHashSet, regex, minExon);
+        readGffFile(gffFile, transcriptHashSet, "exon", minExon);
     } else {
-        readGffFile(gffFile, transcriptHashSet, regex, minExon);
+        readGffFile(gffFile, transcriptHashSet, "CDS", minExon);
     }
+
     std::set<std::string> toRemoveChrs;
     for (std::map<std::string, std::vector<Transcript> >::iterator it = transcriptHashSet.begin(); it != transcriptHashSet.end(); ++it) {
         if (genome.find(it->first) == genome.end()) {
@@ -28,6 +28,8 @@ void getSequences(const std::string &gffFile, const std::string &genomeFile,
     for (std::string chr: toRemoveChrs) {
         transcriptHashSet.erase(chr);
     }
+
+
     if (exonModel) {
 
     } else {

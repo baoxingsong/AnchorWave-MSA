@@ -17,14 +17,8 @@
 
 #include "parameters.h"
 #include "myutil.h"
-#include <fstream>
-#include <regex>
 #include <stdio.h>
-#include <iostream>
-#include <memory>
-#include <stdexcept>
-#include <string>
-#include <array>
+
 
 std::map<std::string, std::string> initialize_paramters(std::string parameters_file, std::string exepath) {
     std::map<std::string, std::string> parameters;

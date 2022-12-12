@@ -560,14 +560,13 @@ void setupAnchorsWithSpliceAlignmentResult(const std::string &gffFilePath, const
     bool H = false;
 
     //read genome and gff file begin
-    std::string regex = get_parameters("cdsParentRegex", parameters);
     NucleotideCodeSubstitutionMatrix nucleotideCodeSubstitutionMatrix;
     std::map<std::string, std::vector<Transcript> > transcriptHashSet;
     if (exonModel) {
-        readGffFile_exon(gffFilePath, transcriptHashSet, regex, minExon);
+        readGffFile(gffFilePath, transcriptHashSet, "exon", minExon);
     }
     else {
-        readGffFile(gffFilePath, transcriptHashSet, regex, minExon);
+        readGffFile(gffFilePath, transcriptHashSet, "CDS", minExon);
     }
 
     std::set<std::string> toRemoveChrs;
@@ -1185,11 +1184,10 @@ void setupAnchorsWithSpliceAlignmentResultQuota_v0(const std::string &gffFilePat
     }
 
     // read reference genome and gff begin
-    std::string regex = get_parameters("cdsParentRegex", parameters);
     NucleotideCodeSubstitutionMatrix nucleotideCodeSubstitutionMatrix;
     std::map<std::string, std::vector<Transcript> > transcriptHashSet;
 
-    readGffFile(gffFilePath, transcriptHashSet, regex, minExon);
+    readGffFile(gffFilePath, transcriptHashSet, "CDS", minExon);
 
     // clean reference genome and annotation chromosomes
     std::set<std::string> toRemoveChrs;
@@ -1870,13 +1868,12 @@ void setupAnchorsWithSpliceAlignmentResultQuota(const std::string &gffFilePath, 
     }
 
     // read reference genome and gff begin
-    std::string regex = get_parameters("cdsParentRegex", parameters);
     NucleotideCodeSubstitutionMatrix nucleotideCodeSubstitutionMatrix;
     std::map<std::string, std::vector<Transcript> > transcriptHashSet;
     if (exonModel) {
-        readGffFile_exon(gffFilePath, transcriptHashSet, regex, minExon);
+        readGffFile(gffFilePath, transcriptHashSet, "exon", minExon);
     } else {
-        readGffFile(gffFilePath, transcriptHashSet, regex, minExon);
+        readGffFile(gffFilePath, transcriptHashSet, "CDS", minExon);
     }
 
     // clean reference genome and annotation chromosomes
