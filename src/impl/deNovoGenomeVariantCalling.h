@@ -29,7 +29,7 @@ void genomeAlignmentAndVariantCalling(std::map<std::string, std::vector<Alignmen
                                       const int32_t &openGapPenalty2, const int32_t &extendGapPenalty2,
                                       const int32_t &min_wavefront_length, const int32_t &max_distance_threshold,
                                       int32_t &seed_window_size, const int32_t &mini_cns_score, const int32_t &step_size,
-                                      const int32_t &matrix_boundary_distance, const int32_t &scoreThreshold, const int32_t &w, const int32_t &xDrop, const int &maxThread, std::map<std::string, std::string> &parameters);
+                                      const int32_t &matrix_boundary_distance, const int32_t &scoreThreshold, const int32_t &w, const int32_t &xDrop, const int &maxThread);
 
 void genomeAlignment(std::vector<std::vector<AlignmentMatch>> &alignmentMatchsMap,
                      const std::string &refFastaFilePath, const std::string &targetFastaFilePath,
@@ -39,7 +39,7 @@ void genomeAlignment(std::vector<std::vector<AlignmentMatch>> &alignmentMatchsMa
                      const int32_t &extendGapPenalty1,
                      const int32_t &openGapPenalty2, const int32_t &extendGapPenalty2, int32_t &seed_window_size, const int32_t &mini_cns_score, const int32_t &step_size,
                      const int32_t &matrix_boundary_distance, const int32_t &scoreThreshold, const int32_t &w, const int32_t &xDrop,
-                     const int32_t &min_wavefront_length, const int32_t &max_distance_threshold, const int &maxThread, std::map<std::string, std::string> &parameters);
+                     const int32_t &min_wavefront_length, const int32_t &max_distance_threshold, const int &maxThread);
 
 void alignmentToVcf(std::string &queryAlignSeq, std::string &refAlignSeq, std::vector<Variant> &sdiRecordsThisOne, std::string chr, std::string &refSequence, int32_t refLetterNumber);
 

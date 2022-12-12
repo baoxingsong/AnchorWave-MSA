@@ -18,7 +18,7 @@
 #include "controlLayer.h"
 
 
-int gff2seq(int argc, char **argv, std::map<std::string, std::string> &parameters) {
+int gff2seq(int argc, char **argv) {
     std::stringstream usage;
     usage << "Usage: " << PROGRAMNAME << " gff2seq -i inputGffFile -r inputGenome -o outputSequences " << std::endl <<
           "Options" << std::endl <<
@@ -47,7 +47,7 @@ int gff2seq(int argc, char **argv, std::map<std::string, std::string> &parameter
         if (inputParser.cmdOptionExists("-x")) {
             exonModel = true;
         }
-        getSequences(inputGffFile, genome, outputCdsSequences, parameters, minExon, exonModel);
+        getSequences(inputGffFile, genome, outputCdsSequences, minExon, exonModel);
         return 0;
     } else {
         std::cerr << usage.str();
@@ -56,7 +56,7 @@ int gff2seq(int argc, char **argv, std::map<std::string, std::string> &parameter
 }
 
 
-int genomeAlignment(int argc, char **argv, std::map<std::string, std::string> &parameters) {
+int genomeAlignment(int argc, char **argv) {
     std::stringstream usage;
 
     int32_t matchingScore = 0;
@@ -349,7 +349,7 @@ int genomeAlignment(int argc, char **argv, std::map<std::string, std::string> &p
 
         std::map<std::string, std::vector<AlignmentMatch>> alignmentMatchsMap;
         setupAnchorsWithSpliceAlignmentResult(refGffFilePath, cdsSequenceFile, samFilePath, alignmentMatchsMap,
-                                              inversion_PENALTY, MIN_ALIGNMENT_SCORE, considerInversion, minExon, windownWidth, minimumSimilarity, minimumSimilarity2, parameters, referenceGenome,
+                                              inversion_PENALTY, MIN_ALIGNMENT_SCORE, considerInversion, minExon, windownWidth, minimumSimilarity, minimumSimilarity2, referenceGenome,
                                               queryGenome, expectedCopies, maximumSimilarity, referenceSamFilePath, wfaSize3, searchForNewAnchors, exonModel
                 /*, matchingScore, mismatchingPenalty, openGapPenalty1, extendGapPenalty1, k, mw, H*/);
 
@@ -465,7 +465,7 @@ int genomeAlignment(int argc, char **argv, std::map<std::string, std::string> &p
                                              matchingScore, mismatchingPenalty, openGapPenalty1, extendGapPenalty1,
                                              openGapPenalty2, extendGapPenalty2, min_wavefront_length, max_distance_threshold,
                                              seed_window_size, mini_cns_score, step_size, matrix_boundary_distance,
-                                             scoreThreshold, w2, xDrop, threads, parameters);
+                                             scoreThreshold, w2, xDrop, threads);
             std::cout << "AnchorWave done!" << std::endl;
         }
         return 0;
@@ -475,7 +475,7 @@ int genomeAlignment(int argc, char **argv, std::map<std::string, std::string> &p
     return 0;
 }
 
-int proportationalAlignment(int argc, char **argv, std::map<std::string, std::string> &parameters) {
+int proportationalAlignment(int argc, char **argv) {
     bool useAlignmentScore = false;
 
     int32_t matchingScore = 0;
@@ -821,7 +821,7 @@ int proportationalAlignment(int argc, char **argv, std::map<std::string, std::st
 
         setupAnchorsWithSpliceAlignmentResultQuota(refGffFilePath, samFilePath, cdsSequenceFile, alignmentMatchsMap, INDEL_SCORE, GAP_OPEN_PENALTY, MIN_ALIGNMENT_SCORE,
                                                    MAX_DIST_BETWEEN_MATCHES, refMaximumTimes, queryMaximumTimes,
-                                                   calculateIndelDistance, minExon, windownWidth, minimumSimilarity, minimumSimilarity2, parameters, referenceGenome, queryGenome,
+                                                   calculateIndelDistance, minExon, windownWidth, minimumSimilarity, minimumSimilarity2, referenceGenome, queryGenome,
                                                    expectedCopies, wfaSize3, maximumSimilarity, referenceSamFilePath,
                 /*matchingScore, mismatchingPenalty, openGapPenalty1, extendGapPenalty1, k, mw, H,*/ searchForNewAnchors, exonModel);
 
@@ -910,7 +910,7 @@ int proportationalAlignment(int argc, char **argv, std::map<std::string, std::st
             genomeAlignment(alignmentMatchsMap, referenceGenomeSequence, targetGenomeSequence, windownWidth, wfaSize, wfaSize2,
                             outPutMafFile, outPutFragedFile, /*outPutLocalalignmentFile,*/ matchingScore, mismatchingPenalty, openGapPenalty1, extendGapPenalty1,
                             openGapPenalty2, extendGapPenalty2, seed_window_size, mini_cns_score, step_size, matrix_boundary_distance,
-                            scoreThreshold, w2, xDrop, min_wavefront_length, max_distance_threshold, threads, parameters);
+                            scoreThreshold, w2, xDrop, min_wavefront_length, max_distance_threshold, threads);
             std::cout << "AnchorWave done!" << std::endl;
         }
 
@@ -923,8 +923,7 @@ int proportationalAlignment(int argc, char **argv, std::map<std::string, std::st
     return 0;
 }
 
-int tripleAncestral(int argc, char **argv, std::map<std::string, std::string> &parameters) {
-
+int tripleAncestral(int argc, char **argv) {
     int32_t matchingScore = 0;
     int32_t mismatchingPenalty = -4;
     int32_t openGapPenalty1 = -4;
@@ -1072,7 +1071,7 @@ int tripleAncestral(int argc, char **argv, std::map<std::string, std::string> &p
 
 
 // the following functions were developped for evaluation aim. some of them have hard codes and or output file might have compatible problems with other applications
-int maf2vcf(int argc, char **argv, std::map<std::string, std::string> &parameters) {
+int maf2vcf(int argc, char **argv) {
     std::stringstream usage;
     usage << "Usage: " << PROGRAMNAME
           << " maf2vcf -r refGenome -m mafFile -o output " << std::endl <<
@@ -1110,7 +1109,7 @@ int maf2vcf(int argc, char **argv, std::map<std::string, std::string> &parameter
     return 0;
 }
 
-int sam2vcf(int argc, char **argv, std::map<std::string, std::string> &parameters) {
+int sam2vcf(int argc, char **argv) {
     std::stringstream usage;
     int32_t range = 30;
     usage << "Usage: " << PROGRAMNAME
@@ -1142,7 +1141,7 @@ int sam2vcf(int argc, char **argv, std::map<std::string, std::string> &parameter
     return 0;
 }
 
-int sam2maf(int argc, char **argv, std::map<std::string, std::string> &parameters) {
+int sam2maf(int argc, char **argv) {
     std::stringstream usage;
     usage << "Usage: " << PROGRAMNAME
           << " sam2maf -r refGenome -q queryGenome -s samFile -o output " << std::endl <<
@@ -1171,7 +1170,7 @@ int sam2maf(int argc, char **argv, std::map<std::string, std::string> &parameter
 }
 
 
-int evaluateTEAlignment(int argc, char **argv, std::map<std::string, std::string> &parameters) {
+int evaluateTEAlignment(int argc, char **argv) {
     std::stringstream usage;
     usage << "Usage: " << PROGRAMNAME
           << " evaluateTEAlignment -c chromosome -r refGenome -v vcfFile -g TEannotation -o output " << std::endl <<
@@ -1224,7 +1223,7 @@ int evaluateTEAlignment(int argc, char **argv, std::map<std::string, std::string
     return 0;
 }
 
-int sdiToMaf(int argc, char **argv, std::map<std::string, std::string> &parameters) {
+int sdiToMaf(int argc, char **argv) {
     std::stringstream usage;
     usage << "Usage: " << PROGRAMNAME
           << " sdiToMaf -s sdiFile -r refGenome -q syntheticGenome -o output mafFile " << std::endl <<
@@ -1256,7 +1255,7 @@ int sdiToMaf(int argc, char **argv, std::map<std::string, std::string> &paramete
 }
 
 
-int ali(int argc, char **argv, std::map<std::string, std::string> &parameters) {
+int ali(int argc, char **argv) {
 
     int32_t matchingScore = 0;
     int32_t mismatchingPenalty = -6;
@@ -1358,7 +1357,7 @@ int ali(int argc, char **argv, std::map<std::string, std::string> &parameters) {
         int64_t thiScore = alignSlidingWindow(querySeqStr, refSeqStr, _alignment_q, _alignment_d,
                                               windowWidth, wfaSize, matchingScore, mismatchingPenalty, openGapPenalty1,
                                               extendGapPenalty1, openGapPenalty2, extendGapPenalty2,
-                                              min_wavefront_length, max_distance_threshold, m, parameters);
+                                              min_wavefront_length, max_distance_threshold, m);
         std::cout << ">" << referenceSeq.begin()->first << std::endl;
         std::cout << _alignment_d << std::endl;
         std::cout << ">" << querySeq.begin()->first << std::endl;

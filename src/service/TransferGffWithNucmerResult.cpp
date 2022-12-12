@@ -541,7 +541,6 @@ void readSam(std::vector<AlignmentMatch> &alignmentMatchsMapT, std::ifstream &in
 
 void setupAnchorsWithSpliceAlignmentResult(const std::string &gffFilePath, const std::string &cdsSequenceFile, const std::string &samFile, std::map<std::string, std::vector<AlignmentMatch>> &alignmentMatchsMap,
                                            double &inversion_PENALTY, double &MIN_ALIGNMENT_SCORE, bool &considerInversion, const int &minExon, const int64_t &windownWidth, const double &minimumSimilarity, const double &minimumSimilarity2,
-                                           std::map<std::string, std::string> &parameters,
                                            std::map<std::string, std::string> &referenceGenome, std::map<std::string, std::string> &queryGenome, int &expectedCopies, double &maximumSimilarity,
                                            const std::string &referenceSamFilePath, const int32_t &wfaSize3, const bool &searchForNewAnchors, const bool &exonModel) {
     std::ifstream infile(samFile);
@@ -1161,7 +1160,7 @@ void setupAnchorsWithSpliceAlignmentResult(const std::string &gffFilePath, const
 void setupAnchorsWithSpliceAlignmentResultQuota_v0(const std::string &gffFilePath, const std::string &samFile, const std::string &cdsSequenceFile, std::vector<std::vector<AlignmentMatch>> &alignmentMatchsMap,
                                                    double &INDEL_SCORE, double &GAP_OPEN_PENALTY, double &MIN_ALIGNMENT_SCORE, int &MAX_DIST_BETWEEN_MATCHES, int &refMaximumTimes, int &queryMaximumTimes,
                                                    double &calculateIndelDistance, const int &minExon, const int64_t &windownWidth, const double &minimumSimilarity,
-                                                   const double &minimumSimilarity2, std::map<std::string, std::string> &parameters, std::map<std::string, std::string> &referenceGenome,
+                                                   const double &minimumSimilarity2, std::map<std::string, std::string> &referenceGenome,
                                                    std::map<std::string, std::string> &queryGenome, int &expectedCopies, const int32_t &wfaSize3,
                                                    double &maximumSimilarity, const std::string &referenceSamFilePath,/*
                                                  const int32_t & matchingScore, const int32_t & mismatchingPenalty,
@@ -1848,7 +1847,7 @@ void setupAnchorsWithSpliceAlignmentResultQuota_v0(const std::string &gffFilePat
 void setupAnchorsWithSpliceAlignmentResultQuota(const std::string &gffFilePath, const std::string &samFile, const std::string &cdsSequenceFile, std::vector<std::vector<AlignmentMatch>> &alignmentMatchsMap,
                                                 double &INDEL_SCORE, double &GAP_OPEN_PENALTY, double &MIN_ALIGNMENT_SCORE, int &MAX_DIST_BETWEEN_MATCHES, int &refMaximumTimes, int &queryMaximumTimes,
                                                 double &calculateIndelDistance, const int &minExon, const int64_t &windownWidth, const double &minimumSimilarity,
-                                                const double &minimumSimilarity2, std::map<std::string, std::string> &parameters, std::map<std::string, std::string> &referenceGenome,
+                                                const double &minimumSimilarity2, std::map<std::string, std::string> &referenceGenome,
                                                 std::map<std::string, std::string> &queryGenome, int &expectedCopies, const int32_t &wfaSize3,
                                                 double &maximumSimilarity, const std::string &referenceSamFilePath, bool &searchForNewAnchors, const bool &exonModel) {
 

@@ -38,8 +38,6 @@ add_executable(anchorwave
         src/util/myutil.h
         src/util/nucleotideCodeSubstitutionMatrix.cpp
         src/util/nucleotideCodeSubstitutionMatrix.h
-        src/util/parameters.cpp
-        src/util/parameters.h
         main.cpp
         src/model/variant.cpp
         src/model/variant.h
@@ -257,4 +255,3 @@ add_executable(anchorwave
 target_link_libraries(anchorwave gtest gtest_main ZLIB::ZLIB)
 
 install(TARGETS anchorwave DESTINATION bin)
-install(FILES configure DESTINATION bin)

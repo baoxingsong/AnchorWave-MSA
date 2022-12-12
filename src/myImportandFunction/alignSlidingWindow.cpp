@@ -1790,7 +1790,7 @@ int64_t alignSlidingWindow_local_wfa2_v2(std::string &dna_q, std::string &dna_d,
 int64_t alignSlidingWindow(std::string &dna_q, std::string &dna_d, std::string &_alignment_q, std::string &_alignment_d,
                            const int64_t &slidingWindowSize, const int32_t &wfaSize, const int32_t &matchingScore,
                            const int32_t &mismatchingPenalty, const int32_t &openGapPenalty1, const int32_t &extendGapPenalty1, const int32_t &openGapPenalty2, const int32_t &extendGapPenalty2,
-                           const int32_t &min_wavefront_length, const int32_t &max_distance_threshold, const Scorei &m, std::map<std::string, std::string> &parameters) {
+                           const int32_t &min_wavefront_length, const int32_t &max_distance_threshold, const Scorei &m) {
     return alignSlidingWindow_local_wfa2_v2(dna_q, dna_d, _alignment_q, _alignment_d, slidingWindowSize, wfaSize, matchingScore,
                                             mismatchingPenalty, openGapPenalty1, extendGapPenalty1, openGapPenalty2, extendGapPenalty2,
                                             min_wavefront_length, max_distance_threshold, m);
@@ -1835,7 +1835,7 @@ int64_t alignSlidingWindowNW(std::string &dna_q, std::string &dna_d, std::string
 int64_t alignSlidingWindow(std::string &dna_ref1, std::string &dna_ref2, std::string &dna_query, std::string &_alignment_ref1, std::string &_alignment_ref2, std::string &_alignment_query,
                            const int64_t &slidingWindowSize, const int32_t &wfaSize, const int32_t &matchingScore,
                            const int32_t &mismatchingPenalty, const int32_t &openGapPenalty1, const int32_t &extendGapPenalty1, const int32_t &openGapPenalty2, const int32_t &extendGapPenalty2,
-                           const int32_t &min_wavefront_length, const int32_t &max_distance_threshold, const Scorei &m, std::map<std::string, std::string> &parameters) {
+                           const int32_t &min_wavefront_length, const int32_t &max_distance_threshold, const Scorei &m) {
 
     return alignSlidingWindow_local_wfa2_v2(dna_query, dna_ref2, _alignment_query, _alignment_ref2, slidingWindowSize, wfaSize, matchingScore,
                                             mismatchingPenalty, openGapPenalty1, extendGapPenalty1, openGapPenalty2, extendGapPenalty2,

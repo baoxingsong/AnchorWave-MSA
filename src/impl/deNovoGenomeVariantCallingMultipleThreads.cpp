@@ -17,7 +17,7 @@ void genomeAlignmentSingleThread(std::vector<AlignmentMatch> alignmentMatchs,
                                  const int32_t openGapPenalty1, const int32_t extendGapPenalty1,
                                  const int32_t openGapPenalty2, const int32_t extendGapPenalty2,
                                  const int32_t min_wavefront_length, const int32_t max_distance_threshold,
-                                 std::atomic_int &number_of_runing_threads, std::map<std::string, std::string> parameters) {
+                                 std::atomic_int &number_of_runing_threads) {
 
     Scorei m(matchingScore, mismatchingPenalty);
 
@@ -95,7 +95,7 @@ void genomeAlignmentSingleThread(std::vector<AlignmentMatch> alignmentMatchs,
                     std::string _alignment_d;
 //                    std::cout << "line 78" << std::endl;
                     int64_t thiScore = alignSlidingWindow(querySeq, refSeq, _alignment_q, _alignment_d, widownWidth, wfaSize, matchingScore, mismatchingPenalty, openGapPenalty1, extendGapPenalty1, openGapPenalty2, extendGapPenalty2, min_wavefront_length, max_distance_threshold,
-                                                          m, parameters);
+                                                          m);
                     //                  std::cout << " line 80" << std::endl;
                     if (checkResult) {
                         std::string tempd;
@@ -147,7 +147,7 @@ void genomeAlignmentSingleThread(std::vector<AlignmentMatch> alignmentMatchs,
                     std::string _alignment_d;
 //                    std::cout << "line 126" << std::endl;
                     int64_t thiScore = alignSlidingWindow(querySeq, refSeq, _alignment_q, _alignment_d, widownWidth, wfaSize2, matchingScore, mismatchingPenalty, openGapPenalty1, extendGapPenalty1, openGapPenalty2, extendGapPenalty2, min_wavefront_length, max_distance_threshold,
-                                                          m, parameters);
+                                                          m);
                     //                  std::cout << "line 128" << std::endl;
                     if (checkResult) {
                         std::string tempd;
@@ -283,7 +283,7 @@ void genomeAlignmentSingleThread(std::vector<AlignmentMatch> alignmentMatchs,
                     std::string _alignment_d;
 //                    std::cout << "line 288" << std::endl;
                     int64_t thiScore = alignSlidingWindow(querySeq, refSeq, _alignment_q, _alignment_d, widownWidth, wfaSize, matchingScore, mismatchingPenalty, openGapPenalty1, extendGapPenalty1, openGapPenalty2, extendGapPenalty2, min_wavefront_length, max_distance_threshold,
-                                                          m, parameters);
+                                                          m);
 //                    std::cout << "line 230" << std::endl;
 
                     if (checkResult) {
@@ -334,7 +334,7 @@ void genomeAlignmentSingleThread(std::vector<AlignmentMatch> alignmentMatchs,
                     std::string _alignment_d;
 //                    std::cout << refSeq << std::endl << querySeq << std::endl << "line 276" << std::endl;
                     int64_t thiScore = alignSlidingWindow(querySeq, refSeq, _alignment_q, _alignment_d, widownWidth, wfaSize2, matchingScore, mismatchingPenalty, openGapPenalty1, extendGapPenalty1, openGapPenalty2, extendGapPenalty2, min_wavefront_length, max_distance_threshold,
-                                                          m, parameters);
+                                                          m);
 
                     if (checkResult) {
                         std::string tempd;
@@ -413,7 +413,7 @@ void genomeAlignment(std::vector<std::vector<AlignmentMatch>> &alignmentMatchsMa
                      const int32_t &openGapPenalty2, const int32_t &extendGapPenalty2,
                      int32_t &seed_window_size, const int32_t &mini_cns_score, const int32_t &step_size,
                      const int32_t &matrix_boundary_distance, const int32_t &scoreThreshold, const int32_t &w, const int32_t &xDrop,
-                     const int32_t &min_wavefront_length, const int32_t &max_distance_threshold, const int &maxThread, std::map<std::string, std::string> &parameters) {
+                     const int32_t &min_wavefront_length, const int32_t &max_distance_threshold, const int &maxThread) {
 
 
     bool outPutMaf = false;
@@ -495,7 +495,7 @@ void genomeAlignment(std::vector<std::vector<AlignmentMatch>> &alignmentMatchsMa
                               widownWidth, wfaSize, wfaSize2, matchingScore, mismatchingPenalty,
                               openGapPenalty1, extendGapPenalty1,
                               openGapPenalty2, extendGapPenalty2,
-                              min_wavefront_length, max_distance_threshold, std::ref(number_of_runing_threads), parameters);
+                              min_wavefront_length, max_distance_threshold, std::ref(number_of_runing_threads));
                 ++number_of_runing_threads;
                 t.detach();
                 isThisThreadUnrun = false;
@@ -1159,8 +1159,7 @@ void genomeAlignmentAndVariantCallingSingleThread(
         const int32_t widownWidth, const int32_t wfaSize, const int32_t wfaSize2,
         const int32_t matchingScore, const int32_t mismatchingPenalty,
         const int32_t openGapPenalty1, const int32_t extendGapPenalty1, const int32_t openGapPenalty2, const int32_t extendGapPenalty2,
-        const int32_t min_wavefront_length, const int32_t max_distance_threshold, std::atomic_int &number_of_runing_threads,
-        std::map<std::string, std::string> parameters) {
+        const int32_t min_wavefront_length, const int32_t max_distance_threshold, std::atomic_int &number_of_runing_threads) {
 //    std::cout << "line 877" << std::endl;
 
     Scorei m(matchingScore, mismatchingPenalty);
@@ -1250,8 +1249,7 @@ void genomeAlignmentAndVariantCallingSingleThread(
                 std::string _alignment_q;
                 std::string _alignment_d;
 
-                int64_t thiScore = alignSlidingWindow(querySeq, refSeq, _alignment_q, _alignment_d, widownWidth, wfaSize, matchingScore, mismatchingPenalty, openGapPenalty1, extendGapPenalty1, openGapPenalty2, extendGapPenalty2, min_wavefront_length, max_distance_threshold, m,
-                                                      parameters);
+                int64_t thiScore = alignSlidingWindow(querySeq, refSeq, _alignment_q, _alignment_d, widownWidth, wfaSize, matchingScore, mismatchingPenalty, openGapPenalty1, extendGapPenalty1, openGapPenalty2, extendGapPenalty2, min_wavefront_length, max_distance_threshold, m);
                 if (checkResult) {
                     std::string tempd;
                     std::string tempq;
@@ -1352,8 +1350,7 @@ void genomeAlignmentAndVariantCallingSingleThread(
                 std::string _alignment_q;
                 std::string _alignment_d;
 
-                int64_t thiScore = alignSlidingWindow(querySeq, refSeq, _alignment_q, _alignment_d, widownWidth, wfaSize, matchingScore, mismatchingPenalty, openGapPenalty1, extendGapPenalty1, openGapPenalty2, extendGapPenalty2, min_wavefront_length, max_distance_threshold, m,
-                                                      parameters);
+                int64_t thiScore = alignSlidingWindow(querySeq, refSeq, _alignment_q, _alignment_d, widownWidth, wfaSize, matchingScore, mismatchingPenalty, openGapPenalty1, extendGapPenalty1, openGapPenalty2, extendGapPenalty2, min_wavefront_length, max_distance_threshold, m);
                 if (checkResult) {
                     std::string tempd;
                     std::string tempq;
@@ -1464,8 +1461,7 @@ void genomeAlignmentAndVariantCallingSingleThread(
             std::string _alignment_q;
             std::string _alignment_d;
 
-            int64_t thiScore = alignSlidingWindow(querySeq, refSeq, _alignment_q, _alignment_d, widownWidth, wfaSize2, matchingScore, mismatchingPenalty, openGapPenalty1, extendGapPenalty1, openGapPenalty2, extendGapPenalty2, min_wavefront_length, max_distance_threshold, m,
-                                                  parameters);
+            int64_t thiScore = alignSlidingWindow(querySeq, refSeq, _alignment_q, _alignment_d, widownWidth, wfaSize2, matchingScore, mismatchingPenalty, openGapPenalty1, extendGapPenalty1, openGapPenalty2, extendGapPenalty2, min_wavefront_length, max_distance_threshold, m);
             if (checkResult) {
                 std::string tempd;
                 std::string tempq;
@@ -1567,8 +1563,7 @@ void genomeAlignmentAndVariantCallingSingleThread(
             std::string _alignment_q;
             std::string _alignment_d;
 
-            int64_t thiScore = alignSlidingWindow(querySeq, refSeq, _alignment_q, _alignment_d, widownWidth, wfaSize, matchingScore, mismatchingPenalty, openGapPenalty1, extendGapPenalty1, openGapPenalty2, extendGapPenalty2, min_wavefront_length, max_distance_threshold, m,
-                                                  parameters);
+            int64_t thiScore = alignSlidingWindow(querySeq, refSeq, _alignment_q, _alignment_d, widownWidth, wfaSize, matchingScore, mismatchingPenalty, openGapPenalty1, extendGapPenalty1, openGapPenalty2, extendGapPenalty2, min_wavefront_length, max_distance_threshold, m);
             if (checkResult) {
                 std::string tempd;
                 std::string tempq;
@@ -1676,7 +1671,7 @@ void genomeAlignmentAndVariantCalling(std::map<std::string, std::vector<Alignmen
                                       const std::string &outPutFragedFile, /*std::string & outPutLocalalignmentFile, */const int32_t &matchingScore, const int32_t &mismatchingPenalty,
                                       const int32_t &openGapPenalty1, const int32_t &extendGapPenalty1, const int32_t &openGapPenalty2, const int32_t &extendGapPenalty2,
                                       const int32_t &min_wavefront_length, const int32_t &max_distance_threshold, int32_t &seed_window_size, const int32_t &mini_cns_score, const int32_t &step_size,
-                                      const int32_t &matrix_boundary_distance, const int32_t &scoreThreshold, const int32_t &w, const int32_t &xDrop, const int &maxThread, std::map<std::string, std::string> &parameters) {
+                                      const int32_t &matrix_boundary_distance, const int32_t &scoreThreshold, const int32_t &w, const int32_t &xDrop, const int &maxThread) {
 
 //    Scorei m(matchingScore, mismatchingPenalty);
 
@@ -1780,7 +1775,7 @@ void genomeAlignmentAndVariantCalling(std::map<std::string, std::vector<Alignmen
                                   refFileName, queryFileName, outPutMaf, outPutVcf, outPutFraged, std::ref(omaffile),
                                   std::ref(ovcffile), std::ref(ofragfile), widownWidth, wfaSize, wfaSize2, matchingScore, mismatchingPenalty,
                                   openGapPenalty1, extendGapPenalty1, openGapPenalty2, extendGapPenalty2,
-                                  min_wavefront_length, max_distance_threshold, std::ref(number_of_runing_threads), parameters);
+                                  min_wavefront_length, max_distance_threshold, std::ref(number_of_runing_threads));
                     ++number_of_runing_threads;
                     t.detach();
                     isThisThreadUnrun = false;

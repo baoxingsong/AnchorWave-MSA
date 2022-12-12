@@ -567,7 +567,6 @@ void generateMsa(std::vector<BlocksForMsa> &ref1Ref2BlocksForMsas, std::vector<B
 
 
         Scorei m(matchingScore, mismatchingPenalty);
-        std::map<std::string, std::string> parameters;
         std::string alin0 = "";
         std::string alin1 = "";
         std::string alin2 = "";
@@ -596,7 +595,7 @@ void generateMsa(std::vector<BlocksForMsa> &ref1Ref2BlocksForMsas, std::vector<B
                 int64_t thiScore = alignSlidingWindow(_dna_query, _dna_ref2, _alignment_query, _alignment_ref2,
                                                       slidingWindowSize, wfaSize, matchingScore, mismatchingPenalty,
                                                       open_gap_penalty1, extend_gap_penalty1, open_gap_penalty2,
-                                                      extend_gap_penalty2, min_wavefront_length, max_distance_threshold, m, parameters);
+                                                      extend_gap_penalty2, min_wavefront_length, max_distance_threshold, m);
 
                 thiScore = alignSlidingWindow(_alignment_ref2, _alignment_query, _dna_ref1, _alignment_ref1, slidingWindowSize, matchingScore, mismatchingPenalty,
                                               open_gap_penalty1, extend_gap_penalty1, open_gap_penalty2,

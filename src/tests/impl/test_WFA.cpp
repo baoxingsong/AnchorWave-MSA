@@ -420,13 +420,12 @@ TEST(alignSlidingWindow, c2) {
     int32_t min_wavefront_length = 10000;
     int32_t max_distance_threshold = 10000;
     Scorei m(matchingScore, mismatchingPenalty);
-    std::map<std::string, std::string> parameters;
     for (int i=0; i<200; i++) {
         std::cout << "line 325" << std::endl;
         int64_t thiScore = alignSlidingWindow(querySeq, refSeq, _alignment_q, _alignment_d,
                                               slidingWindowSize, wfaSize, matchingScore, mismatchingPenalty,
                                               open_gap_penalty1, extend_gap_penalty1, open_gap_penalty2,
-                                              extend_gap_penalty2, min_wavefront_length, max_distance_threshold, m, parameters);
+                                              extend_gap_penalty2, min_wavefront_length, max_distance_threshold, m);
         std::cout << _alignment_d << std::endl;
         std::cout << _alignment_q << std::endl;
         std::cout << thiScore << std::endl;
@@ -465,12 +464,11 @@ TEST(MSA, c1) {
     int32_t min_wavefront_length = 10000;
     int32_t max_distance_threshold = 10000;
     Scorei m(matchingScore, mismatchingPenalty);
-    std::map<std::string, std::string> parameters;
     std::cout << "line 438" << std::endl;
     int64_t thiScore = alignSlidingWindow(_dna_query, _dna_ref2, _alignment_query, _alignment_ref2,
                                           slidingWindowSize, wfaSize, matchingScore, mismatchingPenalty,
                                           open_gap_penalty1, extend_gap_penalty1, open_gap_penalty2,
-                                          extend_gap_penalty2, min_wavefront_length, max_distance_threshold, m, parameters);
+                                          extend_gap_penalty2, min_wavefront_length, max_distance_threshold, m);
     std::cout << "line 443\t" << thiScore << std::endl;
     std::cout << _alignment_ref2 << std::endl;
     std::cout << _alignment_query << std::endl;
@@ -513,12 +511,11 @@ TEST(alignSlidingWindow, c3) {
     int32_t min_wavefront_length = 10000;
     int32_t max_distance_threshold = 10000;
     Scorei m(matchingScore, mismatchingPenalty);
-    std::map<std::string, std::string> parameters;
     std::cout << "line 325" << std::endl;
     int64_t thiScore = alignSlidingWindow(querySeq, refSeq, _alignment_q, _alignment_d,
                                           slidingWindowSize, wfaSize, matchingScore, mismatchingPenalty,
                                           open_gap_penalty1, extend_gap_penalty1, open_gap_penalty2,
-                                          extend_gap_penalty2, min_wavefront_length, max_distance_threshold, m, parameters);
+                                          extend_gap_penalty2, min_wavefront_length, max_distance_threshold, m);
     std::cout << _alignment_d << std::endl;
     std::cout << _alignment_q << std::endl;
     std::cout << thiScore << std::endl;

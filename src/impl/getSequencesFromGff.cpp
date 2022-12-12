@@ -6,7 +6,7 @@
 #include "CheckAndUpdateTranscriptsEnds.h"
 
 void getSequences(const std::string &gffFile, const std::string &genomeFile,
-                  const std::string &outputCdsSequences, std::map<std::string, std::string> &parameters, const int &minExon, const bool &exonModel) {
+                  const std::string &outputCdsSequences, const int &minExon, const bool &exonModel) {
     NucleotideCodeSubstitutionMatrix nucleotideCodeSubstitutionMatrix;
 
     std::map<std::string, std::string> genome;
