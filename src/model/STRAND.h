@@ -31,5 +31,4 @@ enum STRAND {
 
 std::ostream &operator<<(std::ostream &out, const STRAND value);
 
-
 #endif //ANNOTATIONLIFTOVER_STRAND_H

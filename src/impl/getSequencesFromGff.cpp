@@ -9,7 +9,7 @@ void getSequences(const std::string &gffFile, const std::string &genomeFile,
                   const std::string &outputCdsSequences, const int &minExon, const bool &exonModel) {
     NucleotideCodeSubstitutionMatrix nucleotideCodeSubstitutionMatrix;
 
-    std::map<std::string, std::string> genome;
+    std::map<std::string, std::tuple<std::string, long, long, int> > genome;
     readFastaFile(genomeFile, genome);
 
     std::map<std::string, std::vector<Transcript> > transcriptHashSet;
@@ -25,17 +25,10 @@ void getSequences(const std::string &gffFile, const std::string &genomeFile,
             toRemoveChrs.insert(it->first);
         }
     }
+
     for (std::string chr: toRemoveChrs) {
         transcriptHashSet.erase(chr);
     }
-
-
-    if (exonModel) {
-
-    } else {
-        // CheckAndUpdateTranscriptsEnds(transcriptHashSet, genome, nucleotideCodeSubstitutionMatrix);
-    }
-//    CheckAndUpdateTranscriptsEnds( transcriptHashSet, genome, nucleotideCodeSubstitutionMatrix);
 
     std::map<std::string, std::string> transcript_to_gene_map;
     get_transcript_to_gene_map_from_gff(gffFile, transcript_to_gene_map);

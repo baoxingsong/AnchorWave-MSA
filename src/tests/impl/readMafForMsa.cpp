@@ -43,8 +43,6 @@ TEST(mafToSdi, c1){
 }
 //31m22s372ms
 
-
-
 TEST(mafToSdi, c2){
     std::string mafFile = "/media/bs674/ppi8t/ZeaMSA/sorghum_coix/coix_sorghum.maf";
     std::vector<BlocksForMsa> ref1Ref2BlocksForMsas;
@@ -70,10 +68,6 @@ TEST(mafToSdi, c2){
 
     ASSERT_EQ(0, 0);
 }
-
-
-
-
 
 TEST(mafToSdi, c3){
     std::string mafFile = "/media/bs674/ppi8t/ZeaMSA/Tripsacum_Zea_ancestral.maf";
@@ -101,10 +95,6 @@ TEST(mafToSdi, c3){
     ASSERT_EQ(0, 0);
 }
 
-
-
-
-
 TEST(nostructureVariation, c1){
     std::string mafFile = "/media/bs674/ppi8t/ZeaMSA/debug/bur_tair.maf";
     std::vector<BlocksForMsa> ref1Ref2BlocksForMsas;
@@ -130,9 +120,6 @@ TEST(nostructureVariation, c1){
 
     ASSERT_EQ(0, 0);
 }
-
-
-
 
 TEST(ancestralNoInversion, c1){
     std::string mafFile = "/media/bs674/ppi8t/ZeaMSA/debug/bur_0_chr1_inversion_tair.maf";
@@ -160,7 +147,6 @@ TEST(ancestralNoInversion, c1){
     ASSERT_EQ(0, 0);
 }
 
-
 TEST(ancestralTwoInversion, c1){
     std::string mafFile = "/media/bs674/ppi8t/ZeaMSA/debug/bur_0_chr1_inversion_tair.maf";
     std::vector<BlocksForMsa> ref1Ref2BlocksForMsas;
@@ -186,7 +172,6 @@ TEST(ancestralTwoInversion, c1){
 
     ASSERT_EQ(0, 0);
 }
-
 
 TEST(ref2differentStrand, c1){
     std::string mafFile = "/media/bs674/ppi8t/ZeaMSA/debug/burrc_tair.maf";
@@ -214,10 +199,6 @@ TEST(ref2differentStrand, c1){
     ASSERT_EQ(0, 0);
 }
 
-
-
-
-
 TEST(ref2querydifferentStrand, c1){
     std::string mafFile = "/media/bs674/ppi8t/ZeaMSA/debug/burrc_tair.maf";
     std::vector<BlocksForMsa> ref1Ref2BlocksForMsas;
@@ -243,9 +224,6 @@ TEST(ref2querydifferentStrand, c1){
 
     ASSERT_EQ(0, 0);
 }
-
-
-
 
 TEST(ref2querydifferentStrandInversion, c1){
     std::string mafFile = "/media/bs674/ppi8t/ZeaMSA/debug/bur_0_chr1_inversion_rc_tair.maf";
@@ -273,7 +251,6 @@ TEST(ref2querydifferentStrandInversion, c1){
     ASSERT_EQ(0, 0);
 }
 
-
 TEST(ref2querydifferentStrandInversion, c2){
     std::string mafFile = "/media/bs674/ppi8t/ZeaMSA/debug/bur_0_chr1_inversion_rc_bur.maf";
     std::vector<BlocksForMsa> ref1Ref2BlocksForMsas;
@@ -299,8 +276,6 @@ TEST(ref2querydifferentStrandInversion, c2){
 
     ASSERT_EQ(0, 0);
 }
-
-
 
 TEST(ref2queryInversion, c2){
     std::string mafFile = "/media/bs674/ppi8t/ZeaMSA/debug/bur_iv2_tair.maf";
@@ -328,9 +303,6 @@ TEST(ref2queryInversion, c2){
     ASSERT_EQ(0, 0);
 }
 
-
-
-
 TEST(ref2queryInversion, c3){
     std::string mafFile = "/media/bs674/ppi8t/ZeaMSA/debug/bur_iv2_bur.maf";
     std::vector<BlocksForMsa> ref1Ref2BlocksForMsas;
@@ -356,8 +328,6 @@ TEST(ref2queryInversion, c3){
 
     ASSERT_EQ(0, 0);
 }
-
-
 
 TEST(ref2queryInversion, c4){
     std::string mafFile = "/media/bs674/ppi8t/ZeaMSA/debug/buriv2rc_bur.maf";
@@ -385,7 +355,6 @@ TEST(ref2queryInversion, c4){
     ASSERT_EQ(0, 0);
 }
 
-
 TEST(ref2queryInversion, c5){
     std::string mafFile = "/media/bs674/ppi8t/ZeaMSA/debug/bur_bur_iv2.maf";
     std::vector<BlocksForMsa> ref1Ref2BlocksForMsas;
@@ -411,7 +380,6 @@ TEST(ref2queryInversion, c5){
 
     ASSERT_EQ(0, 0);
 }
-
 
 TEST(ref2queryInversion, c6){
     std::string mafFile = "/media/bs674/ppi8t/ZeaMSA/debug/bur_buriv2rc.maf";

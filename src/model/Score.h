@@ -26,13 +26,8 @@ Reading the score from configure and provide score query functions
 #define WSA_SCORE_H
 
 #include <map>
-#include <string>
 #include <iostream>
-#include <sstream>
 #include <fstream>
-#include <cstdlib>
-#include <cassert>
-#include <utility>
 
 class Score {
 private:

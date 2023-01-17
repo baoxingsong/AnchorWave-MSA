@@ -11,10 +11,11 @@
 #include <map>
 #include "../model/model.h"
 #include <sstream>
+#include <unistd.h>
+#include <sys/time.h>
 
-void readFastaFile(const std::string &filePath, std::map<std::string, std::string> &sequences);
+void readFastaFile(const std::string &filePath, std::map<std::string, std::tuple<std::string, long, long, int> > &map);
 
-//void readFastaFileWorkWithIUPACcode( const std::string& filePath, std::map<std::string, Fasta>& sequences);
 void readFastaFileWorkWithIUPACcode(const std::string &filePath, std::map<std::string, std::string> &sequences);
 
 #endif //ANNOTATIONLIFTOVER_READFASTAFILE_H

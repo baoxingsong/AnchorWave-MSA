@@ -49,25 +49,17 @@ int main(int argc, char **argv) {
 
     if (program.compare("gff2seq") == 0) {
         return gff2seq(--argc, ++argv);
-    } else if (program.compare("proali") == 0) {
+    }
+    else if (program.compare("proali") == 0) {
         return proportationalAlignment(--argc, ++argv);
-    } else if (program.compare("genoAli") == 0) {
+    }
+    else if (program.compare("genoAli") == 0) {
         return genomeAlignment(--argc, ++argv);
-    } else if (program.compare("triAnc") == 0) {
-        return tripleAncestral(--argc, ++argv);
-    } else if (program.compare("maf2vcf") == 0) {
-        return maf2vcf(--argc, ++argv);
-    } else if (program.compare("sam2maf") == 0) {
-        return sam2maf(--argc, ++argv);
-    } else if (program.compare("sam2vcf") == 0) {
-        return sam2vcf(--argc, ++argv);
-    } else if (program.compare("evaluateTEAlignment") == 0) {
-        return evaluateTEAlignment(--argc, ++argv);
-    } else if (program.compare("sdiToMaf") == 0) {
-        return sdiToMaf(--argc, ++argv);
-    } else if (program.compare("ali") == 0) {
+    }
+    else if (program.compare("ali") == 0) {
         return ali(--argc, ++argv);
-    } else {
+    }
+    else {
         usage();
     }
 

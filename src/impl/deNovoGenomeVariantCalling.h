@@ -10,7 +10,6 @@
 #include "../util/util.h"
 #include "./readFastaFile.h"
 #include "../myImportandFunction/myImportantFunction.h"
-#include "./SequenceCharToUInt8.h"
 #include <iomanip>
 
 #include <atomic>
@@ -23,8 +22,8 @@
 
 void genomeAlignmentAndVariantCalling(std::map<std::string, std::vector<AlignmentMatch>> &alignmentMatchsMap,
                                       const std::string &refFastaFilePath, const std::string &targetFastaFilePath,
-                                      const int32_t &widownWidth, const int32_t &wfaSize, const int32_t &wfaSize2, const std::string &outPutMafFile, const std::string &outPutVcfFile,
-                                      const std::string &outPutFragedFile, /*std::string & outPutLocalalignmentFile,*/ const int32_t &matchingScore,
+                                      const int32_t &widownWidth, const int32_t &wfaSize, const int32_t &wfaSize2, const std::string &outPutMafFile,
+                                      const std::string &outPutFragedFile, const int32_t &matchingScore,
                                       const int32_t &mismatchingPenalty, const int32_t &openGapPenalty1, const int32_t &extendGapPenalty1,
                                       const int32_t &openGapPenalty2, const int32_t &extendGapPenalty2,
                                       const int32_t &min_wavefront_length, const int32_t &max_distance_threshold,
@@ -34,7 +33,7 @@ void genomeAlignmentAndVariantCalling(std::map<std::string, std::vector<Alignmen
 void genomeAlignment(std::vector<std::vector<AlignmentMatch>> &alignmentMatchsMap,
                      const std::string &refFastaFilePath, const std::string &targetFastaFilePath,
                      const int32_t &widownWidth, const int32_t &wfaSize, const int32_t &wfaSize2,
-                     const std::string &outPutMafFile, const std::string &outPutFragedFile, /*std::string & outPutLocalalignmentFile,*/
+                     const std::string &outPutMafFile, const std::string &outPutFragedFile,
                      const int32_t &matchingScore, const int32_t &mismatchingPenalty, const int32_t &openGapPenalty1,
                      const int32_t &extendGapPenalty1,
                      const int32_t &openGapPenalty2, const int32_t &extendGapPenalty2, int32_t &seed_window_size, const int32_t &mini_cns_score, const int32_t &step_size,

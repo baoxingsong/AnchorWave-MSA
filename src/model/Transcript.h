@@ -22,12 +22,10 @@
 #ifndef ANNOTATIONLIFTOVER_TRANSCRIPT_H
 #define ANNOTATIONLIFTOVER_TRANSCRIPT_H
 
-#include <string>
 #include "GenomeBasicFeature.h"
 #include "STRAND.h"
 #include <vector>
 #include <set>
-#include <map>
 #include <algorithm>
 #include <limits>
 

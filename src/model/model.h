@@ -24,23 +24,17 @@ the methods under this folder does not rely on any code from other folders
 #ifndef _MODEL_H
 #define _MODEL_H
 
-
+#include "AlignmentBlock.h"
+#include "AlignmentMatch.h"
+#include "BlocksForMsa.h"
 #include "FirstLastList.h"
 #include "Gene.h"
+#include <regex>
+#include "Range.h"
+#include "Score.h"
 #include "STRAND.h"
 #include "Transcript.h"
-#include "variant.h"
-#include "AlignmentMatch.h"
-#include "Matrix.h"
-#include "PairedSimilarFragment.h"
-#include "Score.h"
-#include "Seed.h"
-#include "AlignmentBlock.h"
-#include "BlocksForMsa.h"
-#include <regex>
-#include "PhylogeneticTreeNode.h"
-#include "PhylogeneticTree.h"
-#include "Range.h"
 #include "TwoVectorsOfRanges.h"
+#include "variant.h"
 
 #endif

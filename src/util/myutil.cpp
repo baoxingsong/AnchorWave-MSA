@@ -14,11 +14,8 @@
 // =====================================================================================
 
 
-#include <string>
-#include <vector>
-#include <regex>
+
 #include "myutil.h"
-#include <stdlib.h>
 
 #ifdef __unix
 
@@ -52,8 +49,8 @@ int32_t min(const int32_t &a, const int32_t &b) {
 
 void splitCIGAR(std::string str, std::vector <std::string> &cigarElems) {
     while (str.length() > 0) {
-        int p_d = str.find_first_of("1234567890");
-        int p_c = str.find_first_of("MIDNSHPX=");
+        size_t p_d = str.find_first_of("1234567890");
+        size_t p_c = str.find_first_of("MIDNSHPX=");
 
         if(p_c > p_d) {
             std::string s = str.substr(p_d, p_c + 1);

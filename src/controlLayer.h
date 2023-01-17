@@ -34,18 +34,6 @@ int genomeAlignment(int argc, char **argv);
 
 int proportationalAlignment(int argc, char **argv);
 
-int tripleAncestral(int argc, char **argv);
-
-int maf2vcf(int argc, char **argv);
-
-int sam2maf(int argc, char **argv);
-
-int sam2vcf(int argc, char **argv);
-
-int evaluateTEAlignment(int argc, char **argv);
-
-int sdiToMaf(int argc, char **argv);
-
 int ali(int argc, char **argv);
 
 #endif

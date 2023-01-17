@@ -102,7 +102,7 @@ struct compare_gene {
         if (gene1.getChromeSomeName().compare(gene2.getChromeSomeName()) == 0) {
             return gene1.getStart() < gene2.getStart();
         } else {
-            return (chr1 < chr1);
+            return (chr1 < chr2);
         }
     }
 };

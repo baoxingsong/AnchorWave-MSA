@@ -110,7 +110,6 @@ void gffToMaf(std::string & fastaFilePath,  std::string & gffFile, std::string &
     omaffile.close();
 }
 
-
 TEST(gffToMaf, c1){ // just to make sure that every line has been analysed
     std::string fastaFilePath = "/media/bs674/ppi8t/testWAF/maizeTeAlignment/Zea_mays.AGPv4.dna.toplevel.fa";
     std::string newFastaFilePath = "/media/bs674/ppi8t/testWAF/maizeTeAlignment/Zea_mays.AGPv4.dna.toplevel_withTe_removed.fa";
@@ -119,8 +118,6 @@ TEST(gffToMaf, c1){ // just to make sure that every line has been analysed
     gffToMaf(fastaFilePath, gffFile, outfile, newFastaFilePath );
     ASSERT_EQ(0, 0);
 }
-
-
 
 TEST(gff2Vcf, c1){ // just to make sure that every line has been analysed
     std::vector<std::string> chrs;
@@ -154,9 +151,6 @@ TEST(gff2Vcf, c1){ // just to make sure that every line has been analysed
     ASSERT_EQ(0, 0);
 }
 
-
-
-
 TEST(CompareWithVcf, c1){ // just to make sure that every line has been analysed
     std::vector<std::string> chrs;
     chrs.push_back("10");
@@ -174,7 +168,6 @@ TEST(CompareWithVcf, c1){ // just to make sure that every line has been analysed
     readFastaFile( fastaFilePath, referenceGenome);
     std::cout << "genome reading done" << std::endl;
 
-
     std::ofstream ofile2;
     ofile2.open("/media/bs674/ppi8t/testWAF/maizeTeAlignment/lm23/gffTovariant.vcf");
 
@@ -184,7 +177,6 @@ TEST(CompareWithVcf, c1){ // just to make sure that every line has been analysed
         ofile.open("/media/bs674/ppi8t/testWAF/maizeTeAlignment/lm23/" + chr + "_subtract.vcf.errors");
         std::string vcfFilePath = "/media/bs674/ppi8t/testWAF/maizeTeAlignment/lm23/subtract.vcf";
 
-
         std::map< std::string, std::vector<Variant>> variants;
         vcfToVariant(vcfFilePath, variants, chr );
         std::cout << "vcf to variant done" << std::endl;
@@ -192,7 +184,6 @@ TEST(CompareWithVcf, c1){ // just to make sure that every line has been analysed
         std::string gffFile = "/media/bs674/ppi8t/testWAF/maizeTeAlignment/B73V4.pseudomolecule.ltrharvest.contignames.gff3.contigpositions.gff3";
         std::vector<Variant> benchmarkVariants;
         gffToVariant(fastaFilePath,  gffFile, chr, benchmarkVariants );
-
 
         std::cout << "gff to variant done" << std::endl;
         for(  Variant v : benchmarkVariants ){
@@ -208,4 +199,3 @@ TEST(CompareWithVcf, c1){ // just to make sure that every line has been analysed
     ofile2.close();
     ASSERT_EQ(0, 0);
 }
-

@@ -7,6 +7,7 @@
 #include <string>
 #include <iostream>
 #include <sstream>
+
 TEST(sequencesToKmerCountMatrix, c1){ // just to make sure that every line has been analysed
     std::string fastaFilePath = "/home/bs674/seq.fa";
     int8_t kmer_size = 12;
@@ -78,9 +79,7 @@ TEST(sequencesToKmeruUpgma, c1){ // just to make sure that every line has been a
         std::cout<< std::endl;
     }
 
-
     using namespace std;
-
 
     // let's start with empty DynMatrix:
     ClusterNode* head = NULL;
@@ -88,8 +87,8 @@ TEST(sequencesToKmeruUpgma, c1){ // just to make sure that every line has been a
 
     for (string seqName : seqNames){
         addCluster(head, tail, seqName);
-
     }
+
     ClusterNode *node = head;
     for (int i=0; i<seqNames.size(); i++) {
         DistanceNode *newDistance = node->row;
@@ -119,7 +118,6 @@ TEST(sequencesToKmeruUpgma, c1){ // just to make sure that every line has been a
     // Print out name of last node
     if (head) {
         cout  << head->name <<endl;
-
     }
     // BONUS (optional): print the tree in a nice way
 

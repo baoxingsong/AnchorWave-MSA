@@ -15,11 +15,7 @@
  * =====================================================================================
  */
 
-#include <set>
-#include <map>
-#include <vector>
 #include "nucleotideCodeSubstitutionMatrix.h"
-#include <regex>
 
 
 NucleotideCodeSubstitutionMatrix::NucleotideCodeSubstitutionMatrix(const int32_t &matchingScore, const int32_t &mismatchingPenalty) {

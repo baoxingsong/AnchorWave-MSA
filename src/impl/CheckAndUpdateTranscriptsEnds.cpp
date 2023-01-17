@@ -7,7 +7,6 @@
 
 bool ifEndWithStopCodon(std::string &cdsSequence, NucleotideCodeSubstitutionMatrix &nucleotideCodeSubstitutionMatrix) {
     std::string threeNaInFrame = cdsSequence.substr(cdsSequence.length() - 3, 3);
-    //std::cout << "472 " << threeNaInFrame << std::endl << cdsSequence << std::endl;
     return nucleotideCodeSubstitutionMatrix.getPossibleStopCodons().find(threeNaInFrame)
            != nucleotideCodeSubstitutionMatrix.getPossibleStopCodons().end();
 }
@@ -32,7 +31,7 @@ void updateTranscriptEnds(Transcript &transcript) {
     }
 }
 
-void CheckAndUpdateTranscriptsEnds(std::map<std::string, Transcript> &transcripts, std::map<std::string, std::string> &sequences,
+void CheckAndUpdateTranscriptsEnds(std::map<std::string, Transcript> &transcripts, std::map<std::string, std::tuple<std::string, long, long, int> > &sequences,
                                    NucleotideCodeSubstitutionMatrix &nucleotideCodeSubstitutionMatrix) {
     size_t checkedNumber = 0;
     size_t caseNumber = 0;
@@ -56,7 +55,7 @@ void CheckAndUpdateTranscriptsEnds(std::map<std::string, Transcript> &transcript
     }
 }
 
-void CheckAndUpdateTranscriptsEnds(std::map<std::string, std::vector<Transcript> > &transcriptHashSet, std::map<std::string, std::string> &sequences,
+void CheckAndUpdateTranscriptsEnds(std::map<std::string, std::vector<Transcript> > &transcriptHashSet, std::map<std::string, std::tuple<std::string, long, long, int> > &sequences,
                                    NucleotideCodeSubstitutionMatrix &nucleotideCodeSubstitutionMatrix) {
     size_t checkedNumber = 0;
     size_t caseNumber = 0;
@@ -65,7 +64,6 @@ void CheckAndUpdateTranscriptsEnds(std::map<std::string, std::vector<Transcript>
         for (std::vector<Transcript>::iterator it1 = it->second.begin(); it1 != it->second.end(); ++it1) {
             checkedNumber++;
             TranscriptUpdateCdsInformation(*it1, sequences);
-//            checkOrfState( *it1, sequences, nucleotideCodeSubstitutionMatrix);
             std::string cdsSequenceString = it1->getCdsSequence();
             if (!(ifEndWithStopCodon(cdsSequenceString, nucleotideCodeSubstitutionMatrix))) {
                 ++caseNumber;

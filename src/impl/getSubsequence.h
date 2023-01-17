@@ -7,10 +7,24 @@
 
 #include "../model/model.h"
 #include "GetReverseComplementary.h"
+#include <unistd.h>
+#include <fcntl.h>
 
-std::string getSubsequence(std::map<std::string, std::string> &sequences, const std::string &seqName, const int &start, const int &end);
+std::string getSubsequence2(std::map<std::string, std::tuple<std::string, long, long, int> > &map, const std::string &seqName, const int &_start, const int &_end);
 
-std::string getSubsequence(std::map<std::string, std::string> &sequences, const std::string &seqName, const int &start, const int &end, const STRAND &strand);
+std::string getSubsequence3(std::map<std::string, std::tuple<std::string, long, long, int> > &map, int &fd, const std::string &seqName, const int &_start, const int &_end);
+
+char getCharByPos(std::map<std::string, std::tuple<std::string, long, long, int> > &map, const std::string &seqName, const int &_pos);
+
+std::string getSubsequence2(std::map<std::string, std::tuple<std::string, long, long, int> > &map, const std::string &seqName);
+
+std::string getSubsequence3(std::map<std::string, std::tuple<std::string, long, long, int> > &map, int &fd, const std::string &seqName);
+
+std::string getSubsequence3(std::map<std::string, std::tuple<std::string, long, long, int> > &map, int &fd, const std::string &seqName, const int &_start, const int &_end, const STRAND &strand);
+
+std::string getSubsequence2(std::map<std::string, std::tuple<std::string, long, long, int> > &map, const std::string &seqName, const int &_start, const int &_end, const STRAND &strand);
+
+size_t getSequenceSizeFromPath2(std::tuple<std::string, long, long, int> &t);
 
 std::string getSubsequence(const std::string &sequence, const int &_start, const int &_end);
 

@@ -21,6 +21,7 @@
 #include <string>
 #include <vector>
 #include <map>
+#include <regex>
 #include "nucleotideCodeSubstitutionMatrix.h"
 
 void split(const std::string &s, char &delim, std::vector<std::string> &elems);

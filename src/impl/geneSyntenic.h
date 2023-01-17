@@ -15,7 +15,6 @@ void longestPath(std::vector<AlignmentMatch> &pairedSimilarFragments, std::vecto
 
 void myAlignmentMatchSort(std::vector<AlignmentMatch> &pairedSimilarFragments, const double &penalty, const double &scoreThreshold, const bool &keepTandemDuplication, const bool &considerInversion);
 
-
 void myOrthologPairsSortQueryQuota(std::vector<AlignmentMatch> &pairedSimilarFragments);
 
 void myOrthologPairsSortQuota(std::vector<AlignmentMatch> &pairedSimilarFragments);
@@ -25,7 +24,5 @@ void longestPathQuotav2(std::vector<AlignmentMatch> pairedSimilarFragments, std:
                         double &INDEL_SCORE, double &GAP_OPEN_PENALTY,
                         double &MIN_ALIGNMENT_SCORE, const int &MAX_DIST_BETWEEN_MATCHES, int &refMaximumTimes, int &queryMaximumTimes,
                         double &calculateIndelDistance, bool withNovelAnchros);
-
-std::vector<PairedSimilarFragment> syntenic(std::vector<PairedSimilarFragment> &pairedSimilarFragments);
 
 #endif //PROALI_LONGESTPATH_H

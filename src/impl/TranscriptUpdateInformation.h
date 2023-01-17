@@ -5,9 +5,9 @@
 #ifndef ANNOTATIONLIFTOVER_TRANSCRIPTUPDATEINFORMATION_H
 #define ANNOTATIONLIFTOVER_TRANSCRIPTUPDATEINFORMATION_H
 
-#include "../model/model.h"
+#include "../model/Transcript.h"
 #include "getSubsequence.h"
 
-void TranscriptUpdateCdsInformation(Transcript &transcript, std::map<std::string, std::string> &genome);
+void TranscriptUpdateCdsInformation(Transcript &transcript, std::map<std::string, std::tuple<std::string, long, long, int> > &genome);
 
 #endif //ANNOTATIONLIFTOVER_TRANSCRIPTUPDATEINFORMATION_H

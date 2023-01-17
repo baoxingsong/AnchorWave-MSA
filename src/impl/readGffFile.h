@@ -5,7 +5,9 @@
 #ifndef ANNOTATIONLIFTOVER_READGFFFILE_H
 #define ANNOTATIONLIFTOVER_READGFFFILE_H
 
-#include "../model/model.h"
+#include "../model/Transcript.h"
+#include <iostream>
+#include <fstream>
 
 void get_transcript_to_gene_map_from_gff(const std::string &filePath, std::map<std::string, std::string> &transcript_to_gene_map);
 
