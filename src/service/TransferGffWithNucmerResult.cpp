@@ -74,7 +74,7 @@ void readSam(std::vector<AlignmentMatch> &alignmentMatchsMapT, std::ifstream &in
             queryStart = stoi(elems[3]);
             queryChr = elems[2];
 
-            if (queryChr.compare("*") != 0 && transcriptHashMap.find(elems[0]) != transcriptHashMap.end()) { // ignore those none mapping records
+            if (queryChr.compare("*") != 0 && transcriptHashMap.find(elems[0]) != transcriptHashMap.end() && queryGenome.find(queryChr) != queryGenome.end() ) { // ignore those none mapping records
                 databaseChr = transcriptHashMap[elems[0]].getChromeSomeName();
                 databaseStart = transcriptHashMap[elems[0]].getPStart();
                 databaseEnd = transcriptHashMap[elems[0]].getPEnd();
