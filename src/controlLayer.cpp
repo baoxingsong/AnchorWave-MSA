@@ -75,10 +75,10 @@ int genomeAlignment(int argc, char **argv) {
 //    double MIN_ALIGNMENT_SCORE = 3000; // to be optimized
     double MIN_ALIGNMENT_SCORE = 2;
     bool considerInversion = false;
-    int32_t wfaSize = 15000;
-    int32_t wfaSize2 = 50000;
-    int32_t wfaSize3 = 200000; // if the inter-anchor length is shorter than this value, stop trying to find new anchors
-    int64_t windowWidth = 38000;
+//    int32_t wfaSize = 15000;
+//    int32_t wfaSize2 = 50000;
+    int32_t wfaSize3 = 100000; // if the inter-anchor length is shorter than this value, stop trying to find new anchors
+    int64_t windowWidth = 100000;
     int expectedCopies = 1;
     double maximumSimilarity = 0.6; // the maximum simalarity between secondary hist the primary hit. If the second hit is too similary with primary hit, that is unwanted duplications
 
@@ -185,14 +185,6 @@ int genomeAlignment(int argc, char **argv) {
 
         if (inputParser.cmdOptionExists("-t")) {
             threads = std::stoi(inputParser.getCmdOption("-t"));
-        }
-
-        if (inputParser.cmdOptionExists("-v")) {
-            std::string outPutVcfFile = inputParser.getCmdOption("-v");
-            if (inputParser.cmdOptionExists("-IV")) {
-                std::cout << "please do not set -v and -IV together" << std::endl;
-                return 1;
-            }
         }
 
         if (inputParser.cmdOptionExists("-m")) {
@@ -443,7 +435,7 @@ int genomeAlignment(int argc, char **argv) {
 
         if (inputParser.cmdOptionExists("-f") || inputParser.cmdOptionExists("-o") || inputParser.cmdOptionExists("-l")) {
             genomeAlignmentAndVariantCalling(alignmentMatchsMap, path_ref_GenomeSequence, path_target_GenomeSequence,
-                                             windowWidth, wfaSize, wfaSize2,
+                                             windowWidth, /*wfaSize, wfaSize2,*/
                                              outPutMafFile, outPutFragedFile,
                                              matchingScore, mismatchingPenalty, openGapPenalty1, extendGapPenalty1,
                                              openGapPenalty2, extendGapPenalty2, min_wavefront_length, max_distance_threshold,
@@ -479,10 +471,10 @@ int proportationalAlignment(int argc, char **argv) {
     double minimumSimilarity = 0;
     double minimumSimilarity2 = 0;
 
-    int32_t wfaSize = 15000;
-    int32_t wfaSize2 = 50000;
-    int32_t wfaSize3 = 200000; // if the inter-anchor length is shorter than this value, stop trying to find new anchors
-    int64_t windowWidth = 38000;
+//    int32_t wfaSize = 15000;
+//    int32_t wfaSize2 = 50000;
+    int32_t wfaSize3 = 100000; // if the inter-anchor length is shorter than this value, stop trying to find new anchors
+    int64_t windowWidth = 100000;
     int expectedCopies = 1;
     double maximumSimilarity = 0.6;
     int32_t min_wavefront_length = 20;
@@ -584,7 +576,7 @@ int proportationalAlignment(int argc, char **argv) {
         std::cerr << usage.str();
     } else if (inputParser.cmdOptionExists("-i") && inputParser.cmdOptionExists("-r") &&
                inputParser.cmdOptionExists("-a") && inputParser.cmdOptionExists("-s") && inputParser.cmdOptionExists("-as")
-               && (inputParser.cmdOptionExists("-n") || inputParser.cmdOptionExists("-f") || inputParser.cmdOptionExists("-v") || inputParser.cmdOptionExists("-o") ) ) {
+               && (inputParser.cmdOptionExists("-n") || inputParser.cmdOptionExists("-f") || inputParser.cmdOptionExists("-o") ) ) {
 
         std::string refGffFilePath = inputParser.getCmdOption("-i");
         std::string referenceGenomeSequence = inputParser.getCmdOption("-r");
@@ -859,8 +851,8 @@ int proportationalAlignment(int argc, char **argv) {
             std::cout << "totalAnchors:" << totalAnchors << std::endl;
         }
 
-        if (inputParser.cmdOptionExists("-f") || inputParser.cmdOptionExists("-v") || inputParser.cmdOptionExists("-o") || inputParser.cmdOptionExists("-l")) {
-            genomeAlignment(alignmentMatchsMap, referenceGenomeSequence, targetGenomeSequence, windowWidth, wfaSize, wfaSize2,
+        if (inputParser.cmdOptionExists("-f") || inputParser.cmdOptionExists("-o") || inputParser.cmdOptionExists("-l")) {
+            genomeAlignment(alignmentMatchsMap, referenceGenomeSequence, targetGenomeSequence, windowWidth, /*wfaSize, wfaSize2,*/
                             outPutMafFile, outPutFragedFile, matchingScore, mismatchingPenalty, openGapPenalty1, extendGapPenalty1,
                             openGapPenalty2, extendGapPenalty2, seed_window_size, mini_cns_score, step_size, matrix_boundary_distance,
                             scoreThreshold, w2, xDrop, min_wavefront_length, max_distance_threshold, threads);
@@ -969,14 +961,13 @@ int ali(int argc, char **argv) {
 
         int32_t min_wavefront_length = 20;
         int32_t max_distance_threshold = 100;
-        int32_t wfaSize = 15000;
         Scorei m(matchingScore, mismatchingPenalty);
 
         std::string refSeqStr = getSubsequence2(map_ref, map_ref.begin()->first);
         std::string querySeqStr = getSubsequence2(map_qry, map_qry.begin()->first);
 
         alignSlidingWindow(querySeqStr, refSeqStr, _alignment_q, _alignment_d,
-                                              windowWidth, wfaSize, matchingScore, mismatchingPenalty, openGapPenalty1,
+                                              windowWidth, matchingScore, mismatchingPenalty, openGapPenalty1,
                                               extendGapPenalty1, openGapPenalty2, extendGapPenalty2,
                                               min_wavefront_length, max_distance_threshold, m);
         std::cout << ">" << map_ref.begin()->first << std::endl;

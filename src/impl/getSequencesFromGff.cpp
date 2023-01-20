@@ -65,7 +65,7 @@ void getSequences(const std::string &gffFile, const std::string &genomeFile,
     for (std::map<std::string, std::string>::iterator it = seqToOutPut.begin(); it != seqToOutPut.end(); ++it) {
         if (geneBlackList.find(it->first) == geneBlackList.end()) {
             oCfile << ">" << usedSeq[it->second] << " " << it->first << std::endl;
-            oCfile << it->second << std::endl;
+            oCfile << it->second << std::endl; // does it work?
         }
     }
     oCfile.close();

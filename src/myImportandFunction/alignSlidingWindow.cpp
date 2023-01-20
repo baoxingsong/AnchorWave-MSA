@@ -1664,7 +1664,7 @@ std::string GetStdoutFromCommand(std::string &cmd) {
 }
 
 int64_t alignSlidingWindow_minimap2_or_NW(std::string &dna_q, std::string &dna_d, std::string &_alignment_q, std::string &_alignment_d,
-                                          const int64_t &slidingWindowSize, const int32_t &wfaSize, const int32_t &matchingScore,
+                                          const int64_t &slidingWindowSize, const int32_t &matchingScore,
                                           const int32_t &mismatchingPenalty, const int32_t &openGapPenalty1, const int32_t &extendGapPenalty1, const int32_t &openGapPenalty2, const int32_t &extendGapPenalty2,
                                           const int32_t &min_wavefront_length, const int32_t &max_distance_threshold, const Scorei &m) {
     int64_t totalScore = 0;
@@ -1695,7 +1695,7 @@ int64_t alignSlidingWindow_minimap2_or_NW(std::string &dna_q, std::string &dna_d
 }
 
 int64_t alignSlidingWindow_local_wfa2_v2(std::string &dna_q, std::string &dna_d, std::string &_alignment_q, std::string &_alignment_d,
-                                         const int64_t &slidingWindowSize, const int32_t &wfaSize, const int32_t &matchingScore,
+                                         const int64_t &slidingWindowSize, const int32_t &matchingScore,
                                          const int32_t &mismatchingPenalty, const int32_t &openGapPenalty1, const int32_t &extendGapPenalty1, const int32_t &openGapPenalty2, const int32_t &extendGapPenalty2,
                                          const int32_t &min_wavefront_length, const int32_t &max_distance_threshold, const Scorei &m) {
     int64_t totalScore = 0;
@@ -1732,7 +1732,7 @@ int64_t alignSlidingWindow_local_wfa2_v2(std::string &dna_q, std::string &dna_d,
     if (_length_of_q < 5 || _length_of_d < 5 || ratio > 3.0) {
 //        std::cout << " minimap2 1 " << std::endl;
         totalScore = alignSlidingWindow_minimap2_or_NW(dna_q, dna_d, _alignment_q, _alignment_d,
-                                                       slidingWindowSize, wfaSize, matchingScore,
+                                                       slidingWindowSize, matchingScore,
                                                        mismatchingPenalty, openGapPenalty1, extendGapPenalty1,
                                                        openGapPenalty2,
                                                        extendGapPenalty2, min_wavefront_length,
@@ -1782,7 +1782,7 @@ int64_t alignSlidingWindow_local_wfa2_v2(std::string &dna_q, std::string &dna_d,
             }
         } else {
             totalScore = alignSlidingWindow_minimap2_or_NW(dna_q, dna_d, _alignment_q, _alignment_d,
-                                                           slidingWindowSize, wfaSize, matchingScore,
+                                                           slidingWindowSize, matchingScore,
                                                            mismatchingPenalty, openGapPenalty1, extendGapPenalty1,
                                                            openGapPenalty2,
                                                            extendGapPenalty2, min_wavefront_length,
@@ -1795,16 +1795,16 @@ int64_t alignSlidingWindow_local_wfa2_v2(std::string &dna_q, std::string &dna_d,
 }
 
 int64_t alignSlidingWindow(std::string &dna_q, std::string &dna_d, std::string &_alignment_q, std::string &_alignment_d,
-                           const int64_t &slidingWindowSize, const int32_t &wfaSize, const int32_t &matchingScore,
+                           const int64_t &slidingWindowSize,  const int32_t &matchingScore,
                            const int32_t &mismatchingPenalty, const int32_t &openGapPenalty1, const int32_t &extendGapPenalty1, const int32_t &openGapPenalty2, const int32_t &extendGapPenalty2,
                            const int32_t &min_wavefront_length, const int32_t &max_distance_threshold, const Scorei &m) {
-    return alignSlidingWindow_local_wfa2_v2(dna_q, dna_d, _alignment_q, _alignment_d, slidingWindowSize, wfaSize, matchingScore,
+    return alignSlidingWindow_local_wfa2_v2(dna_q, dna_d, _alignment_q, _alignment_d, slidingWindowSize, matchingScore,
                                             mismatchingPenalty, openGapPenalty1, extendGapPenalty1, openGapPenalty2, extendGapPenalty2,
                                             min_wavefront_length, max_distance_threshold, m);
 }
 
 int64_t alignSlidingWindowNW(std::string &dna_q, std::string &dna_d, std::string &_alignment_q, std::string &_alignment_d,
-                             const int64_t &slidingWindowSize, const int32_t &wfaSize, const int32_t &matchingScore,
+                             const int64_t &slidingWindowSize, const int32_t &matchingScore,
                              const int32_t &mismatchingPenalty, const int32_t &openGapPenalty1, const int32_t &extendGapPenalty1, const int32_t &openGapPenalty2, const int32_t &extendGapPenalty2,
                              const int32_t &min_wavefront_length, const int32_t &max_distance_threshold, const Scorei &m) {
     int64_t totalScore = 0;
@@ -1840,11 +1840,11 @@ int64_t alignSlidingWindowNW(std::string &dna_q, std::string &dna_d, std::string
 }
 
 int64_t alignSlidingWindow(std::string &dna_ref1, std::string &dna_ref2, std::string &dna_query, std::string &_alignment_ref1, std::string &_alignment_ref2, std::string &_alignment_query,
-                           const int64_t &slidingWindowSize, const int32_t &wfaSize, const int32_t &matchingScore,
+                           const int64_t &slidingWindowSize, const int32_t &matchingScore,
                            const int32_t &mismatchingPenalty, const int32_t &openGapPenalty1, const int32_t &extendGapPenalty1, const int32_t &openGapPenalty2, const int32_t &extendGapPenalty2,
                            const int32_t &min_wavefront_length, const int32_t &max_distance_threshold, const Scorei &m) {
 
-    return alignSlidingWindow_local_wfa2_v2(dna_query, dna_ref2, _alignment_query, _alignment_ref2, slidingWindowSize, wfaSize, matchingScore,
+    return alignSlidingWindow_local_wfa2_v2(dna_query, dna_ref2, _alignment_query, _alignment_ref2, slidingWindowSize, matchingScore,
                                             mismatchingPenalty, openGapPenalty1, extendGapPenalty1, openGapPenalty2, extendGapPenalty2,
                                             min_wavefront_length, max_distance_threshold, m);
 }

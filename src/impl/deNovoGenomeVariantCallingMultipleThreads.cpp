@@ -13,7 +13,7 @@ void genomeAlignmentSingleThread(std::vector<AlignmentMatch> alignmentMatchs,
                                  std::map<std::string, std::tuple<std::string, long, long, int> > &map_ref,
                                  std::map<std::string, std::tuple<std::string, long, long, int> > &map_target,
                                  const int chrWidth, const std::string refFileName, const std::string queryFileName,
-                                 const int32_t windowWidth, const int32_t wfaSize, const int32_t wfaSize2,
+                                 const int32_t windowWidth,
                                  const int32_t matchingScore, const int32_t mismatchingPenalty,
                                  const int32_t openGapPenalty1, const int32_t extendGapPenalty1,
                                  const int32_t openGapPenalty2, const int32_t extendGapPenalty2,
@@ -99,7 +99,7 @@ void genomeAlignmentSingleThread(std::vector<AlignmentMatch> alignmentMatchs,
                     std::string _alignment_q;
                     std::string _alignment_d;
 //                    std::cout << "line 78" << std::endl;
-                    int64_t thiScore = alignSlidingWindow(querySeq, refSeq, _alignment_q, _alignment_d, windowWidth, wfaSize, matchingScore, mismatchingPenalty, openGapPenalty1, extendGapPenalty1, openGapPenalty2, extendGapPenalty2, min_wavefront_length, max_distance_threshold,
+                    int64_t thiScore = alignSlidingWindow(querySeq, refSeq, _alignment_q, _alignment_d, windowWidth, matchingScore, mismatchingPenalty, openGapPenalty1, extendGapPenalty1, openGapPenalty2, extendGapPenalty2, min_wavefront_length, max_distance_threshold,
                                                           m);
                     //                  std::cout << " line 80" << std::endl;
                     if (checkResult) {
@@ -113,7 +113,7 @@ void genomeAlignmentSingleThread(std::vector<AlignmentMatch> alignmentMatchs,
                         tempq.erase(std::remove(tempq.begin(), tempq.end(), '-'), tempq.end());
                         if (tempd.compare(refSeq) != 0 || tempq.compare(querySeq) != 0) {
 //                            std::cout << "align error:" << std::endl << refSeq << std::endl << querySeq << std::endl;
-                            thiScore = alignSlidingWindowNW(querySeq, refSeq, _alignment_q, _alignment_d, windowWidth, wfaSize, matchingScore, mismatchingPenalty, openGapPenalty1, extendGapPenalty1, openGapPenalty2, extendGapPenalty2, min_wavefront_length, max_distance_threshold,
+                            thiScore = alignSlidingWindowNW(querySeq, refSeq, _alignment_q, _alignment_d, windowWidth,  matchingScore, mismatchingPenalty, openGapPenalty1, extendGapPenalty1, openGapPenalty2, extendGapPenalty2, min_wavefront_length, max_distance_threshold,
                                                             m);
                             tempd = _alignment_d;
                             tempd.erase(std::remove(tempd.begin(), tempd.end(), '-'), tempd.end());
@@ -151,7 +151,7 @@ void genomeAlignmentSingleThread(std::vector<AlignmentMatch> alignmentMatchs,
                     std::string _alignment_q;
                     std::string _alignment_d;
 //                    std::cout << "line 126" << std::endl;
-                    int64_t thiScore = alignSlidingWindow(querySeq, refSeq, _alignment_q, _alignment_d, windowWidth, wfaSize2, matchingScore, mismatchingPenalty, openGapPenalty1, extendGapPenalty1, openGapPenalty2, extendGapPenalty2, min_wavefront_length, max_distance_threshold, m);
+                    int64_t thiScore = alignSlidingWindow(querySeq, refSeq, _alignment_q, _alignment_d, windowWidth, matchingScore, mismatchingPenalty, openGapPenalty1, extendGapPenalty1, openGapPenalty2, extendGapPenalty2, min_wavefront_length, max_distance_threshold, m);
                     //                  std::cout << "line 128" << std::endl;
                     if (checkResult) {
                         std::string tempd;
@@ -162,7 +162,7 @@ void genomeAlignmentSingleThread(std::vector<AlignmentMatch> alignmentMatchs,
                         tempq.erase(std::remove(tempq.begin(), tempq.end(), '-'), tempq.end());
                         if (tempd.compare(refSeq) != 0 || tempq.compare(querySeq) != 0) {
 //                            std::cout << "align error:" << std::endl << refSeq << std::endl << querySeq << std::endl;
-                            thiScore = alignSlidingWindowNW(querySeq, refSeq, _alignment_q, _alignment_d, windowWidth, wfaSize, matchingScore, mismatchingPenalty, openGapPenalty1, extendGapPenalty1, openGapPenalty2, extendGapPenalty2, min_wavefront_length, max_distance_threshold, m);
+                            thiScore = alignSlidingWindowNW(querySeq, refSeq, _alignment_q, _alignment_d, windowWidth,  matchingScore, mismatchingPenalty, openGapPenalty1, extendGapPenalty1, openGapPenalty2, extendGapPenalty2, min_wavefront_length, max_distance_threshold, m);
                             tempd = _alignment_d;
                             tempd.erase(std::remove(tempd.begin(), tempd.end(), '-'), tempd.end());
                             tempq = _alignment_q;
@@ -283,7 +283,7 @@ void genomeAlignmentSingleThread(std::vector<AlignmentMatch> alignmentMatchs,
                     std::string _alignment_q;
                     std::string _alignment_d;
 //                    std::cout << "line 288" << std::endl;
-                    int64_t thiScore = alignSlidingWindow(querySeq, refSeq, _alignment_q, _alignment_d, windowWidth, wfaSize, matchingScore, mismatchingPenalty, openGapPenalty1, extendGapPenalty1, openGapPenalty2, extendGapPenalty2, min_wavefront_length, max_distance_threshold, m);
+                    int64_t thiScore = alignSlidingWindow(querySeq, refSeq, _alignment_q, _alignment_d, windowWidth,  matchingScore, mismatchingPenalty, openGapPenalty1, extendGapPenalty1, openGapPenalty2, extendGapPenalty2, min_wavefront_length, max_distance_threshold, m);
 //                    std::cout << "line 230" << std::endl;
 
                     if (checkResult) {
@@ -295,7 +295,7 @@ void genomeAlignmentSingleThread(std::vector<AlignmentMatch> alignmentMatchs,
                         tempq.erase(std::remove(tempq.begin(), tempq.end(), '-'), tempq.end());
                         if (tempd.compare(refSeq) != 0 || tempq.compare(querySeq) != 0) {
 //                            std::cout << "align error:" << std::endl << refSeq << std::endl << querySeq << std::endl;
-                            thiScore = alignSlidingWindowNW(querySeq, refSeq, _alignment_q, _alignment_d, windowWidth, wfaSize, matchingScore, mismatchingPenalty, openGapPenalty1, extendGapPenalty1, openGapPenalty2, extendGapPenalty2, min_wavefront_length, max_distance_threshold, m);
+                            thiScore = alignSlidingWindowNW(querySeq, refSeq, _alignment_q, _alignment_d, windowWidth,  matchingScore, mismatchingPenalty, openGapPenalty1, extendGapPenalty1, openGapPenalty2, extendGapPenalty2, min_wavefront_length, max_distance_threshold, m);
                             tempd = _alignment_d;
                             tempd.erase(std::remove(tempd.begin(), tempd.end(), '-'), tempd.end());
                             tempq = _alignment_q;
@@ -332,7 +332,7 @@ void genomeAlignmentSingleThread(std::vector<AlignmentMatch> alignmentMatchs,
                     std::string _alignment_q;
                     std::string _alignment_d;
 //                    std::cout << refSeq << std::endl << querySeq << std::endl << "line 276" << std::endl;
-                    int64_t thiScore = alignSlidingWindow(querySeq, refSeq, _alignment_q, _alignment_d, windowWidth, wfaSize2, matchingScore, mismatchingPenalty, openGapPenalty1, extendGapPenalty1, openGapPenalty2, extendGapPenalty2, min_wavefront_length, max_distance_threshold, m);
+                    int64_t thiScore = alignSlidingWindow(querySeq, refSeq, _alignment_q, _alignment_d, windowWidth, matchingScore, mismatchingPenalty, openGapPenalty1, extendGapPenalty1, openGapPenalty2, extendGapPenalty2, min_wavefront_length, max_distance_threshold, m);
 
                     if (checkResult) {
                         std::string tempd;
@@ -343,7 +343,7 @@ void genomeAlignmentSingleThread(std::vector<AlignmentMatch> alignmentMatchs,
                         tempq.erase(std::remove(tempq.begin(), tempq.end(), '-'), tempq.end());
                         if (tempd.compare(refSeq) != 0 || tempq.compare(querySeq) != 0) {
 //                            std::cout << "align error:" << std::endl << refSeq << std::endl << querySeq << std::endl;
-                            thiScore = alignSlidingWindowNW(querySeq, refSeq, _alignment_q, _alignment_d, windowWidth, wfaSize, matchingScore, mismatchingPenalty, openGapPenalty1, extendGapPenalty1, openGapPenalty2, extendGapPenalty2, min_wavefront_length, max_distance_threshold, m);
+                            thiScore = alignSlidingWindowNW(querySeq, refSeq, _alignment_q, _alignment_d, windowWidth, matchingScore, mismatchingPenalty, openGapPenalty1, extendGapPenalty1, openGapPenalty2, extendGapPenalty2, min_wavefront_length, max_distance_threshold, m);
                             tempd = _alignment_d;
                             tempd.erase(std::remove(tempd.begin(), tempd.end(), '-'), tempd.end());
                             tempq = _alignment_q;
@@ -401,7 +401,7 @@ void genomeAlignmentSingleThread(std::vector<AlignmentMatch> alignmentMatchs,
 
 void genomeAlignment(std::vector<std::vector<AlignmentMatch>> &alignmentMatchsMap,
                      const std::string &refFastaFilePath, const std::string &targetFastaFilePath,
-                     const int32_t &windowWidth, const int32_t &wfaSize, const int32_t &wfaSize2,
+                     const int32_t &windowWidth, /*const int32_t &wfaSize, const int32_t &wfaSize2,*/
                      const std::string &outPutMafFile, const std::string &outPutFragedFile, /*std::string & outPutLocalalignmentFile,*/
                      const int32_t &matchingScore, const int32_t &mismatchingPenalty,
                      const int32_t &openGapPenalty1, const int32_t &extendGapPenalty1,
@@ -487,7 +487,7 @@ void genomeAlignment(std::vector<std::vector<AlignmentMatch>> &alignmentMatchsMa
                               refChr, queryChr,
                               std::ref(refSequences), std::ref(targetSequences),
                               chrWidth, refFileName, queryFileName,
-                              windowWidth, wfaSize, wfaSize2, matchingScore, mismatchingPenalty,
+                              windowWidth, matchingScore, mismatchingPenalty,
                               openGapPenalty1, extendGapPenalty1,
                               openGapPenalty2, extendGapPenalty2,
                               min_wavefront_length, max_distance_threshold, std::ref(number_of_runing_threads));
@@ -512,637 +512,6 @@ void genomeAlignment(std::vector<std::vector<AlignmentMatch>> &alignmentMatchsMa
 }
 
 
-void alignmentToVcf(std::string &queryAlignSeq, std::string &refAlignSeq, std::ofstream &ovcffile, std::string chr, std::string &refSequence) {
-    alignmentToVcf(queryAlignSeq, refAlignSeq, ovcffile, chr, refSequence, 0);
-}
-
-void alignmentToVcf(std::string &queryAlignSeq, std::string &refAlignSeq, std::ofstream &ovcffile, std::string chr, std::map<std::string, std::string> &refSequences) {
-    alignmentToVcf(queryAlignSeq, refAlignSeq, ovcffile, chr, refSequences, 0);
-}
-
-void alignmentToVcf(std::string &queryAlignSeq, std::string &refAlignSeq, std::ofstream &ovcffile, std::string chr, std::map<std::string, std::string> &refSequences, int32_t refLetterNumber) {
-    alignmentToVcf(queryAlignSeq, refAlignSeq, ovcffile, chr, refSequences[chr], refLetterNumber);
-}
-
-void alignmentToVcf(std::string &queryAlignSeq, std::string &refAlignSeq, std::ofstream &ovcffile, std::string chr, std::string &refSequence, int32_t refLetterNumber) {
-    std::vector<Variant> sdiRecordsThisOne;
-    alignmentToVcf(queryAlignSeq, refAlignSeq, sdiRecordsThisOne, chr, refSequence, refLetterNumber);
-    g_num_mutex.lock();
-    for (std::vector<Variant>::iterator itVariant = sdiRecordsThisOne.begin(); itVariant != sdiRecordsThisOne.end(); ++itVariant) {
-        ovcffile << itVariant->getChromosome() << "\t" << itVariant->getPosition() << "\t" << itVariant->getChromosome() << "_" << itVariant->getPosition() << "\t" + itVariant->getReference() << "\t" << itVariant->getAlternative() << "\t50\tPASS\tDP=1\tGT:GQ:DP\t1:50:1"
-                 << std::endl;
-    }
-    g_num_mutex.unlock();
-}
-
-
-void alignmentToVcf(std::string &queryAlignSeq, std::string &refAlignSeq, std::ofstream &ovcffile, std::string chr, std::map<std::string, std::string> &refSequences, int32_t refLetterNumber, const bool &gvcf) {
-    alignmentToVcf(queryAlignSeq, refAlignSeq, ovcffile, chr, refSequences[chr], refLetterNumber, gvcf);
-}
-
-void alignmentToVcf(std::string &queryAlignSeq, std::string &refAlignSeq, std::ofstream &ovcffile, std::string chr, std::string &refSequence, int32_t refLetterNumber, const bool &gvcf) {
-    std::vector<Variant> sdiRecordsThisOne;
-    alignmentToVcf(queryAlignSeq, refAlignSeq, sdiRecordsThisOne, chr, refSequence, refLetterNumber);
-    if (gvcf) {
-        g_num_mutex.lock();
-        int32_t lastPosition = refLetterNumber + 1;
-        for (std::vector<Variant>::iterator itVariant = sdiRecordsThisOne.begin(); itVariant != sdiRecordsThisOne.end(); ++itVariant) {
-            if (lastPosition < itVariant->getPosition()) {
-                ovcffile << itVariant->getChromosome() << "\t" << lastPosition << "\t" << itVariant->getChromosome() << "_" << lastPosition << "\t" << refSequence[lastPosition - 1] << "\t" << "<NON_REF>" << "\t.\t.\tEND=" << std::to_string(itVariant->getPosition() - 1)
-                         << "\tGT:AD:DP\t0:1,0:1" << std::endl;
-            }
-            ovcffile << itVariant->getChromosome() << "\t" << itVariant->getPosition() << "\t" << itVariant->getChromosome() << "_" << itVariant->getPosition() << "\t" + itVariant->getReference() << "\t" << itVariant->getAlternative() << ",<NON_REF>"
-                     << "\t.\t.\t.\tGT:AD:DP\t1:0,1,0:1" << std::endl;
-            lastPosition = itVariant->getPosition() + itVariant->getReference().size();
-        }
-        g_num_mutex.unlock();
-    } else {
-        g_num_mutex.lock();
-        for (std::vector<Variant>::iterator itVariant = sdiRecordsThisOne.begin(); itVariant != sdiRecordsThisOne.end(); ++itVariant) {
-            ovcffile << itVariant->getChromosome() << "\t" << itVariant->getPosition() << "\t" << itVariant->getChromosome() << "_" << itVariant->getPosition() << "\t" + itVariant->getReference() << "\t" << itVariant->getAlternative() << "\t50\tPASS\tDP=1\tGT:GQ:DP\t1:50:1"
-                     << std::endl;
-        }
-        g_num_mutex.unlock();
-    }
-}
-
-void alignmentToVcf(std::string &queryAlignSeq, std::string &refAlignSeq, std::vector<Variant> &sdiRecordsThisOne, std::string chr, std::map<std::string, std::string> &refSequences, int32_t refLetterNumber) {
-    alignmentToVcf(queryAlignSeq, refAlignSeq, sdiRecordsThisOne, chr, refSequences[chr], refLetterNumber);
-}
-
-bool to_T(char c) { return c == 'U'; }
-
-bool to_N(char c) {
-    return c == 'R' || c == 'Y' || c == 'S' || c == 'W' || c == 'K' || c == 'M' || c == 'B' || c == 'D' || c == 'H' || c == 'V';
-}
-
-void alignmentToVcf(std::string &queryAlignSeq, std::string &refAlignSeq, std::vector<Variant> &sdiRecordsThisOne, std::string chr, std::string &refSequence, int32_t refLetterNumber) {
-
-    std::replace_if(refAlignSeq.begin(), refAlignSeq.end(), to_T, 'T');
-    std::replace_if(refAlignSeq.begin(), refAlignSeq.end(), to_N, 'N');
-
-    std::replace_if(queryAlignSeq.begin(), queryAlignSeq.end(), to_T, 'T');
-    std::replace_if(queryAlignSeq.begin(), queryAlignSeq.end(), to_N, 'N');
-
-    FirstLastList sdiRecords;
-    std::cout << "reference length:" << std::to_string(refAlignSeq.size()) << std::endl;
-    for (int ai = 0; ai < refAlignSeq.size(); ai++) {
-        if (refAlignSeq[ai] != '-') {
-            ++refLetterNumber;
-        }
-//        std::cout << "ai:" << std::to_string(ai) << std::endl;
-        if (refAlignSeq[ai] != queryAlignSeq[ai]) {
-            if (queryAlignSeq[ai] == '-') {
-                if (NULL != sdiRecords.getLast() &&
-                    sdiRecords.getLast()->getMapSingleRecord().getChanginglength() < 0 &&
-                    sdiRecords.getLast()->getMapSingleRecord().getAlternative().compare("-") == 0 &&
-                    sdiRecords.getLast()->getMapSingleRecord().getPosition() - sdiRecords.getLast()->getMapSingleRecord().getChanginglength() == refLetterNumber) {
-                    int position = sdiRecords.getLast()->getMapSingleRecord().getPosition();
-                    std::string ori = sdiRecords.getLast()->getMapSingleRecord().getReference() + refAlignSeq[ai];
-                    std::string result = "-";
-//                    std::cout << "liner 581" << chr <<  std::to_string(position) <<  ori << result << std::endl;
-                    Variant mapSingleRecord = Variant(chr, position, ori, result);
-                    Data *data = new Data(mapSingleRecord);
-                    sdiRecords.deleteLast();
-                    sdiRecords.insertLast(data);
-
-                } else {
-                    std::string ori(1, refAlignSeq[ai]);
-                    std::string result = "-";
-//                    std::cout << "liner 590" << chr <<  std::to_string(refLetterNumber) <<  ori << result << std::endl;
-                    Variant mapSingleRecord = Variant(chr, refLetterNumber, ori, result);
-                    Data *data = new Data(mapSingleRecord);
-                    sdiRecords.insertLast(data);
-                }
-            } else if (refAlignSeq[ai] == '-') {
-                if (sdiRecords.getLast() == NULL) {
-                    int position = refLetterNumber + 1;
-                    std::string ori = "-";
-                    std::string result(1, queryAlignSeq[ai]);
-//                    std::cout << "liner 600" << chr <<  std::to_string(position) <<  ori << result << std::endl;
-                    Variant mapSingleRecord = Variant(chr, position, ori, result);
-                    Data *data = new Data(mapSingleRecord);
-                    sdiRecords.insertLast(data);
-                } else {
-                    if (sdiRecords.getLast()->getMapSingleRecord().getPosition() ==
-                        (refLetterNumber + 1)
-                        && sdiRecords.getLast()->getMapSingleRecord().getChanginglength() > 0 &&
-                        sdiRecords.getLast()->getMapSingleRecord().getReference().compare("-") == 0) {
-
-                        int position = refLetterNumber + 1;
-                        std::string ori = "-";
-                        std::string result = sdiRecords.getLast()->getMapSingleRecord().getAlternative() + queryAlignSeq[ai];
-//                        std::cout << "liner 614" << chr <<  std::to_string(position) <<  ori << result << std::endl;
-                        Variant mapSingleRecord = Variant(chr, position, ori, result);
-                        Data *data = new Data(mapSingleRecord);
-                        sdiRecords.deleteLast();
-                        sdiRecords.insertLast(data);
-                    } else {
-                        int position = refLetterNumber + 1;
-                        std::string ori = "-";
-                        std::string result(1, queryAlignSeq[ai]);
-//                        std::cout << "liner 623" << chr <<  std::to_string(position) <<  ori << result << std::endl;
-                        Variant mapSingleRecord = Variant(chr, position, ori, result);
-                        Data *data = new Data(mapSingleRecord);
-                        sdiRecords.insertLast(data);
-                    }
-                }
-            } else {
-                int position = refLetterNumber;
-                std::string ori(1, refAlignSeq[ai]);
-                std::string result(1, queryAlignSeq[ai]);
-//                std::cout << "liner 633" << chr <<  std::to_string(position) <<  ori << result << std::endl;
-                Variant mapSingleRecord = Variant(chr, position, ori, result);
-                Data *data = new Data(mapSingleRecord);
-                sdiRecords.insertLast(data);
-            }
-        }
-    }
-
-    std::cout << "initial variants calling done" << std::endl;
-
-    for (int runingCound = 0; runingCound < 2; ++runingCound) {
-        if ((sdiRecords.getFirst() != NULL)
-            && (sdiRecords.getFirst()->getNext() != NULL)) {
-            Data *prevOne = sdiRecords.getFirst();
-            Data *currOne = (sdiRecords.getFirst()->getNext());
-            while ((currOne != NULL) && (NULL != currOne->getNext())) {
-//                std::cout << "647" << std::endl;
-                if (sdiRecords.getFirst() == currOne) {
-                    prevOne = currOne;
-                    currOne = prevOne->getNext();
-                }
-                if (currOne->getMapSingleRecord().getChanginglength() < 0 &&
-                    prevOne->getMapSingleRecord().getChanginglength() < 0 &&
-                    (prevOne->getMapSingleRecord().getPosition() + abs(prevOne->getMapSingleRecord().getChanginglength())) ==
-                    currOne->getMapSingleRecord().getPosition()
-                    && prevOne->getMapSingleRecord().getAlternative().compare("-") == 0 &&
-                    currOne->getMapSingleRecord().getAlternative().compare("-") == 0) { // merge two deletions
-
-                    int position = prevOne->getMapSingleRecord().getPosition();
-                    std::string ori = prevOne->getMapSingleRecord().getReference() + currOne->getMapSingleRecord().getReference();
-                    std::string result = "-";
-//                    std::cout << "liner 662" << chr <<  std::to_string(position) <<  ori << result << std::endl;
-                    Variant mapSingleRecord2(chr, position, ori, result);
-                    //delete prev one begin
-                    if (((currOne->getPrev())) == (sdiRecords.getFirst())) {
-                        sdiRecords.deleteFirst();
-                    } else {
-                        prevOne->getPrev()->setNext(currOne);
-                        currOne->setPrev(prevOne->getPrev());
-                        delete (prevOne);
-                    } //delete prev one end
-                    currOne->setMapSingleRecord(mapSingleRecord2);
-                    prevOne = currOne->getPrev();
-                    if (prevOne == NULL) {
-                        prevOne = currOne;
-                        currOne = prevOne->getNext();
-                    }
-                } else if (currOne->getMapSingleRecord().getChanginglength() == 0 &&
-                           0 == currOne->getMapSingleRecord().getReference().compare(currOne->getMapSingleRecord().getAlternative())) { // nonsense records
-                    //delete current one
-//                    std::cout << "820 delete prev" << std::endl;
-                    prevOne->setNext(currOne->getNext());
-                    currOne->getNext()->setPrev(prevOne);
-                    delete (currOne);
-                    currOne = prevOne->getNext();
-                } else if (currOne->getMapSingleRecord().getChanginglength() < 0 &&
-                           prevOne->getMapSingleRecord().getChanginglength() > 0
-                           && currOne->getMapSingleRecord().getReference().compare(
-                        prevOne->getMapSingleRecord().getAlternative()) == 0 &&
-                           currOne->getMapSingleRecord().getPosition() ==
-                           prevOne->getMapSingleRecord().getPosition()) { //delete one insertion and next reverse sence deletion
-                    //delete current one and prev
-//                    std::cout << "830 delete current one and prev" << std::endl;
-                    if (((currOne->getPrev())) == (sdiRecords.getFirst())) {
-                        sdiRecords.deleteFirst();
-                        sdiRecords.deleteFirst();
-                        prevOne = sdiRecords.getFirst();
-                        currOne = (sdiRecords.getFirst()->getNext());
-                    } else if (currOne == sdiRecords.getLast()) {
-                        sdiRecords.deleteLast();
-                        sdiRecords.deleteLast();
-                        currOne = sdiRecords.getLast();
-                        prevOne = currOne->getPrev();
-                    } else {
-                        currOne->getPrev()->getPrev()->setNext(currOne->getNext());
-                        currOne->getNext()->setPrev(currOne->getPrev()->getPrev());
-                        Data *temp = currOne->getNext();
-                        delete (currOne->getPrev());
-                        delete (currOne);
-                        currOne = temp;
-                        prevOne = temp->getPrev();
-                    }
-                } else if (currOne->getMapSingleRecord().getChanginglength() > 0 &&
-                           prevOne->getMapSingleRecord().getChanginglength() < 0
-                           && currOne->getMapSingleRecord().getAlternative().compare(
-                        prevOne->getMapSingleRecord().getReference()) == 0 &&
-                           (currOne->getMapSingleRecord().getPosition() - 1) ==
-                           prevOne->getMapSingleRecord().getPosition()) {
-                    //delete current one and prev
-//                    std::cout << "850 delete current one and prev" << std::endl;
-                    if (((currOne->getPrev())) == (sdiRecords.getFirst())) {
-                        sdiRecords.deleteFirst();
-                        sdiRecords.deleteFirst();
-                        prevOne = sdiRecords.getFirst();
-                        currOne = (sdiRecords.getFirst()->getNext());
-                    } else {
-                        currOne->getPrev()->getPrev()->setNext(currOne->getNext());
-                        currOne->getNext()->setPrev(currOne->getPrev()->getPrev());
-                        Data *temp = currOne->getNext();
-                        delete (currOne->getPrev());
-                        delete (currOne);
-                        currOne = temp;
-                        prevOne = temp->getPrev();
-                    }
-                } else if (currOne->getMapSingleRecord().getChanginglength() < 0 && currOne->getMapSingleRecord().getAlternative().compare("-") == 0 &&
-                           ( //(sdiRecordsThisOne[j - 1].getPosition() == (sdiRecordsThisOne[j].getPosition()-1)  && sdiRecordsThisOne[j - 1].getReference() != "-" ) ||
-                                   (currOne->getPrev()->getMapSingleRecord().getReference()[0] != '-' &&
-                                    currOne->getPrev()->getMapSingleRecord().getPosition() + currOne->getPrev()->getMapSingleRecord().getReference().size() == currOne->getMapSingleRecord().getPosition()))) {
-                    int position = currOne->getPrev()->getMapSingleRecord().getPosition();
-                    std::string ori = currOne->getPrev()->getMapSingleRecord().getReference() + currOne->getMapSingleRecord().getReference();
-                    std::string result = currOne->getPrev()->getMapSingleRecord().getAlternative() + currOne->getMapSingleRecord().getAlternative();
-
-                    ori.erase(std::remove(ori.begin(), ori.end(), '-'), ori.end());
-                    result.erase(std::remove(result.begin(), result.end(), '-'), result.end());
-//                std::cout << "liner 846" << chr <<  std::to_string(position) <<  ori << result << std::endl;
-                    Variant mapSingleRecord2(chr, position, ori, result);
-
-                    if (((currOne->getPrev())) == (sdiRecords.getFirst())) {
-                        sdiRecords.deleteFirst();
-                    } else {
-                        prevOne->getPrev()->setNext(currOne);
-                        currOne->setPrev(prevOne->getPrev());
-                        delete (prevOne);
-                    } //delete prev one end
-                    currOne->setMapSingleRecord(mapSingleRecord2);
-                    prevOne = currOne->getPrev();
-                    if (prevOne == NULL) {
-                        prevOne = currOne;
-                        currOne = prevOne->getNext();
-                    }
-                } else if (currOne->getMapSingleRecord().getChanginglength() < 0 &&
-                           currOne->getMapSingleRecord().getAlternative().compare("-") == 0 &&
-                           (currOne->getPrev()->getMapSingleRecord().getReference() == "-" && currOne->getPrev()->getMapSingleRecord().getPosition() == (currOne->getMapSingleRecord().getPosition()))
-                        ) {
-                    int position = currOne->getPrev()->getMapSingleRecord().getPosition();
-                    std::string ori = currOne->getPrev()->getMapSingleRecord().getReference() + currOne->getMapSingleRecord().getReference();
-                    std::string result = currOne->getPrev()->getMapSingleRecord().getAlternative() + currOne->getMapSingleRecord().getAlternative();
-
-                    ori.erase(std::remove(ori.begin(), ori.end(), '-'), ori.end());
-                    result.erase(std::remove(result.begin(), result.end(), '-'), result.end());
-//                std::cout << "liner 873" << chr <<  std::to_string(position) << "\t" <<  ori << "\t" << result << std::endl;
-                    Variant mapSingleRecord2(chr, position, ori, result);
-                    if (((currOne->getPrev())) == (sdiRecords.getFirst())) {
-                        sdiRecords.deleteFirst();
-                    } else {
-                        prevOne->getPrev()->setNext(currOne);
-                        currOne->setPrev(prevOne->getPrev());
-                        delete (prevOne);
-                    } //delete prev one end
-                    currOne->setMapSingleRecord(mapSingleRecord2);
-                    prevOne = currOne->getPrev();
-                    if (prevOne == NULL) {
-                        prevOne = currOne;
-                        currOne = prevOne->getNext();
-                    }
-                } else if (currOne->getMapSingleRecord().getChanginglength() > 0 &&
-                           currOne->getMapSingleRecord().getReference().compare("-") == 0 &&
-                           currOne->getPrev()->getMapSingleRecord().getReference().compare("-") != 0 &&
-                           (currOne->getPrev()->getMapSingleRecord().getPosition() + currOne->getPrev()->getMapSingleRecord().getReference().size()) == (currOne->getMapSingleRecord().getPosition())) {
-                    int position = currOne->getPrev()->getMapSingleRecord().getPosition();
-                    std::string ori = currOne->getPrev()->getMapSingleRecord().getReference() + currOne->getMapSingleRecord().getReference();
-                    std::string result = currOne->getPrev()->getMapSingleRecord().getAlternative() + currOne->getMapSingleRecord().getAlternative();
-                    ori.erase(std::remove(ori.begin(), ori.end(), '-'), ori.end());
-                    result.erase(std::remove(result.begin(), result.end(), '-'), result.end());
-//                std::cout << "liner 888" << chr <<  std::to_string(position) << "\t" <<  ori << "\t" << result << std::endl;
-                    Variant mapSingleRecord2(chr, position, ori, result);
-                    if (((currOne->getPrev())) == (sdiRecords.getFirst())) {
-                        sdiRecords.deleteFirst();
-                    } else {
-                        prevOne->getPrev()->setNext(currOne);
-                        currOne->setPrev(prevOne->getPrev());
-                        delete (prevOne);
-                    } //delete prev one end
-                    currOne->setMapSingleRecord(mapSingleRecord2);
-                    prevOne = currOne->getPrev();
-                    if (prevOne == NULL) {
-                        prevOne = currOne;
-                        currOne = prevOne->getNext();
-                    }
-                } else {
-                    prevOne = currOne;
-                    currOne = prevOne->getNext();
-                }//std::cout <<  (*itName) << ": link data structure end " << currOne->getMapSingleRecord().getPosition() << std::endl;
-//                std::cout << "820" << std::endl;
-            }
-        }
-    }
-    std::cout << "variants calling merging" << std::endl;
-
-    if (sdiRecords.getFirst() != NULL) {
-        Data *thisone = sdiRecords.getFirst();
-        while (thisone != NULL) {
-            sdiRecordsThisOne.push_back(thisone->getMapSingleRecord());
-            thisone = (thisone->getNext());
-        }
-    }
-
-    // clear RAM assigned by new Data() begin
-    if (sdiRecords.getFirst() != NULL) {
-        Data *thisone = sdiRecords.getFirst();
-        while (thisone != NULL) {
-            Data *tempData = thisone;
-            thisone = (thisone->getNext());
-            delete (tempData);
-        }
-    }// clear RAM assigned by new Data() end
-    std::cout << sdiRecordsThisOne.size() << std::endl;
-    std::cout << "variants calling to vector" << std::endl;
-
-
-    // transform link to vector and sort and merge nearby records begin
-    bool ifChanged = true;
-    while (ifChanged) { // link deletions together
-        std::sort(sdiRecordsThisOne.begin(), sdiRecordsThisOne.end());
-        ifChanged = false;
-        std::vector<int> sdiRecordsToRomove;
-        int oldSize = sdiRecordsThisOne.size();
-        for (int j = 1; j < oldSize; j++) {
-            if (sdiRecordsThisOne[j].getChanginglength() < 0 &&
-                sdiRecordsThisOne[j - 1].getChanginglength() < 0 &&
-                (sdiRecordsThisOne[j - 1].getPosition() + abs(sdiRecordsThisOne[j - 1].getChanginglength())) == sdiRecordsThisOne[j].getPosition() &&
-                sdiRecordsThisOne[j - 1].getAlternative().compare("-") == 0 &&
-                sdiRecordsThisOne[j].getAlternative().compare("-") == 0) {
-                int position = sdiRecordsThisOne[j - 1].getPosition();
-                std::string ori = sdiRecordsThisOne[j - 1].getReference() + sdiRecordsThisOne[j].getReference();
-                std::string result = "-";
-//                std::cout << "liner 778" << chr <<  std::to_string(position) <<  ori << result << std::endl;
-                Variant mapSingleRecord2(chr, position, ori, result);
-                sdiRecordsToRomove.push_back(j - 1);
-                sdiRecordsThisOne[j] = mapSingleRecord2;
-                j++;
-                ifChanged = true;
-            } else if (sdiRecordsThisOne[j].getReference().compare(sdiRecordsThisOne[j].getAlternative()) == 0) {
-                sdiRecordsToRomove.push_back(j); // it does not affect sorting
-            }
-        }
-        for (int intTpRomoveIndex = sdiRecordsToRomove.size() - 1; intTpRomoveIndex >= 0; --intTpRomoveIndex) {
-            sdiRecordsThisOne.erase(sdiRecordsThisOne.begin() + sdiRecordsToRomove[intTpRomoveIndex]);
-        }
-        sdiRecordsThisOne.shrink_to_fit();
-    }
-    // transform link to vector and sort and merge nearby records end
-    std::cout << sdiRecordsThisOne.size() << std::endl;
-    std::cout << "merge deletions together" << std::endl;
-
-    ifChanged = true;
-    while (ifChanged && sdiRecordsThisOne.size() > 1) {
-        std::sort(sdiRecordsThisOne.begin(), sdiRecordsThisOne.end());
-        ifChanged = false;
-        std::vector<int> sdiRecordsToRomove;
-        int oldSize = sdiRecordsThisOne.size();
-        for (int j = 1; j < oldSize; j++) {
-            if (sdiRecordsThisOne[j - 1].getChanginglength() < 0 && sdiRecordsThisOne[j - 1].getAlternative().compare("-") == 0 &&
-                sdiRecordsThisOne[j].getChanginglength() > 0 && sdiRecordsThisOne[j].getReference().compare("-") == 0 &&
-                ((sdiRecordsThisOne[j - 1].getPosition() + sdiRecordsThisOne[j - 1].getReference().size()) == sdiRecordsThisOne[j].getPosition())) {
-                int position = sdiRecordsThisOne[j - 1].getPosition();
-
-                std::string ori = sdiRecordsThisOne[j - 1].getReference() + sdiRecordsThisOne[j].getReference();
-                std::string result = sdiRecordsThisOne[j - 1].getAlternative() + sdiRecordsThisOne[j].getAlternative();
-
-                ori.erase(std::remove(ori.begin(), ori.end(), '-'), ori.end());
-                result.erase(std::remove(result.begin(), result.end(), '-'), result.end());
-//                std::cout << "liner 812" << chr <<  std::to_string(position) <<  ori << result << std::endl;
-                Variant mapSingleRecord2(chr, position, ori, result);
-                sdiRecordsToRomove.push_back(j - 1);
-                sdiRecordsThisOne[j] = mapSingleRecord2;
-                j++;
-                ifChanged = true;
-            } else if (sdiRecordsThisOne[j].getReference().compare(sdiRecordsThisOne[j].getAlternative()) == 0) {
-                sdiRecordsToRomove.push_back(j); // it does not affect sorting
-            }
-        }
-        for (int intTpRomoveIndex = sdiRecordsToRomove.size() - 1; intTpRomoveIndex >= 0; --intTpRomoveIndex) {
-            sdiRecordsThisOne.erase(sdiRecordsThisOne.begin() + sdiRecordsToRomove[intTpRomoveIndex]);
-        }
-        sdiRecordsThisOne.shrink_to_fit();
-    }
-    std::cout << sdiRecordsThisOne.size() << std::endl;
-    std::cout << "merge deletion insertions together" << std::endl;
-
-    // merge nearby indels begin
-    ifChanged = true;
-    while (ifChanged && sdiRecordsThisOne.size() > 1) {
-        std::sort(sdiRecordsThisOne.begin(), sdiRecordsThisOne.end());
-        ifChanged = false;
-        std::vector<int> sdiRecordsToRomove;
-        int oldSize = sdiRecordsThisOne.size();
-        for (int j = 1; j < oldSize; j++) {
-            if (sdiRecordsThisOne[j].getChanginglength() < 0 && sdiRecordsThisOne[j].getAlternative().compare("-") == 0 &&
-                ( //(sdiRecordsThisOne[j - 1].getPosition() == (sdiRecordsThisOne[j].getPosition()-1)  && sdiRecordsThisOne[j - 1].getReference() != "-" ) ||
-                        (sdiRecordsThisOne[j - 1].getReference()[0] != '-' &&
-                         sdiRecordsThisOne[j - 1].getPosition() + sdiRecordsThisOne[j - 1].getReference().size() == sdiRecordsThisOne[j].getPosition()))) {
-                int position = sdiRecordsThisOne[j - 1].getPosition();
-                std::string ori = sdiRecordsThisOne[j - 1].getReference() + sdiRecordsThisOne[j].getReference();
-                std::string result = sdiRecordsThisOne[j - 1].getAlternative() + sdiRecordsThisOne[j].getAlternative();
-
-                ori.erase(std::remove(ori.begin(), ori.end(), '-'), ori.end());
-                result.erase(std::remove(result.begin(), result.end(), '-'), result.end());
-//                std::cout << "liner 846" << chr <<  std::to_string(position) <<  ori << result << std::endl;
-                Variant mapSingleRecord2(chr, position, ori, result);
-                sdiRecordsToRomove.push_back(j - 1);
-                sdiRecordsThisOne[j] = mapSingleRecord2;
-                j++;
-                ifChanged = true;
-            } else if (sdiRecordsThisOne[j].getChanginglength() < 0 &&
-                       sdiRecordsThisOne[j].getAlternative().compare("-") == 0 && (
-                               (sdiRecordsThisOne[j - 1].getReference() != "-" && (sdiRecordsThisOne[j - 1].getPosition() + (sdiRecordsThisOne[j - 1].getReference().size())) < (sdiRecordsThisOne[j].getPosition()))
-                               || (sdiRecordsThisOne[j - 1].getReference() == "-" && sdiRecordsThisOne[j - 1].getPosition() != (sdiRecordsThisOne[j].getPosition())))
-                    ) {
-                int position = sdiRecordsThisOne[j].getPosition() - 1;
-//                std::cout << std::to_string(position-1) << chr << "\t" <<  std::to_string( refSequence[position-1]) <<  refSequence.substr(position-1, 20) << std::endl;
-                std::string ori(1, refSequence[position - 1]);
-                std::string result = ori;
-//                std::cout << ori << " liner 860" << chr << "\t" <<  std::to_string(sdiRecordsThisOne[j].getPosition()) << "\t" <<  sdiRecordsThisOne[j].getReference() << "\t" << sdiRecordsThisOne[j].getAlternative() << std::endl;
-                ori = ori + sdiRecordsThisOne[j].getReference();
-//                std::cout << "liner 861" << chr << "\t" <<  std::to_string(position) << "\t" <<  ori << "\t" << result << std::endl;
-                Variant mapSingleRecord2(chr, position, ori, result);
-                sdiRecordsThisOne[j] = mapSingleRecord2;
-            } else if (sdiRecordsThisOne[j].getChanginglength() < 0 &&
-                       sdiRecordsThisOne[j].getAlternative().compare("-") == 0 && (sdiRecordsThisOne[j - 1].getReference() == "-" && sdiRecordsThisOne[j - 1].getPosition() == (sdiRecordsThisOne[j].getPosition()))
-                    ) {
-                int position = sdiRecordsThisOne[j - 1].getPosition();
-                std::string ori = sdiRecordsThisOne[j - 1].getReference() + sdiRecordsThisOne[j].getReference();
-                std::string result = sdiRecordsThisOne[j - 1].getAlternative() + sdiRecordsThisOne[j].getAlternative();
-
-                ori.erase(std::remove(ori.begin(), ori.end(), '-'), ori.end());
-                result.erase(std::remove(result.begin(), result.end(), '-'), result.end());
-//                std::cout << "liner 873" << chr <<  std::to_string(position) << "\t" <<  ori << "\t" << result << std::endl;
-                Variant mapSingleRecord2(chr, position, ori, result);
-                sdiRecordsToRomove.push_back(j - 1);
-                sdiRecordsThisOne[j] = mapSingleRecord2;
-                j++;
-                ifChanged = true;
-            } else if (sdiRecordsThisOne[j].getChanginglength() > 0 &&
-                       sdiRecordsThisOne[j].getReference().compare("-") == 0 &&
-                       sdiRecordsThisOne[j - 1].getReference().compare("-") != 0 &&
-                       (sdiRecordsThisOne[j - 1].getPosition() + sdiRecordsThisOne[j - 1].getReference().size()) == (sdiRecordsThisOne[j].getPosition())) {
-                int position = sdiRecordsThisOne[j - 1].getPosition();
-                std::string ori = sdiRecordsThisOne[j - 1].getReference() + sdiRecordsThisOne[j].getReference();
-                std::string result = sdiRecordsThisOne[j - 1].getAlternative() + sdiRecordsThisOne[j].getAlternative();
-                ori.erase(std::remove(ori.begin(), ori.end(), '-'), ori.end());
-                result.erase(std::remove(result.begin(), result.end(), '-'), result.end());
-//                std::cout << "liner 888" << chr <<  std::to_string(position) << "\t" <<  ori << "\t" << result << std::endl;
-                Variant mapSingleRecord2(chr, position, ori, result);
-                sdiRecordsToRomove.push_back(j - 1);
-                sdiRecordsThisOne[j] = mapSingleRecord2;
-                j++;
-                ifChanged = true;
-            } else if (sdiRecordsThisOne[j].getChanginglength() > 0 &&
-                       sdiRecordsThisOne[j].getReference().compare("-") == 0 &&
-                       sdiRecordsThisOne[j - 1].getReference() != "-" &&
-                       (sdiRecordsThisOne[j - 1].getPosition() + (sdiRecordsThisOne[j - 1].getReference().size())) < (sdiRecordsThisOne[j].getPosition())) {
-                int position = sdiRecordsThisOne[j].getPosition() - 1;
-                std::string ori(1, refSequence[position - 1]);
-                std::string result = ori + sdiRecordsThisOne[j].getAlternative();
-//                std::cout << "liner 901" << chr <<  std::to_string(position) << "\t" <<  ori << "\t" << result << std::endl;
-                Variant mapSingleRecord2(chr, position, ori, result);
-                sdiRecordsThisOne[j] = mapSingleRecord2;
-            } else if (sdiRecordsThisOne[j].getChanginglength() > 0 &&
-                       sdiRecordsThisOne[j].getReference().compare("-") == 0 &&
-                       sdiRecordsThisOne[j - 1].getReference() == "-") {
-                int position = sdiRecordsThisOne[j].getPosition() - 1;
-                std::string ori(1, refSequence[position - 1]);
-                std::string result = ori + sdiRecordsThisOne[j].getAlternative();
-//                std::cout << "liner 910" << chr <<  std::to_string(position) << "\t" <<  ori << "\t" << result << std::endl;
-                Variant mapSingleRecord2(chr, position, ori, result);
-                sdiRecordsThisOne[j] = mapSingleRecord2;
-            } else if (sdiRecordsThisOne[j].getReference().compare(sdiRecordsThisOne[j].getAlternative()) == 0) {
-                sdiRecordsToRomove.push_back(j); // it does not affect sorting
-            } else if (sdiRecordsThisOne[j].getChanginglength() == 0 || (sdiRecordsThisOne[j].getReference().compare("-") != 0 && sdiRecordsThisOne[j].getAlternative().compare("-") != 0)) {
-
-            } else {
-                std::cout << "maybe something is missing here" << std::endl;
-                std::cout << sdiRecordsThisOne[j - 1].getChromosome() << "\t" << std::to_string(sdiRecordsThisOne[j - 1].getPosition()) << "\t" << sdiRecordsThisOne[j - 1].getReference() << "\t" << sdiRecordsThisOne[j - 1].getAlternative() << std::endl;
-                std::cout << sdiRecordsThisOne[j].getChromosome() << "\t" << std::to_string(sdiRecordsThisOne[j].getPosition()) << "\t" << sdiRecordsThisOne[j].getReference() << "\t" << sdiRecordsThisOne[j].getAlternative() << std::endl;
-            }
-        }
-        std::cout << sdiRecordsThisOne.size() << std::endl;
-//        return;
-        for (int intTpRomoveIndex = sdiRecordsToRomove.size() - 1; intTpRomoveIndex >= 0; --intTpRomoveIndex) {
-            sdiRecordsThisOne.erase(sdiRecordsThisOne.begin() + sdiRecordsToRomove[intTpRomoveIndex]);
-            sdiRecordsThisOne.shrink_to_fit();
-        }
-        std::cout << sdiRecordsThisOne.size() << std::endl << std::endl;
-//        sdiRecordsThisOne.shrink_to_fit();
-    }
-    std::cout << sdiRecordsThisOne.size() << std::endl;
-    std::cout << "merge nearby records together" << std::endl;
-
-    ifChanged = true;
-    while (ifChanged && sdiRecordsThisOne.size() > 1) {
-        std::sort(sdiRecordsThisOne.begin(), sdiRecordsThisOne.end());
-        ifChanged = false;
-        std::vector<int> sdiRecordsToRomove;
-        int oldSize = sdiRecordsThisOne.size();
-        for (int j = 1; j < oldSize; j++) {
-            if (sdiRecordsThisOne[j - 1].getReference().compare("-") != 0 &&
-                sdiRecordsThisOne[j].getChanginglength() > 0 && sdiRecordsThisOne[j].getReference().compare("-") == 0 &&
-                sdiRecordsThisOne[j - 1].getPosition() == sdiRecordsThisOne[j].getPosition()) {
-                int position = sdiRecordsThisOne[j - 1].getPosition();
-                std::string ori = sdiRecordsThisOne[j].getReference() + sdiRecordsThisOne[j - 1].getReference();
-                std::string result = sdiRecordsThisOne[j].getAlternative() + sdiRecordsThisOne[j - 1].getAlternative();
-
-                ori.erase(std::remove(ori.begin(), ori.end(), '-'), ori.end());
-                result.erase(std::remove(result.begin(), result.end(), '-'), result.end());
-//                std::cout << "liner 931" << chr <<  std::to_string(position) <<  ori << result << std::endl;
-                Variant mapSingleRecord2(chr, position, ori, result);
-                sdiRecordsToRomove.push_back(j - 1);
-                sdiRecordsThisOne[j] = mapSingleRecord2;
-                j++;
-                ifChanged = true;
-            } else if (sdiRecordsThisOne[j].getReference().compare(sdiRecordsThisOne[j].getAlternative()) == 0) {
-                sdiRecordsToRomove.push_back(j); // it does not affect sorting
-            }
-        }
-        for (int intTpRomoveIndex = sdiRecordsToRomove.size() - 1; intTpRomoveIndex >= 0; --intTpRomoveIndex) {
-            sdiRecordsThisOne.erase(sdiRecordsThisOne.begin() + sdiRecordsToRomove[intTpRomoveIndex]);
-        }
-        sdiRecordsThisOne.shrink_to_fit();
-    }
-    std::cout << sdiRecordsThisOne.size() << std::endl;
-    std::cout << "merge same location records together" << std::endl;
-
-    if (sdiRecordsThisOne.size() > 0 && sdiRecordsThisOne[0].getChanginglength() > 0 &&
-        sdiRecordsThisOne[0].getReference().compare("-") == 0) {
-        if (sdiRecordsThisOne[0].getPosition() != 1) {
-            int position = sdiRecordsThisOne[0].getPosition() - 1;
-            std::string ori(1, refSequence[position - 1]);
-            std::string result = ori + sdiRecordsThisOne[0].getAlternative();
-//            std::cout << "liner 953" << chr <<  std::to_string(position) <<  ori << result << std::endl;
-            Variant mapSingleRecord2(chr, position, ori, result);
-            sdiRecordsThisOne[0] = mapSingleRecord2;
-        } else if (sdiRecordsThisOne[0].getPosition() == 1 && sdiRecordsThisOne.size() > 1 && sdiRecordsThisOne[1].getPosition() == 1) {
-            int position = 1;
-            std::string ori = sdiRecordsThisOne[0].getReference() + sdiRecordsThisOne[1].getReference();
-            std::string result = sdiRecordsThisOne[0].getAlternative() + sdiRecordsThisOne[1].getAlternative();
-
-            ori.erase(std::remove(ori.begin(), ori.end(), '-'), ori.end());
-            result.erase(std::remove(result.begin(), result.end(), '-'), result.end());
-//            std::cout << "liner 963" << chr <<  std::to_string(position) <<  ori << result << std::endl;
-            Variant mapSingleRecord2(chr, position, ori, result);
-            sdiRecordsThisOne.erase(sdiRecordsThisOne.begin() + 1);
-            sdiRecordsThisOne.shrink_to_fit();
-            sdiRecordsThisOne[0] = mapSingleRecord2;
-        } else {
-            int position = 1;
-            std::string ori(1, refSequence[0]);
-            std::string result = sdiRecordsThisOne[0].getAlternative() + ori;
-            ori.erase(std::remove(ori.begin(), ori.end(), '-'), ori.end());
-            result.erase(std::remove(result.begin(), result.end(), '-'), result.end());
-//            std::cout << "liner 974" << chr <<  std::to_string(position) <<  ori << result << std::endl;
-            Variant mapSingleRecord2(chr, position, ori, result);
-            sdiRecordsThisOne[0] = mapSingleRecord2;
-        }
-    }
-    std::cout << "first insertion" << std::endl;
-    if (sdiRecordsThisOne.size() > 0 && sdiRecordsThisOne[0].getChanginglength() < 0 &&
-        sdiRecordsThisOne[0].getAlternative().compare("-") == 0) {
-        if (sdiRecordsThisOne[0].getPosition() != 1) {
-            int position = sdiRecordsThisOne[0].getPosition() - 1;
-            std::string ori(1, refSequence[position - 1]);
-            std::string result = ori;
-            ori += sdiRecordsThisOne[0].getReference();
-//            std::cout << "liner 987" << chr <<  std::to_string(position) <<  ori << result << std::endl;
-            Variant mapSingleRecord2(chr, position, ori, result);
-            sdiRecordsThisOne[0] = mapSingleRecord2;
-        } else if (sdiRecordsThisOne[0].getPosition() == 1 && sdiRecordsThisOne.size() > 1 && sdiRecordsThisOne[1].getPosition() == sdiRecordsThisOne[0].getPosition() + sdiRecordsThisOne[0].getReference().size()) {
-            int position = 1;
-            std::string ori = sdiRecordsThisOne[0].getReference() + sdiRecordsThisOne[1].getReference();
-            std::string result = sdiRecordsThisOne[0].getAlternative() + sdiRecordsThisOne[1].getAlternative();
-
-            ori.erase(std::remove(ori.begin(), ori.end(), '-'), ori.end());
-            result.erase(std::remove(result.begin(), result.end(), '-'), result.end());
-//            std::cout << "liner 997" << chr <<  std::to_string(position) <<  ori << result << std::endl;
-            Variant mapSingleRecord2(chr, position, ori, result);
-            sdiRecordsThisOne.erase(sdiRecordsThisOne.begin() + 1);
-            sdiRecordsThisOne.shrink_to_fit();
-            sdiRecordsThisOne[0] = mapSingleRecord2;
-        } else {
-            int position = 1;
-            std::string result(1, refSequence[sdiRecordsThisOne[0].getReference().size()]);
-            std::string ori = sdiRecordsThisOne[0].getReference() + result;
-            ori.erase(std::remove(ori.begin(), ori.end(), '-'), ori.end());
-            result.erase(std::remove(result.begin(), result.end(), '-'), result.end());
-//            std::cout << "liner 1008" << chr <<  std::to_string(position) <<  ori << result << std::endl;
-            Variant mapSingleRecord2(chr, position, ori, result);
-            sdiRecordsThisOne[0] = mapSingleRecord2;
-        }
-    }
-    std::cout << "first deletion" << std::endl;
-}
-
 void genomeAlignmentAndVariantCallingSingleThread(
         std::string refChr, std::string queryChr,
         std::map<std::string, std::tuple<std::string, long, long, int> > map_ref,
@@ -1150,8 +519,8 @@ void genomeAlignmentAndVariantCallingSingleThread(
         const std::vector<AlignmentMatch> v_am,
         const int chrWidth, const std::string refFileName, const std::string queryFileName,
         const bool outPutMaf, const bool outPutFraged, std::ofstream &omaffile,
-        std::ofstream &ovcffile, std::ofstream &ofragfile,
-        const int32_t windowWidth, const int32_t wfaSize, const int32_t wfaSize2,
+        std::ofstream &ofragfile,
+        const int32_t windowWidth,
         const int32_t matchingScore, const int32_t mismatchingPenalty,
         const int32_t openGapPenalty1, const int32_t extendGapPenalty1, const int32_t openGapPenalty2, const int32_t extendGapPenalty2,
         const int32_t min_wavefront_length, const int32_t max_distance_threshold, std::atomic_int &num_runing_threads) {
@@ -1255,7 +624,7 @@ void genomeAlignmentAndVariantCallingSingleThread(
                 std::string _alignment_q;
                 std::string _alignment_d;
 
-                int64_t thiScore = alignSlidingWindow(seq_qry, seq_ref, _alignment_q, _alignment_d, windowWidth, wfaSize, matchingScore, mismatchingPenalty, openGapPenalty1, extendGapPenalty1, openGapPenalty2, extendGapPenalty2, min_wavefront_length, max_distance_threshold, m);
+                int64_t thiScore = alignSlidingWindow(seq_qry, seq_ref, _alignment_q, _alignment_d, windowWidth, matchingScore, mismatchingPenalty, openGapPenalty1, extendGapPenalty1, openGapPenalty2, extendGapPenalty2, min_wavefront_length, max_distance_threshold, m);
                 if (checkResult) {
                     std::string tempd = _alignment_d;
                     tempd.erase(std::remove(tempd.begin(), tempd.end(), '-'), tempd.end());
@@ -1264,7 +633,7 @@ void genomeAlignmentAndVariantCallingSingleThread(
                     tempq.erase(std::remove(tempq.begin(), tempq.end(), '-'), tempq.end());
 
                     if (tempd.compare(seq_ref) != 0 || tempq.compare(seq_qry) != 0) {
-                        thiScore = alignSlidingWindowNW(seq_qry, seq_ref, _alignment_q, _alignment_d, windowWidth, wfaSize, matchingScore, mismatchingPenalty, openGapPenalty1, extendGapPenalty1, openGapPenalty2, extendGapPenalty2, min_wavefront_length, max_distance_threshold, m);
+                        thiScore = alignSlidingWindowNW(seq_qry, seq_ref, _alignment_q, _alignment_d, windowWidth, matchingScore, mismatchingPenalty, openGapPenalty1, extendGapPenalty1, openGapPenalty2, extendGapPenalty2, min_wavefront_length, max_distance_threshold, m);
                         tempd = _alignment_d;
                         tempd.erase(std::remove(tempd.begin(), tempd.end(), '-'), tempd.end());
                         tempq = _alignment_q;
@@ -1353,7 +722,7 @@ void genomeAlignmentAndVariantCallingSingleThread(
                 std::string _alignment_q;
                 std::string _alignment_d;
 
-                int64_t thiScore = alignSlidingWindow(seq_qry, seq_ref, _alignment_q, _alignment_d, windowWidth, wfaSize, matchingScore, mismatchingPenalty, openGapPenalty1, extendGapPenalty1, openGapPenalty2, extendGapPenalty2, min_wavefront_length, max_distance_threshold, m);
+                int64_t thiScore = alignSlidingWindow(seq_qry, seq_ref, _alignment_q, _alignment_d, windowWidth, matchingScore, mismatchingPenalty, openGapPenalty1, extendGapPenalty1, openGapPenalty2, extendGapPenalty2, min_wavefront_length, max_distance_threshold, m);
                 if (checkResult) {
                     std::string tempd = _alignment_d;
                     tempd.erase(std::remove(tempd.begin(), tempd.end(), '-'), tempd.end());
@@ -1362,7 +731,7 @@ void genomeAlignmentAndVariantCallingSingleThread(
                     tempq.erase(std::remove(tempq.begin(), tempq.end(), '-'), tempq.end());
 
                     if (tempd.compare(seq_ref) != 0 || tempq.compare(seq_qry) != 0) {
-                        thiScore = alignSlidingWindowNW(seq_qry, seq_ref, _alignment_q, _alignment_d, windowWidth, wfaSize, matchingScore, mismatchingPenalty, openGapPenalty1, extendGapPenalty1, openGapPenalty2, extendGapPenalty2, min_wavefront_length, max_distance_threshold, m);
+                        thiScore = alignSlidingWindowNW(seq_qry, seq_ref, _alignment_q, _alignment_d, windowWidth, matchingScore, mismatchingPenalty, openGapPenalty1, extendGapPenalty1, openGapPenalty2, extendGapPenalty2, min_wavefront_length, max_distance_threshold, m);
                         tempd = _alignment_d;
                         tempd.erase(std::remove(tempd.begin(), tempd.end(), '-'), tempd.end());
                         tempq = _alignment_q;
@@ -1448,7 +817,7 @@ void genomeAlignmentAndVariantCallingSingleThread(
             std::string _alignment_q;
             std::string _alignment_d;
 
-            int64_t thiScore = alignSlidingWindow(seq_qry, seq_ref, _alignment_q, _alignment_d, windowWidth, wfaSize2, matchingScore, mismatchingPenalty, openGapPenalty1, extendGapPenalty1, openGapPenalty2, extendGapPenalty2, min_wavefront_length, max_distance_threshold, m);
+            int64_t thiScore = alignSlidingWindow(seq_qry, seq_ref, _alignment_q, _alignment_d, windowWidth, matchingScore, mismatchingPenalty, openGapPenalty1, extendGapPenalty1, openGapPenalty2, extendGapPenalty2, min_wavefront_length, max_distance_threshold, m);
             if (checkResult) {
                 std::string tempd = _alignment_d;
                 tempd.erase(std::remove(tempd.begin(), tempd.end(), '-'), tempd.end());
@@ -1457,7 +826,7 @@ void genomeAlignmentAndVariantCallingSingleThread(
                 tempq.erase(std::remove(tempq.begin(), tempq.end(), '-'), tempq.end());
 
                 if (tempd.compare(seq_ref) != 0 || tempq.compare(seq_qry) != 0) {
-                    thiScore = alignSlidingWindowNW(seq_qry, seq_ref, _alignment_q, _alignment_d, windowWidth, wfaSize, matchingScore, mismatchingPenalty, openGapPenalty1, extendGapPenalty1, openGapPenalty2, extendGapPenalty2, min_wavefront_length, max_distance_threshold, m);
+                    thiScore = alignSlidingWindowNW(seq_qry, seq_ref, _alignment_q, _alignment_d, windowWidth, matchingScore, mismatchingPenalty, openGapPenalty1, extendGapPenalty1, openGapPenalty2, extendGapPenalty2, min_wavefront_length, max_distance_threshold, m);
                     tempd = _alignment_d;
                     tempd.erase(std::remove(tempd.begin(), tempd.end(), '-'), tempd.end());
                     tempq = _alignment_q;
@@ -1556,7 +925,7 @@ void genomeAlignmentAndVariantCallingSingleThread(
             std::string _alignment_q;
             std::string _alignment_d;
 
-            int64_t thiScore = alignSlidingWindow(seq_qry, seq_ref, _alignment_q, _alignment_d, windowWidth, wfaSize, matchingScore, mismatchingPenalty, openGapPenalty1, extendGapPenalty1, openGapPenalty2, extendGapPenalty2, min_wavefront_length, max_distance_threshold, m);
+            int64_t thiScore = alignSlidingWindow(seq_qry, seq_ref, _alignment_q, _alignment_d, windowWidth, matchingScore, mismatchingPenalty, openGapPenalty1, extendGapPenalty1, openGapPenalty2, extendGapPenalty2, min_wavefront_length, max_distance_threshold, m);
             if (checkResult) {
                 std::string tempd = _alignment_d;
                 tempd.erase(std::remove(tempd.begin(), tempd.end(), '-'), tempd.end());
@@ -1565,7 +934,7 @@ void genomeAlignmentAndVariantCallingSingleThread(
                 tempq.erase(std::remove(tempq.begin(), tempq.end(), '-'), tempq.end());
 
                 if (tempd.compare(seq_ref) != 0 || tempq.compare(seq_qry) != 0) {
-                    thiScore = alignSlidingWindowNW(seq_qry, seq_ref, _alignment_q, _alignment_d, windowWidth, wfaSize, matchingScore, mismatchingPenalty, openGapPenalty1, extendGapPenalty1, openGapPenalty2, extendGapPenalty2, min_wavefront_length, max_distance_threshold, m);
+                    thiScore = alignSlidingWindowNW(seq_qry, seq_ref, _alignment_q, _alignment_d, windowWidth, matchingScore, mismatchingPenalty, openGapPenalty1, extendGapPenalty1, openGapPenalty2, extendGapPenalty2, min_wavefront_length, max_distance_threshold, m);
                     tempd = _alignment_d;
                     tempd.erase(std::remove(tempd.begin(), tempd.end(), '-'), tempd.end());
                     tempq = _alignment_q;
@@ -1642,7 +1011,7 @@ void genomeAlignmentAndVariantCallingSingleThread(
 
 void genomeAlignmentAndVariantCalling(std::map<std::string, std::vector<AlignmentMatch>> &alignmentMatchsMap,
                                       const std::string &refFastaFilePath, const std::string &targetFastaFilePath,
-                                      const int32_t &windowWidth, const int32_t &wfaSize, const int32_t &wfaSize2, const std::string &outPutMafFile,
+                                      const int32_t &windowWidth, /*const int32_t &wfaSize, const int32_t &wfaSize2, */const std::string &outPutMafFile,
                                       const std::string &outPutFragedFile, const int32_t &matchingScore, const int32_t &mismatchingPenalty,
                                       const int32_t &openGapPenalty1, const int32_t &extendGapPenalty1, const int32_t &openGapPenalty2, const int32_t &extendGapPenalty2,
                                       const int32_t &min_wavefront_length, const int32_t &max_distance_threshold, int32_t &seed_window_size, const int32_t &mini_cns_score, const int32_t &step_size,
@@ -1688,7 +1057,6 @@ void genomeAlignmentAndVariantCalling(std::map<std::string, std::vector<Alignmen
     }
 
     std::ofstream omaffile;
-    std::ofstream ovcffile;
     std::ofstream ofragfile;
     if (outPutMaf) {
         omaffile.open(outPutMafFile);
@@ -1722,7 +1090,7 @@ void genomeAlignmentAndVariantCalling(std::map<std::string, std::vector<Alignmen
 
                     std::thread t(genomeAlignmentAndVariantCallingSingleThread, refChr, queryChr, map_ref, map_target, it->second, chrWidth,
                                   refFileName, queryFileName, outPutMaf, outPutFraged, std::ref(omaffile),
-                                  std::ref(ovcffile), std::ref(ofragfile), windowWidth, wfaSize, wfaSize2, matchingScore, mismatchingPenalty,
+                                  std::ref(ofragfile), windowWidth, matchingScore, mismatchingPenalty,
                                   openGapPenalty1, extendGapPenalty1, openGapPenalty2, extendGapPenalty2,
                                   min_wavefront_length, max_distance_threshold, std::ref(num_runing_threads));
 

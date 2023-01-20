@@ -16,12 +16,12 @@
 #include "../../minimap2/ksw2.h"
 
 int64_t alignSlidingWindow(std::string &dna_q, std::string &dna_d, std::string &_alignment_q, std::string &_alignment_d,
-                           const int64_t &slidingWindowSize, const int32_t &wfaSize, const int32_t &matchingScore,
+                           const int64_t &slidingWindowSize, const int32_t &matchingScore,
                            const int32_t &mismatchingPenalty, const int32_t &openGapPenalty1, const int32_t &extendGapPenalty1, const int32_t &openGapPenalty2, const int32_t &extendGapPenalty2,
                            const int32_t &min_wavefront_length, const int32_t &max_distance_threshold, const Scorei &m);
 
 int64_t alignSlidingWindow(std::string &dna_q, std::string &dna_d, std::string &_alignment_q, std::string &_alignment_d,
-                           const int64_t &slidingWindowSize, const int32_t &wfaSize, const int32_t &matchingScore,
+                           const int64_t &slidingWindowSize, const int32_t &matchingScore,
                            const int32_t &mismatchingPenalty, const int32_t &openGapPenalty1, const int32_t &extendGapPenalty1, const int32_t &openGapPenalty2, const int32_t &extendGapPenalty2,
                            const int32_t &min_wavefront_length, const int32_t &max_distance_threshold, const Scorei &m);
 
@@ -39,7 +39,7 @@ int64_t alignSlidingWindow(const std::string &dna_q, const std::string &dna_d, i
                            const int32_t &extendGapPenalty1, const int32_t &openGapPenalty2, const int32_t &extendGapPenalty2);
 
 int64_t alignSlidingWindowNW(std::string &dna_q, std::string &dna_d, std::string &_alignment_q, std::string &_alignment_d,
-                             const int64_t &slidingWindowSize, const int32_t &wfaSize, const int32_t &matchingScore,
+                             const int64_t &slidingWindowSize, const int32_t &matchingScore,
                              const int32_t &mismatchingPenalty, const int32_t &openGapPenalty1, const int32_t &extendGapPenalty1, const int32_t &openGapPenalty2, const int32_t &extendGapPenalty2,
                              const int32_t &min_wavefront_length, const int32_t &max_distance_threshold, const Scorei &m);
 
