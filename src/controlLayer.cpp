@@ -82,22 +82,11 @@ int genomeAlignment(int argc, char **argv) {
     int expectedCopies = 1;
     double maximumSimilarity = 0.6; // the maximum simalarity between secondary hist the primary hit. If the second hit is too similary with primary hit, that is unwanted duplications
 
-    int32_t min_wavefront_length = 20;
     int32_t max_distance_threshold = 100;
 
-    int32_t seed_window_size = 38;
-    int32_t mini_cns_score = 30;
-    int32_t step_size = 8;
-    int32_t matrix_boundary_distance = 0;
     bool searchForNewAnchors = true;
 
-//    int k = 12;
-//    int mw = 1;
-//    bool H = false;
 
-    int32_t scoreThreshold = 54;
-    int32_t w2 = 10;  //this is the band width for band sequence alignments
-    int32_t xDrop = 20;
     int threads = 1;
     bool exonModel = false;
 
@@ -145,17 +134,7 @@ int genomeAlignment(int argc, char **argv) {
           //          "              -wl and -wd are parameters for WFA-Adaptive"  << std::endl <<
           " -ns          do not search for new anchors (default: false)" << std::endl <<
           " -x           use exon records instead of CDS from the GFF file (should be identical with the setting of gff2seq function)" << std::endl <<
-          //          " Following parameters are for minimap2 library, useful to identify novel anchors when -ns is not set" << std::endl<<
-          //          " -H	         Use homopolymer-compressed (HPC) minimizers. An HPC sequence is constructed by contracting homopolymer runs to a single base. An HPC minimizer is a minimizer on the HPC sequence." << std::endl<<
-          //          " -k   INT	 Minimizer k-mer length (default: "<<k<<")" << std::endl<<
-          //          " -mw  INT	 Minimizer window size(default: " << mw << "). A minimizer is the smallest k-mer in a window of w consecutive k-mers." << std::endl << std::endl <<
-          //          " Following parameters are useful for local alignment when -l is set" << std::endl<<
-          //          " -sw  INT     the windows size used to run the smith-waterman algorithm to get the alignment seed (default: "<<seed_window_size<<")" << std::endl <<
-          //          " -c   INT     minimum seeds score to trigger a local alignment extension (default: " << mini_cns_score << ")" << std::endl <<
-          //          " -st  INT     step size for sliding the smith-waterman seeds alignment window (default: " << step_size << ")" << std::endl <<
-          //          " -ms  INT     minimum score to report a local sequence alignment (default: "<<scoreThreshold<<")" << std::endl <<
-          //          " -x   INT     x-drop for local alignment (default: " << xDrop << ")" << std::endl <<
-          //          " -u   INT     local alignment band width (default: " << w2 << ")" << std::endl <<
+
           std::endl;
 
     InputParser inputParser(argc, argv);
@@ -275,42 +254,11 @@ int genomeAlignment(int argc, char **argv) {
         if (inputParser.cmdOptionExists("-w")) {
             windowWidth = std::stoi(inputParser.getCmdOption("-w"));
         }
-        if (inputParser.cmdOptionExists("-wl")) {
-            min_wavefront_length = std::stoi(inputParser.getCmdOption("-wl"));
-        }
 
-        if (inputParser.cmdOptionExists("-wd")) {
-            max_distance_threshold = std::stoi(inputParser.getCmdOption("-wd"));
-        }
         if (inputParser.cmdOptionExists("-ns")) {
             searchForNewAnchors = false;
         }
-//        if (inputParser.cmdOptionExists("-H")) {
-//            H = true;
-//        }
-//        if (inputParser.cmdOptionExists("-k")) {
-//            k = std::stoi(inputParser.getCmdOption("-k"));
-//        }
-//
-//        if (inputParser.cmdOptionExists("-mw")) {
-//            mw = std::stoi(inputParser.getCmdOption("-mw"));
-//        }
-        if (inputParser.cmdOptionExists("-sw")) {
-            seed_window_size = std::stoi(inputParser.getCmdOption("-sw"));
-        }
-        if (inputParser.cmdOptionExists("-c")) {
-            mini_cns_score = std::stoi(inputParser.getCmdOption("-c"));
-        }
-        if (inputParser.cmdOptionExists("-st")) {
-            step_size = std::stoi(inputParser.getCmdOption("-st"));
-        }
-        if (inputParser.cmdOptionExists("-ms")) {
-            scoreThreshold = std::stoi(inputParser.getCmdOption("-ms"));
-        }
 
-        if (inputParser.cmdOptionExists("-u")) {
-            w2 = std::stoi(inputParser.getCmdOption("-u"));
-        }
         if (inputParser.cmdOptionExists("-x")) {
             exonModel = true;
         }
@@ -438,9 +386,8 @@ int genomeAlignment(int argc, char **argv) {
                                              windowWidth, /*wfaSize, wfaSize2,*/
                                              outPutMafFile, outPutFragedFile,
                                              matchingScore, mismatchingPenalty, openGapPenalty1, extendGapPenalty1,
-                                             openGapPenalty2, extendGapPenalty2, min_wavefront_length, max_distance_threshold,
-                                             seed_window_size, mini_cns_score, step_size, matrix_boundary_distance,
-                                             scoreThreshold, w2, xDrop, threads);
+                                             openGapPenalty2, extendGapPenalty2,
+                                             threads);
 
             std::cout << "AnchorWave done!" << std::endl;
         }
@@ -477,22 +424,8 @@ int proportationalAlignment(int argc, char **argv) {
     int64_t windowWidth = 100000;
     int expectedCopies = 1;
     double maximumSimilarity = 0.6;
-    int32_t min_wavefront_length = 20;
-    int32_t max_distance_threshold = 100;
 
-    int32_t seed_window_size = 38;
-    int32_t mini_cns_score = 30;
-    int32_t step_size = 8;
-    int32_t matrix_boundary_distance = 0;
     bool searchForNewAnchors = true;
-
-//    int k = 12;
-//    int mw = 1;
-//    bool H = false;
-
-    int32_t scoreThreshold = 54;
-    int32_t w2 = 10;  //this is the band width for band sequence alignments
-    int32_t xDrop = 20;
 
     double calculateIndelDistance = 3;
 
@@ -526,11 +459,6 @@ int proportationalAlignment(int argc, char **argv) {
           //          " -fa2 INT     if fragment length is smaller than this value in anchor region, use WFA to align (default: " << wfaSize2 << ")" << std::endl <<
           " -fa3 INT     if the inter-anchor length is shorter than this value, stop trying to find new anchors (default: " << wfaSize3 << ")" << std::endl <<
           " -w   INT     sequence alignment window width (default: " << windowWidth << ")" << std::endl <<
-          //          "              If the fragment length is longer than -fa/-fa2, ProAli perform sequence alignment using a sliding window approach"  << std::endl <<
-          //          "              If you have enough memory on your computer and expect better alignment, please set large value for -w, -fa, -fa2 and -fa3 "  << std::endl  <<
-          //          " -wl  INT     min wavefront length (default: "<< min_wavefront_length << ")" << std::endl <<
-          //          " -wd  INT     max distance threshold (default: "<< max_distance_threshold << ")" << std::endl <<
-          //          "              -wl and -wd are parameters for WFA-Adaptive"  << std::endl <<
           " -R   INT     reference genome maximum alignment coverage " << std::endl <<
           " -Q   INT     query genome maximum alignment coverage " << std::endl <<
           //          " -A   INT     matching score (default: " << matchingScore << ")" << std::endl <<
@@ -555,20 +483,7 @@ int proportationalAlignment(int argc, char **argv) {
           " -D   INT     maximum gap size for chain (default: " << MAX_DIST_BETWEEN_MATCHES << ")" << std::endl <<
           " -ns          do not search for new anchors (default: false)" << std::endl <<
           " -x           use exon records instead of CDS from the GFF file (should be identical with the setting of gff2seq function)" << std::endl <<
-          //          " -ua          use alignment score to identify collinear blocks (default: false)" << std::endl <<
-          //          "              by default, we use proportion of sequence similarity as score to identify collinear block." << std::endl <<
-          //          "              if this parameter is set true, we use the sequence alignment score instead.  " << std::endl << std::endl<<
-          //          " Following parameters are for minimap2 library, useful to identify novel anchors when -ns is not set" << std::endl<<
-          //          " -H	         Use homopolymer-compressed (HPC) minimizers. An HPC sequence is constructed by contracting homopolymer runs to a single base. An HPC minimizer is a minimizer on the HPC sequence." << std::endl<<
-          //          " -k   INT	 Minimizer k-mer length (default: "<<k<<")" << std::endl<<
-          //          " -mw  INT	 Minimizer window size(default: " << mw << "). A minimizer is the smallest k-mer in a window of w consecutive k-mers." << std::endl<< std::endl<<
-          //          " Following parameters are useful for local alignment when -l is set" << std::endl<<
-          //          " -sw  INT     the windows size used to run the smith-waterman algorithm to get the alignment seed (default: "<<seed_window_size<<")" << std::endl <<
-          //          " -c   INT     minimum seeds score to trigger a local alignment extension (default: " << mini_cns_score << ")" << std::endl <<
-          //          " -st  INT     step size for sliding the smith-waterman seeds alignment window (default: " << step_size << ")" << std::endl <<
-          //          " -ms  INT     minimum score to report a local sequence alignment (default: "<<scoreThreshold<<")" << std::endl <<
-          //          " -x   INT     x-drop for local alignment (default: " << xDrop << ")" << std::endl <<
-          //          " -u   INT     local alignment band width (default: " << w2 << ")" << std::endl <<
+
           std::endl;
 
     InputParser inputParser(argc, argv);
@@ -604,14 +519,6 @@ int proportationalAlignment(int argc, char **argv) {
 
         if (inputParser.cmdOptionExists("-w")) {
             windowWidth = std::stoi(inputParser.getCmdOption("-w"));
-        }
-
-        if (inputParser.cmdOptionExists("-wl")) {
-            min_wavefront_length = std::stoi(inputParser.getCmdOption("-wl"));
-        }
-
-        if (inputParser.cmdOptionExists("-wd")) {
-            max_distance_threshold = std::stoi(inputParser.getCmdOption("-wd"));
         }
 
         if (inputParser.cmdOptionExists("-R")) {
@@ -718,39 +625,6 @@ int proportationalAlignment(int argc, char **argv) {
 //            useAlignmentScore = true;
         }
 
-//        if (inputParser.cmdOptionExists("-H")) {
-//            H = true;
-//        }
-
-//        if (inputParser.cmdOptionExists("-f")) {
-//            outPutAlignmentForEachInterval = true;
-//        }
-
-//        if (inputParser.cmdOptionExists("-k")) {
-//            k = std::stoi(inputParser.getCmdOption("-k"));
-//        }
-//
-//        if (inputParser.cmdOptionExists("-mw")) {
-//            mw = std::stoi(inputParser.getCmdOption("-mw"));
-//        }
-
-        if (inputParser.cmdOptionExists("-sw")) {
-            seed_window_size = std::stoi(inputParser.getCmdOption("-sw"));
-        }
-        if (inputParser.cmdOptionExists("-c")) {
-            mini_cns_score = std::stoi(inputParser.getCmdOption("-c"));
-        }
-        if (inputParser.cmdOptionExists("-st")) {
-            step_size = std::stoi(inputParser.getCmdOption("-st"));
-        }
-        if (inputParser.cmdOptionExists("-ms")) {
-            scoreThreshold = std::stoi(inputParser.getCmdOption("-ms"));
-        }
-
-        if (inputParser.cmdOptionExists("-u")) {
-            w2 = std::stoi(inputParser.getCmdOption("-u"));
-        }
-
         std::vector<std::vector<AlignmentMatch>> alignmentMatchsMap;
 
         std::map<std::string, std::tuple<std::string, long, long, int> > map_ref;
@@ -854,8 +728,8 @@ int proportationalAlignment(int argc, char **argv) {
         if (inputParser.cmdOptionExists("-f") || inputParser.cmdOptionExists("-o") || inputParser.cmdOptionExists("-l")) {
             genomeAlignment(alignmentMatchsMap, referenceGenomeSequence, targetGenomeSequence, windowWidth, /*wfaSize, wfaSize2,*/
                             outPutMafFile, outPutFragedFile, matchingScore, mismatchingPenalty, openGapPenalty1, extendGapPenalty1,
-                            openGapPenalty2, extendGapPenalty2, seed_window_size, mini_cns_score, step_size, matrix_boundary_distance,
-                            scoreThreshold, w2, xDrop, min_wavefront_length, max_distance_threshold, threads);
+                            openGapPenalty2, extendGapPenalty2,
+                            threads);
             std::cout << "AnchorWave done!" << std::endl;
         }
     }
@@ -959,8 +833,6 @@ int ali(int argc, char **argv) {
         std::string _alignment_q;
         std::string _alignment_d;
 
-        int32_t min_wavefront_length = 20;
-        int32_t max_distance_threshold = 100;
         Scorei m(matchingScore, mismatchingPenalty);
 
         std::string refSeqStr = getSubsequence2(map_ref, map_ref.begin()->first);
@@ -968,8 +840,7 @@ int ali(int argc, char **argv) {
 
         alignSlidingWindow(querySeqStr, refSeqStr, _alignment_q, _alignment_d,
                                               windowWidth, matchingScore, mismatchingPenalty, openGapPenalty1,
-                                              extendGapPenalty1, openGapPenalty2, extendGapPenalty2,
-                                              min_wavefront_length, max_distance_threshold, m);
+                                              extendGapPenalty1, openGapPenalty2, extendGapPenalty2, m);
         std::cout << ">" << map_ref.begin()->first << std::endl;
         std::cout << _alignment_d << std::endl;
         std::cout << ">" << map_qry.begin()->first << std::endl;

@@ -11,9 +11,13 @@ set(CMAKE_CXX_STANDARD 14)
 #endif()
 
 find_package(ZLIB)
+add_definitions(-D__SSE2__ -D__SSE2NEON__)
+include_directories(src minimap2/sse2neon)
 
-set(CMAKE_CXX_FLAGS " -lm -lz -Wall -g3 -O3 -funroll-all-loops -msse4.1 -msse4.2 -I ./ -std=gnu++14 -pthread -lrt") # the -mavx* is for GNU compiler and xCORE* are for intel compiler
-set(CMAKE_C_FLAGS " -lm -lz -Wall -g3 -O3 -funroll-all-loops -msse4.1 -msse4.2 -I ./ -pthread -lrt")
+set(CMAKE_CXX_FLAGS " -Wall -g3 -O3 -I ./ -std=gnu++14 -pthread") # the -mavx* is for GNU compiler and xCORE* are for intel compiler
+set(CMAKE_C_FLAGS " -Wall -g3 -O3 -I ./ -pthread")
+
+
 
 #for google unit test
 add_subdirectory(./googletest/googletest)
