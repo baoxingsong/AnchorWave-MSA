@@ -82,8 +82,6 @@ int genomeAlignment(int argc, char **argv) {
     int expectedCopies = 1;
     double maximumSimilarity = 0.6; // the maximum simalarity between secondary hist the primary hit. If the second hit is too similary with primary hit, that is unwanted duplications
 
-    int32_t max_distance_threshold = 100;
-
     bool searchForNewAnchors = true;
 
 
@@ -833,14 +831,13 @@ int ali(int argc, char **argv) {
         std::string _alignment_q;
         std::string _alignment_d;
 
-        Scorei m(matchingScore, mismatchingPenalty);
 
         std::string refSeqStr = getSubsequence2(map_ref, map_ref.begin()->first);
         std::string querySeqStr = getSubsequence2(map_qry, map_qry.begin()->first);
 
         alignSlidingWindow(querySeqStr, refSeqStr, _alignment_q, _alignment_d,
                                               windowWidth, matchingScore, mismatchingPenalty, openGapPenalty1,
-                                              extendGapPenalty1, openGapPenalty2, extendGapPenalty2, m);
+                                              extendGapPenalty1, openGapPenalty2, extendGapPenalty2);
         std::cout << ">" << map_ref.begin()->first << std::endl;
         std::cout << _alignment_d << std::endl;
         std::cout << ">" << map_qry.begin()->first << std::endl;

@@ -406,8 +406,7 @@ int64_t alignSlidingWindow_minimap2(const std::string &dna_q, const std::string 
 
 int64_t alignSlidingWindow_minimap2_or_NW(std::string &dna_q, std::string &dna_d, std::string &_alignment_q, std::string &_alignment_d,
                                           const int64_t &slidingWindowSize, const int32_t &matchingScore,
-                                          const int32_t &mismatchingPenalty, const int32_t &openGapPenalty1, const int32_t &extendGapPenalty1, const int32_t &openGapPenalty2, const int32_t &extendGapPenalty2,
-                                          const Scorei &m) {
+                                          const int32_t &mismatchingPenalty, const int32_t &openGapPenalty1, const int32_t &extendGapPenalty1, const int32_t &openGapPenalty2, const int32_t &extendGapPenalty2) {
 //    int64_t totalScore = 0;
 //    _alignment_q = "";
 //    _alignment_d = "";
@@ -458,7 +457,7 @@ int64_t alignSlidingWindow_minimap2_or_NW(std::string &dna_q, std::string &dna_d
 
 int64_t alignSlidingWindow_local_wfa2_v2(std::string &dna_q, std::string &dna_d, std::string &_alignment_q, std::string &_alignment_d,
                                          const int64_t &slidingWindowSize, const int32_t &matchingScore,
-                                         const int32_t &mismatchingPenalty, const int32_t &openGapPenalty1, const int32_t &extendGapPenalty1, const int32_t &openGapPenalty2, const int32_t &extendGapPenalty2,const Scorei &m) {
+                                         const int32_t &mismatchingPenalty, const int32_t &openGapPenalty1, const int32_t &extendGapPenalty1, const int32_t &openGapPenalty2, const int32_t &extendGapPenalty2) {
     int64_t totalScore = 0;
     _alignment_q = "";
     _alignment_d = "";
@@ -496,7 +495,7 @@ int64_t alignSlidingWindow_local_wfa2_v2(std::string &dna_q, std::string &dna_d,
                                                        slidingWindowSize, matchingScore,
                                                        mismatchingPenalty, openGapPenalty1, extendGapPenalty1,
                                                        openGapPenalty2,
-                                                       extendGapPenalty2, m);
+                                                       extendGapPenalty2);
     } else {
         //check all Ns end
         std::string qSeq = dna_q;
@@ -547,7 +546,7 @@ int64_t alignSlidingWindow_local_wfa2_v2(std::string &dna_q, std::string &dna_d,
                                                            slidingWindowSize, matchingScore,
                                                            mismatchingPenalty, openGapPenalty1, extendGapPenalty1,
                                                            openGapPenalty2,
-                                                           extendGapPenalty2, m);
+                                                           extendGapPenalty2);
         }
 
 
@@ -557,8 +556,7 @@ int64_t alignSlidingWindow_local_wfa2_v2(std::string &dna_q, std::string &dna_d,
 
 int64_t alignSlidingWindow(std::string &dna_q, std::string &dna_d, std::string &_alignment_q, std::string &_alignment_d,
                            const int64_t &slidingWindowSize,  const int32_t &matchingScore,
-                           const int32_t &mismatchingPenalty, const int32_t &openGapPenalty1, const int32_t &extendGapPenalty1, const int32_t &openGapPenalty2, const int32_t &extendGapPenalty2,
-                           const Scorei &m) {
+                           const int32_t &mismatchingPenalty, const int32_t &openGapPenalty1, const int32_t &extendGapPenalty1, const int32_t &openGapPenalty2, const int32_t &extendGapPenalty2) {
 //    int64_t totalScore = 0;
 //    _alignment_q = "";
 //    _alignment_d = "";
@@ -580,7 +578,7 @@ int64_t alignSlidingWindow(std::string &dna_q, std::string &dna_d, std::string &
 //
 //    return totalScore;
     return alignSlidingWindow_local_wfa2_v2(dna_q, dna_d, _alignment_q, _alignment_d, slidingWindowSize, matchingScore,
-                                            mismatchingPenalty, openGapPenalty1, extendGapPenalty1, openGapPenalty2, extendGapPenalty2,m);
+                                            mismatchingPenalty, openGapPenalty1, extendGapPenalty1, openGapPenalty2, extendGapPenalty2);
 }
 
 
