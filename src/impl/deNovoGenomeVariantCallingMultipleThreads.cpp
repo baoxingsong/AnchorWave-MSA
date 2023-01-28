@@ -6,7 +6,7 @@
 
 std::mutex g_num_mutex;
 
-void genomeAlignmentSingleThread(std::vector<AlignmentMatch> & alignmentMatchs,
+void genomeAlignmentSingleThread(std::vector<AlignmentMatch> alignmentMatchs,
                                  const bool outPutMaf, const bool outPutFraged,
                                  std::ofstream &omaffile, std::ofstream &ofragfile,
                                  std::map<std::string, std::tuple<std::string, long, long, int> > &map_ref,
@@ -482,7 +482,7 @@ void genomeAlignment(std::vector<std::vector<AlignmentMatch>> &alignmentMatchsMa
         bool isThisThreadUnrun = true;
         while (isThisThreadUnrun) {
             if (number_of_runing_threads < maxThread) {
-                std::thread t(genomeAlignmentSingleThread, std::ref(alignmentMatchs), outPutMaf, outPutFraged,
+                std::thread t(genomeAlignmentSingleThread, alignmentMatchs, outPutMaf, outPutFraged,
                               std::ref(omaffile), std::ref(ofragfile),
                               std::ref(refSequences), std::ref(targetSequences),
                               chrWidth, refFileName, queryFileName,
