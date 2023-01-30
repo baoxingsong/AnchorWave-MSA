@@ -67,15 +67,15 @@ int32_t minimap2_alignment(const std::string &_dna_q, const std::string &_dna_d,
     ksw_extz_t ez;
     memset(&ez, 0, sizeof(ksw_extz_t));
     memset(c, 4, 256);
-    //    std::cout << "line 359" << std::endl;
+
     c['A'] = c['a'] = 0;
     c['C'] = c['c'] = 1;
     c['G'] = c['g'] = 2;
     c['T'] = c['t'] = 3; // build the encoding table
-    //    std::cout << "line 362" << std::endl;
+
     ts = (uint8_t *) malloc(tl);
     qs = (uint8_t *) malloc(ql);
-    //    std::cout << "line 365" << std::endl;
+
     int i;
     for (i = 0; i < tl; ++i) {
         ts[i] = c[(uint8_t) tseq[i]]; // encode to 0/1/2/3
@@ -109,9 +109,6 @@ int32_t minimap2_alignment(const std::string &_dna_q, const std::string &_dna_d,
     _alignment_q = "";
     _alignment_d = "";
     int pattern_pos = 0, text_pos = 0;
-
-    //    std::cout << cigarstring << std::endl;
-    //    std::cout << std::to_string(cigarElems.size()) << std::endl;
 
     for (i = 0; i < cigarElems.size(); ++i) {
         std::string cVal = cigarElems[i];
@@ -169,15 +166,15 @@ int32_t alignment_minimap2(const std::string &_dna_q, const std::string &_dna_d,
     ksw_extz_t ez;
     memset(&ez, 0, sizeof(ksw_extz_t));
     memset(c, 4, 256);
-    //    std::cout << "line 359" << std::endl;
+
     c['A'] = c['a'] = 0;
     c['C'] = c['c'] = 1;
     c['G'] = c['g'] = 2;
     c['T'] = c['t'] = 3; // build the encoding table
-    //    std::cout << "line 362" << std::endl;
+
     ts = (uint8_t *) malloc(tl);
     qs = (uint8_t *) malloc(ql);
-    //    std::cout << "line 365" << std::endl;
+
     int i;
     for (i = 0; i < tl; ++i) {
         ts[i] = c[(uint8_t) tseq[i]]; // encode to 0/1/2/3
@@ -403,30 +400,9 @@ int64_t alignSlidingWindow_minimap2(const std::string &dna_q, const std::string 
     return totalScore;
 }
 
-
 int64_t alignSlidingWindow_minimap2_or_NW(std::string &dna_q, std::string &dna_d, std::string &_alignment_q, std::string &_alignment_d,
                                           const int64_t &slidingWindowSize, const int32_t &matchingScore,
                                           const int32_t &mismatchingPenalty, const int32_t &openGapPenalty1, const int32_t &extendGapPenalty1, const int32_t &openGapPenalty2, const int32_t &extendGapPenalty2) {
-//    int64_t totalScore = 0;
-//    _alignment_q = "";
-//    _alignment_d = "";
-//
-//    int32_t _length_of_q = dna_q.size();
-//    int32_t _length_of_d = dna_d.size();
-//
-//    _alignment_q = dna_q;
-//    _alignment_d = dna_d;
-//
-//    int32_t count_ = abs(_length_of_q - _length_of_d);
-//    if(_length_of_q < _length_of_d) {
-//        _alignment_q += std::string(count_, '-');
-//    }
-//
-//    if(_length_of_d < _length_of_q) {
-//        _alignment_d += std::string(count_, '-');
-//    }
-//
-//    return totalScore;
 
     int64_t totalScore = 0;
     _alignment_q = "";
@@ -549,7 +525,6 @@ int64_t alignSlidingWindow_local_wfa2_v2(std::string &dna_q, std::string &dna_d,
                                                            extendGapPenalty2);
         }
 
-
     }
     return totalScore;
 }
@@ -557,30 +532,9 @@ int64_t alignSlidingWindow_local_wfa2_v2(std::string &dna_q, std::string &dna_d,
 int64_t alignSlidingWindow(std::string &dna_q, std::string &dna_d, std::string &_alignment_q, std::string &_alignment_d,
                            const int64_t &slidingWindowSize,  const int32_t &matchingScore,
                            const int32_t &mismatchingPenalty, const int32_t &openGapPenalty1, const int32_t &extendGapPenalty1, const int32_t &openGapPenalty2, const int32_t &extendGapPenalty2) {
-//    int64_t totalScore = 0;
-//    _alignment_q = "";
-//    _alignment_d = "";
-//
-//    int32_t _length_of_q = dna_q.size();
-//    int32_t _length_of_d = dna_d.size();
-//
-//    _alignment_q = dna_q;
-//    _alignment_d = dna_d;
-//
-//    int32_t count_ = abs(_length_of_q - _length_of_d);
-//    if(_length_of_q < _length_of_d) {
-//        _alignment_q += std::string(count_, '-');
-//    }
-//
-//    if(_length_of_d < _length_of_q) {
-//        _alignment_d += std::string(count_, '-');
-//    }
-//
-//    return totalScore;
     return alignSlidingWindow_local_wfa2_v2(dna_q, dna_d, _alignment_q, _alignment_d, slidingWindowSize, matchingScore,
                                             mismatchingPenalty, openGapPenalty1, extendGapPenalty1, openGapPenalty2, extendGapPenalty2);
 }
-
 
 int64_t alignSlidingWindowNW(std::string &dna_q, std::string &dna_d, std::string &_alignment_q, std::string &_alignment_d,
                              const int64_t &slidingWindowSize, const int32_t &matchingScore,

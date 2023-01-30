@@ -37,8 +37,6 @@ add_executable(anchorwave
         src/version.h
 
         src/impl/impl.h
-        src/impl/CheckAndUpdateTranscriptsEnds.cpp
-        src/impl/CheckAndUpdateTranscriptsEnds.h
         src/impl/deNovoGenomeVariantCallingMultipleThreads.cpp
         src/impl/deNovoGenomeVariantCalling.h
         src/impl/geneSyntenic.cpp

@@ -28,7 +28,6 @@ the methods under this folder only rely on code under model and util
 #include "readFastaFile.h"
 #include "readGffFile.h"
 #include "TranscriptUpdateInformation.h"
-#include "CheckAndUpdateTranscriptsEnds.h"
 #include "deNovoGenomeVariantCalling.h"
 #include "geneSyntenic.h"
 

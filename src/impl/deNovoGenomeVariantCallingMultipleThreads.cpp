@@ -511,20 +511,6 @@ void genomeAlignment(std::vector<std::vector<AlignmentMatch>> &alignmentMatchsMa
 }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 void genomeAlignmentAndVariantCallingSingleThread(
         std::map<std::string, std::tuple<std::string, long, long, int> > & map_ref,
         std::map<std::string, std::tuple<std::string, long, long, int> > & map_target,

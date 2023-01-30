@@ -3,7 +3,6 @@
 //
 
 #include "getSequencesFromGff.h"
-#include "CheckAndUpdateTranscriptsEnds.h"
 
 void getSequences(const std::string &gffFile, const std::string &genomeFile,
                   const std::string &outputCdsSequences, const int &minExon, const bool &exonModel) {
