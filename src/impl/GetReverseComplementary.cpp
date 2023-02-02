@@ -5,12 +5,11 @@
 #include "GetReverseComplementary.h"
 
 
-std::string getReverseComplementary(const std::string &sequence) {
-    std::string reserveString;
-    reserveString.reserve(sequence.size());
-    std::stringstream reversecomplementary(reserveString);
-    for (int i = sequence.length() - 1; i >= 0; i--) {
-        char c = sequence[i];
+std::string getReverseComplementary(const std::string &seq) {
+    std::stringstream ss;
+
+    for (int i = seq.length() - 1; i >= 0; i--) {
+        char c = seq[i];
         if ('A' == c) {
             c = 'T';
         } else if ('T' == c) {
@@ -38,8 +37,9 @@ std::string getReverseComplementary(const std::string &sequence) {
         } else if ('H' == c) {
             c = 'D';
         }
-        reversecomplementary << c;
+
+        ss << c;
     }
 
-    return reversecomplementary.str();
+    return ss.str();
 }

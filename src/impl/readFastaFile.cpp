@@ -12,8 +12,7 @@ void readFastaFile(const std::string &filePath, std::map<std::string, std::tuple
     }
 
     std::string name = "";
-    std::stringstream ss;
-    std::string line = "";
+    std::string line;
 
     long offset = 0;
     size_t size = 0;
