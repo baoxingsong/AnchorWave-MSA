@@ -4,8 +4,7 @@
 
 
 #include "include/gtest/gtest.h"
-#include "../../impl/impl.h"
-#include "../../service/service.h"
+#include "../../service/TransferGffWithNucmerResult.h"
 #include <string>
 #include <iostream>
 #include <map>
@@ -108,9 +107,6 @@ TEST(sdiToMaf, c1){ // just to make sure that every line has been analysed
     sdiToMaf(fastaFilePath, targetFastaFilePath, sdiFile, outfile );
     ASSERT_EQ(0, 0);
 }
-
-
-
 
 TEST(samToMaf, c1){ // just to make sure that every line has been analysed
     std::string referenceFastaFilePath = "/media/bs674/ppi8t/testWAF/ara/colagainstSimulation/tair10.fa";

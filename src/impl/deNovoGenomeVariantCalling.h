@@ -2,39 +2,35 @@
 // Created by Baoxing song on 20.10.18.
 //
 
-#ifndef PROALI_DENOVOGENOMEVARIANTCALLING_H
-#define PROALI_DENOVOGENOMEVARIANTCALLING_H
-
-#include <ctime>
-#include "../model/model.h"
-#include "../util/util.h"
-#include "./readFastaFile.h"
-#include "../myImportandFunction/myImportantFunction.h"
-#include <iomanip>
+#pragma once
 
 #include <atomic>
-#include <mutex>
-#include <unistd.h>
-#include <thread>
+#include <iomanip>
 #include <iostream>
-#include <chrono>
+#include <mutex>
+#include <thread>
+#include <unistd.h>
 
+#include "../model/AlignmentMatch.h"
+#include "../myImportandFunction/alignSlidingWindow.h"
+#include "../util/myutil.h"
+#include "../util/nucleotideCodeSubstitutionMatrix.h"
+#include "readFastaFile.h"
+#include "getSubsequence.h"
 
-void genomeAlignmentAndVariantCalling(std::map<std::string, std::vector<AlignmentMatch>> &alignmentMatchsMap,
+void genomeAlignmentAndVariantCalling(std::map<std::string, std::vector<AlignmentMatch>> &map_v_am,
                                       const std::string &refFastaFilePath, const std::string &targetFastaFilePath,
-                                      const int32_t &widownWidth, /*const int32_t &wfaSize, const int32_t &wfaSize2, */const std::string &outPutMafFile,
+                                      const int32_t &windowWidth, const std::string &outPutMafFile,
                                       const std::string &outPutFragedFile, const int32_t &matchingScore,
                                       const int32_t &mismatchingPenalty, const int32_t &openGapPenalty1, const int32_t &extendGapPenalty1,
                                       const int32_t &openGapPenalty2, const int32_t &extendGapPenalty2,
                                       const int &maxThread);
 
-void genomeAlignment(std::vector<std::vector<AlignmentMatch>> &alignmentMatchsMap,
+void genomeAlignment(std::vector<std::vector<AlignmentMatch>> &v_v_am,
                      const std::string &refFastaFilePath, const std::string &targetFastaFilePath,
-                     const int32_t &widownWidth, /*const int32_t &wfaSize, const int32_t &wfaSize2,*/
+                     const int32_t &windowWidth,
                      const std::string &outPutMafFile, const std::string &outPutFragedFile,
                      const int32_t &matchingScore, const int32_t &mismatchingPenalty, const int32_t &openGapPenalty1,
                      const int32_t &extendGapPenalty1,
                      const int32_t &openGapPenalty2, const int32_t &extendGapPenalty2,
                      const int &maxThread);
-
-#endif //PROALI_DENOVOGENOMEVARIANTCALLING_H

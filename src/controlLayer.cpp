@@ -29,31 +29,174 @@ int gff2seq(int argc, char **argv) {
           " -m INT    minimum exon length to output (default: 20)" << std::endl << std::endl;
 
     InputParser inputParser(argc, argv);
-    if (inputParser.cmdOptionExists("-h") || inputParser.cmdOptionExists("--help")) {
+    if (inputParser.cmdOptionExists("-h") || inputParser.cmdOptionExists("--help") || !inputParser.cmdOptionExists("-i") || !inputParser.cmdOptionExists("-r") || !inputParser.cmdOptionExists("-o")) {
         std::cerr << usage.str();
     }
-    else if (inputParser.cmdOptionExists("-i") && inputParser.cmdOptionExists("-r") && inputParser.cmdOptionExists("-o")) {
-        std::string inputGffFile = inputParser.getCmdOption("-i");
-        std::string genome = inputParser.getCmdOption("-r");
-        std::string outputCdsSequences = inputParser.getCmdOption("-o");
 
-        int minExon;
-        if (inputParser.cmdOptionExists("-m")) {
-            minExon = std::stoi(inputParser.getCmdOption("-m"));
-        } else {
-            minExon = 20;
-        }
-        bool exonModel = false;
-        if (inputParser.cmdOptionExists("-x")) {
-            exonModel = true;
-        }
-        getSequences(inputGffFile, genome, outputCdsSequences, minExon, exonModel);
+    std::string inputGffFile = inputParser.getCmdOption("-i");
+    std::string genome = inputParser.getCmdOption("-r");
+    std::string outputCdsSequences = inputParser.getCmdOption("-o");
+
+    int minExon;
+    if (inputParser.cmdOptionExists("-m")) {
+        minExon = std::stoi(inputParser.getCmdOption("-m"));
+    } else {
+        minExon = 20;
     }
-    else {
-        std::cerr << usage.str();
+
+    bool exonModel = false;
+    if (inputParser.cmdOptionExists("-x")) {
+        exonModel = true;
     }
+
+    getSequences(inputGffFile, genome, outputCdsSequences, minExon, exonModel);
 
     return 0;
+}
+
+// generate alignmentMatchsMap for genomeAlignment from anchors file.
+void genGenoMapFromFile(std::string path_anchors, std::string wholeCommand, std::map<std::string, std::vector<AlignmentMatch>> & map_v_am) {
+    std::ifstream infile_anchors(path_anchors);
+
+    std::string line;
+    bool same_command = false;
+    bool has_begin = false;
+    bool has_end = false;
+    int count_begin = 0;
+    int count_end = 0;
+    int line_no = 0;
+
+    while (std::getline(infile_anchors, line)) {
+        if(line_no++ == 0) {
+            if(line == std::string("#" + std::string(PROGRAMNAME) + " " + wholeCommand)) {
+                same_command = true;
+            }
+            else {
+                break;
+            }
+        }
+
+        if (line[0] != '#') {
+            continue;
+        }
+
+        if(line.find("#block begin")) {
+            has_begin = true;
+            count_begin++;
+        }
+
+        if(line.find("#block end")) {
+            has_end = true;
+            count_end++;
+        }
+    }
+
+    std::cout << "same_command " << same_command << std::endl;
+    std::cout << "has_begin " << has_begin << std::endl;
+    std::cout << "has_end " << has_end << std::endl;
+    std::cout << "count_begin " << count_begin << std::endl;
+    std::cout << "count_end " << count_end << std::endl;
+
+    // has generated anchors file before.
+    if(same_command && has_begin && has_end && (count_begin == count_end)) {
+        // get alignmentMatchsMap from anchors file.
+        std::ifstream infile(path_anchors);
+        if (!infile.good()) {
+            std::cerr << "error in opening anchors file " << path_anchors << std::endl;
+        }
+
+        std::vector <AlignmentMatch> v_am;
+        std::string line;
+        bool flag_begin = false;
+        int line_std_n_no = 0;
+        int line_std_p_no = 0;
+        STRAND last_strand = POSITIVE;
+
+        while (std::getline(infile, line)) {
+            // --line like :    5B	387734189	387739576	GWHBJBH00000005	293115001	293120759	+	transcript:TraesCS5B02G214600.2	1	0.99872
+            // refChr	referenceStart	referenceEnd	queryChr	queryStart	queryEnd	strand	gene	score
+            if (!flag_begin && line.find("#block begin") != std::string::npos) {
+                flag_begin = true;
+                line_std_n_no = 0;
+                line_std_p_no = 0;
+                continue;
+            }
+
+            if (!flag_begin) {
+                continue;
+            }
+
+            if (line.find("#block end") != std::string::npos) {
+                map_v_am[v_am[0].getRefChr()] = v_am;
+                v_am.clear();
+                flag_begin = false;
+            }
+
+            int size = line.size();
+
+            char refChr[size];
+            uint32_t referenceStart, referenceEnd;
+            uint32_t last_referenceEnd;
+            char queryChr[size];
+            uint32_t queryStart, queryEnd;
+            uint32_t last_queryStart;
+            char strand_[size];
+            char c_gene[size];
+            char c_score[size];
+
+            int ret = sscanf(line.c_str(), "%s%d%d%s%d%d%s%s%*s%s", refChr, &referenceStart, &referenceEnd, queryChr, &queryStart, &queryEnd, strand_, c_gene, c_score);
+
+            if (ret == 9) {
+                STRAND strand;
+                if (strand_[0] == '-') {
+                    strand = NEGATIVE;
+                } else {
+                    strand = POSITIVE;
+                }
+
+                if (last_strand != strand) {
+                    if (strand == POSITIVE) {
+                        line_std_p_no = 0;
+                        line_std_p_no++;
+                    } else {
+                        line_std_n_no = 0;
+                        line_std_n_no++;
+                    }
+                    last_strand = strand;
+                } else {
+                    if (strand == POSITIVE) {
+                        int r = line_std_p_no++ % 2;
+                        if (r != 0) {
+                            last_referenceEnd = referenceEnd;
+                            last_queryStart = queryStart;
+                            continue;
+                        }
+                    } else {
+                        bool b_2 = (last_referenceEnd < referenceStart) && (last_queryStart > queryEnd);
+                        if (b_2) {
+                            if (line_std_n_no++ % 2 == 1) {
+                                last_referenceEnd = referenceEnd;
+                                last_queryStart = queryStart;
+                                continue;
+                            }
+                        }
+                    }
+                }
+
+                double score = 1;
+                if (std::string(c_score) != "1") {
+                    score = 0;
+                }
+
+                last_referenceEnd = referenceEnd;
+                last_queryStart = queryStart;
+
+                AlignmentMatch am = AlignmentMatch(std::string(refChr), std::string(queryChr), referenceStart, referenceEnd, queryStart, queryEnd, score, strand, std::string(c_gene), "");
+                v_am.push_back(am);
+            }
+        }
+        infile.close();
+    }
 }
 
 int genomeAlignment(int argc, char **argv) {
@@ -255,118 +398,134 @@ int genomeAlignment(int argc, char **argv) {
         readFastaFile(path_target_GenomeSequence, map_qry);
 
         std::cout << "setupAnchorsWithSpliceAlignmentResult begin " << std::endl;
-        std::map<std::string, std::vector<AlignmentMatch>> alignmentMatchsMap;
-        setupAnchorsWithSpliceAlignmentResult(refGffFilePath, cdsSequenceFile, samFilePath, alignmentMatchsMap,
-                                              inversion_PENALTY, MIN_ALIGNMENT_SCORE, considerInversion, minExon, windowWidth, minimumSimilarity, minimumSimilarity2,
-                                              map_ref, map_qry,
-                                              expectedCopies, maximumSimilarity, referenceSamFilePath, wfaSize3, searchForNewAnchors, exonModel);
+        std::map<std::string, std::vector<AlignmentMatch>> map_v_am;
 
-        std::cout << "setupAnchorsWithSpliceAlignmentResult done!" << std::endl;
-        for (std::map<std::string, std::vector<AlignmentMatch>>::iterator it = alignmentMatchsMap.begin(); it != alignmentMatchsMap.end(); ++it) {
-            myAlignmentMatchSort(it->second, inversion_PENALTY, MIN_ALIGNMENT_SCORE, false, false);
-        }
-
-        std::cout << "myAlignmentMatchSort done!" << std::endl;
-
-        if (inputParser.cmdOptionExists("-n")) {
+        std::string path_anchors = inputParser.getCmdOption("-n");
+        std::ifstream infile_anchors(path_anchors);
+        if (infile_anchors.good()) {
             std::string wholeCommand = argv[0];
             for (int i = 1; i < argc; ++i) {
                 wholeCommand = wholeCommand + " " + argv[i];
             }
 
-            std::ofstream ofile;
-            ofile.open(inputParser.getCmdOption("-n"));
-            ofile << "#" << PROGRAMNAME << " " << wholeCommand << std::endl;
-            int blockIndex = 0;
-            ofile << "refChr" << "\t"
-                  << "referenceStart" << "\t"
-                  << "referenceEnd" << "\t"
-                  << "queryChr" << "\t"
-                  << "queryStart" << "\t"
-                  << "queryEnd" << "\t"
-                  << "strand" << "\t"
-                  << "gene" << "\t"
-                  << "blockIndex" << "\tscore" << std::endl;
+            genGenoMapFromFile(path_anchors, wholeCommand, map_v_am);
+            std::cout << "map_v_am generated!" << std::endl;
+        }
+        else {
+            setupAnchorsWithSpliceAlignmentResult(refGffFilePath, cdsSequenceFile, samFilePath, map_v_am,
+                                                  inversion_PENALTY, MIN_ALIGNMENT_SCORE, considerInversion, minExon, windowWidth, minimumSimilarity, minimumSimilarity2,
+                                                  map_ref, map_qry,
+                                                  expectedCopies, maximumSimilarity, referenceSamFilePath, wfaSize3, searchForNewAnchors, exonModel);
 
-            for (std::map<std::string, std::vector<AlignmentMatch>>::iterator it = alignmentMatchsMap.begin(); it != alignmentMatchsMap.end(); ++it) {
-                ofile << "#block begin" << std::endl;
-                blockIndex++;
-                bool hasInversion = false;
-                for (size_t rangeIndex = 0; rangeIndex < it->second.size(); ++rangeIndex) {
-                    if (rangeIndex > 0) {
-                        if (it->second[rangeIndex].getStrand() == POSITIVE && it->second[rangeIndex - 1].getStrand() == POSITIVE) {
-                            ofile << it->second[rangeIndex].getRefChr() << "\t"
-                                  << it->second[rangeIndex - 1].getRefEndPos() + 1 << "\t"
-                                  << it->second[rangeIndex].getRefStartPos() - 1 << "\t"
-                                  << it->second[rangeIndex].getQueryChr() << "\t"
-                                  << it->second[rangeIndex - 1].getQueryEndPos() + 1 << "\t"
-                                  << it->second[rangeIndex].getQueryStartPos() - 1 << "\t"
-                                  << "+" << "\t"
-                                  << "interanchor" << "\t"
-                                  << blockIndex << "\tNA" << std::endl;
-                        } else if (it->second[rangeIndex].getStrand() == NEGATIVE && it->second[rangeIndex - 1].getStrand() == NEGATIVE
-                                   && it->second[rangeIndex - 1].getRefEndPos() < it->second[rangeIndex].getRefStartPos()
-                                   && it->second[rangeIndex - 1].getQueryStartPos() > it->second[rangeIndex].getQueryEndPos()) {
+            std::cout << "setupAnchorsWithSpliceAlignmentResult done!" << std::endl;
 
-                            ofile << it->second[rangeIndex].getRefChr() << "\t"
-                                  << it->second[rangeIndex - 1].getRefEndPos() + 1 << "\t"
-                                  << it->second[rangeIndex].getRefStartPos() - 1 << "\t"
-                                  << it->second[rangeIndex].getQueryChr() << "\t"
-                                  << it->second[rangeIndex].getQueryEndPos() + 1 << "\t"
-                                  << it->second[rangeIndex - 1].getQueryStartPos() - 1 << "\t"
-                                  << "-" << "\t"
-                                  << "interanchor" << "\t"
-                                  << blockIndex << "\tNA" << std::endl;
+            for (std::map < std::string, std::vector < AlignmentMatch >> ::iterator it = map_v_am.begin(); it != map_v_am.end(); ++it) {
+                myAlignmentMatchSort(it->second, inversion_PENALTY, MIN_ALIGNMENT_SCORE, false, false);
+            }
+
+            std::cout << "myAlignmentMatchSort done!" << std::endl;
+
+            if (inputParser.cmdOptionExists("-n")) {
+                std::string wholeCommand = argv[0];
+                for (int i = 1; i < argc; ++i) {
+                    wholeCommand = wholeCommand + " " + argv[i];
+                }
+
+                std::ofstream ofile;
+                ofile.open(inputParser.getCmdOption("-n"));
+                ofile << "#" << PROGRAMNAME << " " << wholeCommand << std::endl;
+                int blockIndex = 0;
+                ofile << "refChr" << "\t"
+                      << "referenceStart" << "\t"
+                      << "referenceEnd" << "\t"
+                      << "queryChr" << "\t"
+                      << "queryStart" << "\t"
+                      << "queryEnd" << "\t"
+                      << "strand" << "\t"
+                      << "gene" << "\t"
+                      << "blockIndex" << "\tscore" << std::endl;
+
+                for (std::map < std::string, std::vector < AlignmentMatch >> ::iterator it = map_v_am.begin(); it != map_v_am.end(); ++it) {
+                    ofile << "#block begin" << std::endl;
+                    std::vector < AlignmentMatch > v_am = it->second;
+                    blockIndex++;
+                    bool hasInversion = false;
+                    for (size_t i = 0; i < v_am.size(); ++i) {
+                        if (i > 0) {
+                            if (v_am[i].getStrand() == POSITIVE && v_am[i - 1].getStrand() == POSITIVE) {
+                                ofile << v_am[i].getRefChr() << "\t"
+                                      << v_am[i - 1].getRefEndPos() + 1 << "\t"
+                                      << v_am[i].getRefStartPos() - 1 << "\t"
+                                      << v_am[i].getQueryChr() << "\t"
+                                      << v_am[i - 1].getQueryEndPos() + 1 << "\t"
+                                      << v_am[i].getQueryStartPos() - 1 << "\t"
+                                      << "+" << "\t"
+                                      << "interanchor" << "\t"
+                                      << blockIndex << "\tNA" << std::endl;
+                            } else if (v_am[i].getStrand() == NEGATIVE && v_am[i - 1].getStrand() == NEGATIVE
+                                       && v_am[i - 1].getRefEndPos() < v_am[i].getRefStartPos()
+                                       && v_am[i - 1].getQueryStartPos() > v_am[i].getQueryEndPos()) {
+
+                                ofile << v_am[i].getRefChr() << "\t"
+                                      << v_am[i - 1].getRefEndPos() + 1 << "\t"
+                                      << v_am[i].getRefStartPos() - 1 << "\t"
+                                      << v_am[i].getQueryChr() << "\t"
+                                      << v_am[i].getQueryEndPos() + 1 << "\t"
+                                      << v_am[i - 1].getQueryStartPos() - 1 << "\t"
+                                      << "-" << "\t"
+                                      << "interanchor" << "\t"
+                                      << blockIndex << "\tNA" << std::endl;
+                            }
+                        }
+
+                        std::string thisStrand = "+";
+                        if (v_am[i].getStrand() == NEGATIVE) {
+                            thisStrand = "-";
+                            hasInversion = true;
+                        }
+
+                        ofile <<  v_am[i].getRefChr() << "\t"
+                              << v_am[i].getRefStartPos() << "\t"
+                              << v_am[i].getRefEndPos() << "\t"
+                              << v_am[i].getQueryChr() << "\t"
+                              << v_am[i].getQueryStartPos() << "\t"
+                              << v_am[i].getQueryEndPos() << "\t"
+                              << thisStrand << "\t"
+                              << v_am[i].getReferenceGeneName() << "\t";
+
+                        if (v_am[i].getReferenceGeneName().find("localAlignment") == std::string::npos) {
+                            ofile << blockIndex << "\t" << v_am[i].getScore() << std::endl;
+                        } else {
+                            ofile << blockIndex << "\t" << "NA" << std::endl;
                         }
                     }
 
-                    std::string thisStrand = "+";
-                    if (it->second[rangeIndex].getStrand() == NEGATIVE) {
-                        thisStrand = "-";
-                        hasInversion = true;
+                    int i = v_am.size() - 1;
+                    if (!hasInversion) {
+                        size_t size_sr2 = getSequenceSizeFromPath2(map_ref[v_am[i].getRefChr()]);
+                        size_t size_sq2 = getSequenceSizeFromPath2(map_qry[v_am[i].getQueryChr()]);
+
+                        ofile << v_am[i].getRefChr() << "\t"
+                              << v_am[i].getRefEndPos() + 1 << "\t"
+                              << size_sr2 << "\t"
+                              << v_am[i].getQueryChr() << "\t"
+                              << v_am[i].getQueryEndPos() + 1 << "\t"
+                              << size_sq2 << "\t"
+                              << "+" << "\t"
+                              << "interanchor" << "\t"
+                              << blockIndex << "\tNA" << std::endl;
                     }
 
-                    ofile << it->second[rangeIndex].getRefChr() << "\t"
-                          << it->second[rangeIndex].getRefStartPos() << "\t"
-                          << it->second[rangeIndex].getRefEndPos() << "\t"
-                          << it->second[rangeIndex].getQueryChr() << "\t"
-                          << it->second[rangeIndex].getQueryStartPos() << "\t"
-                          << it->second[rangeIndex].getQueryEndPos() << "\t"
-                          << thisStrand << "\t"
-                          << it->second[rangeIndex].getReferenceGeneName() << "\t";
-
-                    if (it->second[rangeIndex].getReferenceGeneName().find("localAlignment") == std::string::npos) {
-                        ofile << blockIndex << "\t" << it->second[rangeIndex].getScore() << std::endl;
-                    } else {
-                        ofile << blockIndex << "\t" << "NA" << std::endl;
-                    }
+                    ofile << "#block end" << std::endl;
                 }
-
-                int rangeIndex = it->second.size() - 1;
-                if (!hasInversion) {
-                    size_t size_sr2 = getSequenceSizeFromPath2(map_ref[it->second[rangeIndex].getRefChr()]);
-                    size_t size_sq2 = getSequenceSizeFromPath2(map_qry[it->second[rangeIndex].getQueryChr()]);
-
-                    ofile << it->second[rangeIndex].getRefChr() << "\t"
-                          << it->second[rangeIndex].getRefEndPos() + 1 << "\t"
-                          << size_sr2 << "\t"
-                          << it->second[rangeIndex].getQueryChr() << "\t"
-                          << it->second[rangeIndex].getQueryEndPos() + 1 << "\t"
-                          << size_sq2 << "\t"
-                          << "+" << "\t"
-                          << "interanchor" << "\t"
-                          << blockIndex << "\tNA" << std::endl;
-                }
-
-                ofile << "#block end" << std::endl;
+                ofile.close();
             }
-            ofile.close();
+
+            std::cout << "anchors generate done!" << std::endl;
         }
 
-        std::cout << "anchors generate done!" << std::endl;
-
         if (inputParser.cmdOptionExists("-f") || inputParser.cmdOptionExists("-o") || inputParser.cmdOptionExists("-l")) {
-            genomeAlignmentAndVariantCalling(alignmentMatchsMap, path_ref_GenomeSequence, path_target_GenomeSequence,
+            genomeAlignmentAndVariantCalling(map_v_am, path_ref_GenomeSequence, path_target_GenomeSequence,
                                              windowWidth,
                                              outPutMafFile, outPutFragedFile,
                                              matchingScore, mismatchingPenalty, openGapPenalty1, extendGapPenalty1,
@@ -383,7 +542,140 @@ int genomeAlignment(int argc, char **argv) {
     return 0;
 }
 
-int proportationalAlignment(int argc, char **argv) {
+// generate alignmentMatchsMap for proportionalAlignment from anchors file.
+void genProVectorFromFile(std::string path_anchors, std::string wholeCommand, std::vector<std::vector<AlignmentMatch>> & v_v_am) {
+    std::ifstream infile_anchors(path_anchors);
+
+    std::string line;
+    bool same_command = false;
+    bool has_begin = false;
+    bool has_end = false;
+    int count_begin = 0;
+    int count_end = 0;
+    int line_no = 0;
+
+    while (std::getline(infile_anchors, line)) {
+        if(line_no++ == 0) {
+            if(line == std::string("#" + std::string(PROGRAMNAME) + " " + wholeCommand)) {
+                same_command = true;
+            }
+            else {
+                break;
+            }
+        }
+
+        if (line[0] != '#') {
+            continue;
+        }
+
+        if(line.find("#block begin")) {
+            has_begin = true;
+            count_begin++;
+        }
+
+        if(line.find("#block end")) {
+            has_end = true;
+            count_end++;
+        }
+    }
+
+    std::cout << "same_command " << same_command << std::endl;
+    std::cout << "has_begin " << has_begin << std::endl;
+    std::cout << "has_end " << has_end << std::endl;
+    std::cout << "count_begin " << count_begin << std::endl;
+    std::cout << "count_end " << count_end << std::endl;
+
+    // has generated anchors file before.
+    if(same_command && has_begin && has_end && (count_begin == count_end)) {
+        // get alignmentMatchsMap from anchors file.
+        std::ifstream infile(path_anchors);
+        if (!infile.good()) {
+            std::cerr << "error in opening anchors file " << path_anchors << std::endl;
+        }
+
+        std::vector <AlignmentMatch> v_am;
+        std::string line;
+        bool flag_begin = false;
+        int line_std_n_no = 0;
+        int line_std_p_no = 0;
+        STRAND last_strand = POSITIVE;
+
+        while (std::getline(infile, line)) {
+            // --line like :    5B	387734189	387739576	GWHBJBH00000005	293115001	293120759	+	transcript:TraesCS5B02G214600.2	1	0.99872
+            // refChr	referenceStart	referenceEnd	queryChr	queryStart	queryEnd	strand	gene	score
+            if (!flag_begin && line.find("#block begin") != std::string::npos) {
+                flag_begin = true;
+                line_std_n_no = 0;
+                line_std_p_no = 0;
+                continue;
+            }
+
+            if (!flag_begin) {
+                continue;
+            }
+
+            if (line.find("#block end") != std::string::npos) {
+                v_v_am.push_back(v_am);
+                v_am.clear();
+                flag_begin = false;
+            }
+
+            int size = line.size();
+
+            char refChr[size];
+            uint32_t referenceStart, referenceEnd;
+            char queryChr[size];
+            uint32_t queryStart, queryEnd;
+            char strand_[size];
+            char c_gene[size];
+            char c_score[size];
+
+            int ret = sscanf(line.c_str(), "%s%d%d%s%d%d%s%s%*s%s", refChr, &referenceStart, &referenceEnd, queryChr, &queryStart, &queryEnd, strand_, c_gene, c_score);
+
+            if (ret == 9) {
+                STRAND strand;
+                if (strand_[0] == '-') {
+                    strand = NEGATIVE;
+                } else {
+                    strand = POSITIVE;
+                }
+
+                if (last_strand != strand) {
+                    if (strand == POSITIVE) {
+                        line_std_p_no = 0;
+                        line_std_p_no++;
+                    } else {
+                        line_std_n_no = 0;
+                        line_std_n_no++;
+                    }
+                    last_strand = strand;
+                } else {
+                    if (strand == POSITIVE) {
+                        int r = line_std_p_no++ % 2;
+                        if (r != 0) {
+                            continue;
+                        }
+                    } else {
+                        if (line_std_n_no++ % 2 == 1) {
+                            continue;
+                        }
+                    }
+                }
+
+                double score = 1;
+                if (std::string(c_score) != "1") {
+                    score = 0;
+                }
+
+                AlignmentMatch am = AlignmentMatch(std::string(refChr), std::string(queryChr), referenceStart, referenceEnd, queryStart, queryEnd, score, strand, std::string(c_gene), "");
+                v_am.push_back(am);
+            }
+        }
+        infile.close();
+    }
+}
+
+int proportionalAlignment(int argc, char **argv) {
 
     int32_t matchingScore = 0;
     int32_t mismatchingPenalty = -4;
@@ -595,7 +887,7 @@ int proportationalAlignment(int argc, char **argv) {
             MAX_DIST_BETWEEN_MATCHES = 25;
         }
 
-        std::vector<std::vector<AlignmentMatch>> alignmentMatchsMap;
+        std::vector<std::vector<AlignmentMatch>> v_v_am;
 
         std::map<std::string, std::tuple<std::string, long, long, int> > map_ref;
         readFastaFile(referenceGenomeSequence, map_ref);
@@ -607,99 +899,115 @@ int proportationalAlignment(int argc, char **argv) {
             exonModel = true;
         }
 
-        setupAnchorsWithSpliceAlignmentResultQuota(refGffFilePath, samFilePath, cdsSequenceFile, alignmentMatchsMap, INDEL_SCORE, GAP_OPEN_PENALTY, MIN_ALIGNMENT_SCORE,
-                                                   MAX_DIST_BETWEEN_MATCHES, refMaximumTimes, queryMaximumTimes,
-                                                   calculateIndelDistance, minExon, windowWidth, minimumSimilarity, minimumSimilarity2,
-                                                   map_ref, map_qry,
-                                                   expectedCopies, wfaSize3, maximumSimilarity, referenceSamFilePath,
-                                                   searchForNewAnchors, exonModel);
+        std::string path_anchors = inputParser.getCmdOption("-n");
 
-        if (inputParser.cmdOptionExists("-n")) {
+        std::ifstream infile_anchors(path_anchors);
+        if (infile_anchors.good()) {
             std::string wholeCommand = argv[0];
             for (int i = 1; i < argc; ++i) {
                 wholeCommand = wholeCommand + " " + argv[i];
             }
+            genProVectorFromFile(path_anchors, wholeCommand, v_v_am);
+        }
+        else {
+            std::cout << "setupAnchorsWithSpliceAlignmentResultQuota begin!" << std::endl;
+            // generate alignmentMatchsMap.
+            setupAnchorsWithSpliceAlignmentResultQuota(refGffFilePath, samFilePath, cdsSequenceFile, v_v_am, INDEL_SCORE, GAP_OPEN_PENALTY, MIN_ALIGNMENT_SCORE,
+                                                       MAX_DIST_BETWEEN_MATCHES, refMaximumTimes, queryMaximumTimes,
+                                                       calculateIndelDistance, minExon, windowWidth, minimumSimilarity, minimumSimilarity2,
+                                                       map_ref, map_qry,
+                                                       expectedCopies, wfaSize3, maximumSimilarity, referenceSamFilePath,
+                                                       searchForNewAnchors, exonModel);
 
-            std::ofstream ofile;
-            ofile.open(inputParser.getCmdOption("-n"));
-            ofile << "#" << PROGRAMNAME << " " << wholeCommand << std::endl;
-            ofile << "refChr" << "\t"
-                  << "referenceStart" << "\t"
-                  << "referenceEnd" << "\t"
-                  << "queryChr" << "\t"
-                  << "queryStart" << "\t"
-                  << "queryEnd" << "\t"
-                  << "strand" << "\t"
-                  << "gene" << "\t"
-                  << "blockIndex" << "\t"
-                  << "score" << std::endl;
+            // generated anchors file.
+            if (inputParser.cmdOptionExists("-n")) {
+                std::string wholeCommand = argv[0];
+                for (int i = 1; i < argc; ++i) {
+                    wholeCommand = wholeCommand + " " + argv[i];
+                }
 
-            size_t totalAnchors = 0;
-            int blockIndex = 0;
-            for (std::vector<AlignmentMatch> alignmentMatchs: alignmentMatchsMap) {
-                ofile << "#block begin" << std::endl;
-                blockIndex++;
-                for (size_t rangeIndex = 0; rangeIndex < alignmentMatchs.size(); ++rangeIndex) {
+                std::ofstream ofile;
+                ofile.open(inputParser.getCmdOption("-n"));
+                ofile << "#" << PROGRAMNAME << " " << wholeCommand << std::endl;
+                ofile << "refChr" << "\t"
+                      << "referenceStart" << "\t"
+                      << "referenceEnd" << "\t"
+                      << "queryChr" << "\t"
+                      << "queryStart" << "\t"
+                      << "queryEnd" << "\t"
+                      << "strand" << "\t"
+                      << "gene" << "\t"
+                      << "blockIndex" << "\t"
+                      << "score" << std::endl;
 
-                    std::string thisStrand = "+";
-                    if (alignmentMatchs[rangeIndex].getStrand() == NEGATIVE) {
-                        thisStrand = "-";
-                    }
+                size_t totalAnchors = 0;
+                int blockIndex = 0;
+                for (std::vector <AlignmentMatch> v_am: v_v_am) {
+                    ofile << "#block begin" << std::endl;
+                    blockIndex++;
 
-                    if (rangeIndex > 0) {
-                        if (alignmentMatchs[rangeIndex].getStrand() == POSITIVE &&
-                            alignmentMatchs[rangeIndex - 1].getStrand() == POSITIVE) {
-                            ofile << alignmentMatchs[rangeIndex].getRefChr() << "\t"
-                                  << alignmentMatchs[rangeIndex - 1].getRefEndPos() + 1 << "\t"
-                                  << alignmentMatchs[rangeIndex].getRefStartPos() - 1 << "\t"
-                                  << alignmentMatchs[rangeIndex].getQueryChr() << "\t"
-                                  << alignmentMatchs[rangeIndex - 1].getQueryEndPos() + 1 << "\t"
-                                  << alignmentMatchs[rangeIndex].getQueryStartPos() - 1 << "\t"
-                                  << "+" << "\t" << "interanchor" << "\t"
-                                  << blockIndex << "\tNA"
-                                  << std::endl;
-                        } else if (alignmentMatchs[rangeIndex].getStrand() == NEGATIVE &&
-                                   alignmentMatchs[rangeIndex - 1].getStrand() == NEGATIVE) {
-                            ofile << alignmentMatchs[rangeIndex].getRefChr() << "\t"
-                                  << alignmentMatchs[rangeIndex - 1].getRefEndPos() + 1 << "\t"
-                                  << alignmentMatchs[rangeIndex].getRefStartPos() - 1 << "\t"
-                                  << alignmentMatchs[rangeIndex].getQueryChr() << "\t"
-                                  << alignmentMatchs[rangeIndex].getQueryEndPos() + 1 << "\t"
-                                  << alignmentMatchs[rangeIndex - 1].getQueryStartPos() - 1 << "\t"
-                                  << "-" << "\t" << "interanchor" << "\t"
-                                  << blockIndex << "\tNA"
-                                  << std::endl;
+                    for (size_t i = 0; i < v_am.size(); i++) {
+                        std::string thisStrand = "+";
+                        if (v_am[i].getStrand() == NEGATIVE) {
+                            thisStrand = "-";
+                        }
+
+                        if (i > 0) {
+                            if (v_am[i].getStrand() == POSITIVE && v_am[i - 1].getStrand() == POSITIVE) {
+                                ofile << v_am[i].getRefChr() << "\t"
+                                      << v_am[i - 1].getRefEndPos() + 1 << "\t"
+                                      << v_am[i].getRefStartPos() - 1 << "\t"
+                                      << v_am[i].getQueryChr() << "\t"
+                                      << v_am[i - 1].getQueryEndPos() + 1 << "\t"
+                                      << v_am[i].getQueryStartPos() - 1 << "\t"
+                                      << "+" << "\t"
+                                      << "interanchor" << "\t"
+                                      << blockIndex << "\tNA"
+                                      << std::endl;
+                            } else if (v_am[i].getStrand() == NEGATIVE && v_am[i - 1].getStrand() == NEGATIVE) {
+                                ofile << v_am[i].getRefChr() << "\t"
+                                      << v_am[i - 1].getRefEndPos() + 1 << "\t"
+                                      << v_am[i].getRefStartPos() - 1 << "\t"
+                                      << v_am[i].getQueryChr() << "\t"
+                                      << v_am[i].getQueryEndPos() + 1 << "\t"
+                                      << v_am[i - 1].getQueryStartPos() - 1 << "\t"
+                                      << "-" << "\t"
+                                      << "interanchor" << "\t"
+                                      << blockIndex << "\tNA"
+                                      << std::endl;
+                            }
+                        }
+
+                        ofile << v_am[i].getRefChr() << "\t"
+                              << v_am[i].getRefStartPos() << "\t"
+                              << v_am[i].getRefEndPos() << "\t"
+                              << v_am[i].getQueryChr() << "\t"
+                              << v_am[i].getQueryStartPos() << "\t"
+                              << v_am[i].getQueryEndPos() << "\t"
+                              << thisStrand << "\t"
+                              << v_am[i].getReferenceGeneName() << "\t";
+
+                        if (v_am[i].getReferenceGeneName().find("localAlignment") == std::string::npos) {
+                            totalAnchors++;
+                            ofile << blockIndex << "\t" << v_am[i].getScore() << std::endl;
+                        } else {
+                            ofile << blockIndex << "\t" << "NA" << std::endl;
                         }
                     }
-
-                    ofile << alignmentMatchs[rangeIndex].getRefChr() << "\t"
-                          << alignmentMatchs[rangeIndex].getRefStartPos() << "\t"
-                          << alignmentMatchs[rangeIndex].getRefEndPos() << "\t"
-                          << alignmentMatchs[rangeIndex].getQueryChr() << "\t"
-                          << alignmentMatchs[rangeIndex].getQueryStartPos() << "\t"
-                          << alignmentMatchs[rangeIndex].getQueryEndPos() << "\t"
-                          << thisStrand << "\t"
-                          << alignmentMatchs[rangeIndex].getReferenceGeneName() << "\t";
-
-                    if (alignmentMatchs[rangeIndex].getReferenceGeneName().find("localAlignment") == std::string::npos) {
-                        totalAnchors++;
-                        ofile << blockIndex << "\t" << alignmentMatchs[rangeIndex].getScore() << std::endl;
-                    } else {
-                        ofile << blockIndex << "\t" << "NA" << std::endl;
-                    }
+                    ofile << "#block end" << std::endl;
                 }
-                ofile << "#block end" << std::endl;
-            }
 
-            ofile.close();
-            std::cout << "totalAnchors:" << totalAnchors << std::endl;
+                ofile.close();
+                std::cout << "totalAnchors:" << totalAnchors << std::endl;
+            }
         }
 
+        std::cout << "anchors generate done!" << std::endl;
+
         if (inputParser.cmdOptionExists("-f") || inputParser.cmdOptionExists("-o") || inputParser.cmdOptionExists("-l")) {
-            genomeAlignment(alignmentMatchsMap, referenceGenomeSequence, targetGenomeSequence, windowWidth, /*wfaSize, wfaSize2,*/
+            genomeAlignment(v_v_am, referenceGenomeSequence, targetGenomeSequence, windowWidth,
                             outPutMafFile, outPutFragedFile, matchingScore, mismatchingPenalty, openGapPenalty1, extendGapPenalty1,
-                            openGapPenalty2, extendGapPenalty2,
-                            threads);
+                            openGapPenalty2, extendGapPenalty2, threads);
             std::cout << "AnchorWave done!" << std::endl;
         }
     }

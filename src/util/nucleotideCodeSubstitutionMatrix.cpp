@@ -164,7 +164,7 @@ void NucleotideCodeSubstitutionMatrix::initial() {
         std::string a = (*it1).substr(0, 1);
         std::string b = (*it1).substr(1, 1);
         std::string c = (*it1).substr(2, 1);
-        //std::cout << "198 " << a << b << c << std::endl;
+
         for (std::map<std::string, std::set<std::string> >::iterator it2 = dnaIupacCode.begin(); it2 != dnaIupacCode.end(); ++it2) {
             if (it2->second.find(a) != it2->second.end()) {
                 for (std::map<std::string, std::set<std::string> >::iterator it3 = dnaIupacCode.begin(); it3 != dnaIupacCode.end(); ++it3) {
@@ -185,7 +185,7 @@ void NucleotideCodeSubstitutionMatrix::initial() {
         std::string a = (*it1).substr(0, 1);
         std::string b = (*it1).substr(1, 1);
         std::string c = (*it1).substr(2, 1);
-        //std::cout << "220 " << a << b << c << std::endl;
+
         for (std::map<std::string, std::set<std::string> >::iterator it2 = dnaIupacCode.begin(); it2 != dnaIupacCode.end(); ++it2) {
             if (it2->second.find(a) != it2->second.end()) {
                 for (std::map<std::string, std::set<std::string> >::iterator it3 = dnaIupacCode.begin(); it3 != dnaIupacCode.end(); ++it3) {
@@ -193,7 +193,6 @@ void NucleotideCodeSubstitutionMatrix::initial() {
                         for (std::map<std::string, std::set<std::string> >::iterator it4 = dnaIupacCode.begin(); it4 != dnaIupacCode.end(); ++it4) {
                             if (it4->second.find(c) != it4->second.end()) {
                                 std::string threeNa = it2->first + it3->first + it4->first;
-                                //std::cout << "227 " << threeNa << std::endl;
                                 this->possibleStopCodons.insert(threeNa);
                             }
                         }

@@ -58,7 +58,6 @@ std::string getSubsequence2(std::map<std::string, std::tuple<std::string, long, 
         }
 
         int size = end - start;
-        int suf = line_bases - start%line_bases;
 
         // 带换行的start和end
         int count_n_start = 0;
@@ -92,7 +91,7 @@ std::string getSubsequence2(std::map<std::string, std::tuple<std::string, long, 
         ret_str.erase(std::remove(ret_str.begin(), ret_str.end(), '\n'), ret_str.end());
 
         size_t s2 = ret_str.size();
-        if(s2 > size + 1) {
+        if(s2 - size > 1) {
             ret_str = ret_str.substr(0, size + 1);
         }
 
@@ -139,7 +138,6 @@ std::string getSubsequence3(std::map<std::string, std::tuple<std::string, long, 
         }
 
         int size = end - start;
-        int suf = line_bases - start%line_bases;
 
         // 带换行的start和end
         int count_n_start = 0;
@@ -175,7 +173,7 @@ std::string getSubsequence3(std::map<std::string, std::tuple<std::string, long, 
         std::string ret_str = std::string(buf);
         ret_str.erase(std::remove(ret_str.begin(), ret_str.end(), '\n'), ret_str.end());
         size_t s2 = ret_str.size();
-        if(s2 > size + 1) {
+        if(s2 - size > 1) {
             ret_str = ret_str.substr(0, size + 1);
         }
 
@@ -210,8 +208,6 @@ char getCharByPos(std::map<std::string, std::tuple<std::string, long, long, int>
         if (start > size_all) {
             start = size_all;
         }
-
-        int size = 1;
 
         // 带换行的start和end
         int count_n_start = 0;
@@ -300,7 +296,7 @@ std::string getSubsequence2(std::map<std::string, std::tuple<std::string, long, 
         ret_str.erase(std::remove(ret_str.begin(), ret_str.end(), '\n'), ret_str.end());
 
         size_t s2 = ret_str.size();
-        if(s2 > size + 1) {
+        if(s2 - size > 1) {
             ret_str = ret_str.substr(0, size + 1);
         }
 
@@ -365,7 +361,7 @@ std::string getSubsequence3(std::map<std::string, std::tuple<std::string, long, 
         ret_str.erase(std::remove(ret_str.begin(), ret_str.end(), '\n'), ret_str.end());
 
         size_t s2 = ret_str.size();
-        if(s2 > size + 1) {
+        if(s2 - size > 1) {
             ret_str = ret_str.substr(0, size + 1);
         }
 

@@ -3,8 +3,7 @@
 //
 
 #include "include/gtest/gtest.h"
-#include "../../impl/impl.h"
-#include "../../service/service.h"
+#include "../../service/TransferGffWithNucmerResult.h"
 #include "../../util/myutil.h"
 #include <string>
 #include <iostream>

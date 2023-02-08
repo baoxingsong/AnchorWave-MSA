@@ -2,14 +2,14 @@
 // Created by Baoxing Song on 2019-03-13.
 //
 
-#ifndef PROALI_LONGESTPATH_H
-#define PROALI_LONGESTPATH_H
+#pragma once
 
-#include "../model/model.h"
+#include "../model/AlignmentMatch.h"
 #include "readFastaFile.h"
 #include "TranscriptUpdateInformation.h"
 #include <algorithm>
 #include <cmath>
+#include <assert.h>
 
 void longestPath(std::vector<AlignmentMatch> &pairedSimilarFragments, std::vector<AlignmentMatch> &sortedOrthologPairs, const bool &keepTandemDuplication, double &scoreThreshold);
 
@@ -24,5 +24,3 @@ void longestPathQuotav2(std::vector<AlignmentMatch> pairedSimilarFragments, std:
                         double &INDEL_SCORE, double &GAP_OPEN_PENALTY,
                         double &MIN_ALIGNMENT_SCORE, const int &MAX_DIST_BETWEEN_MATCHES, int &refMaximumTimes, int &queryMaximumTimes,
                         double &calculateIndelDistance, bool withNovelAnchros);
-
-#endif //PROALI_LONGESTPATH_H

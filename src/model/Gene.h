@@ -22,9 +22,7 @@ The gene. i.e. gff file
 
 **************************************************************************/
 
-
-#ifndef ANNOTATIONLIFTOVER_GENE_H
-#define ANNOTATIONLIFTOVER_GENE_H
+#pragma once
 
 #include "STRAND.h"
 #include "Transcript.h"
@@ -106,5 +104,3 @@ struct compare_gene {
         }
     }
 };
-
-#endif //ANNOTATIONLIFTOVER_GENE_H

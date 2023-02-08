@@ -571,4 +571,3 @@ int64_t alignSlidingWindowNW(std::string &dna_q, std::string &dna_d, std::string
 
     return totalScore;
 }
-

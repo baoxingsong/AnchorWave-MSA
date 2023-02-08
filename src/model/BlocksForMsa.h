@@ -2,8 +2,7 @@
 // Created by bs674 on 6/8/21.
 //
 
-#ifndef ANCHORWAVE_BLOCKSFORMSA_H
-#define ANCHORWAVE_BLOCKSFORMSA_H
+#pragma once
 
 #include <string>
 #include <vector>
@@ -44,5 +43,3 @@ public:
 
     void setPrev(BlocksForMsa *prev);
 };
-
-#endif //ANCHORWAVE_BLOCKSFORMSA_H

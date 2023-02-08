@@ -15,8 +15,7 @@
  * =====================================================================================
  */
 
-#ifndef _INPUTPARSER_H
-#define _INPUTPARSER_H
+#pragma once
 
 #include <string>
 #include <vector>
@@ -39,5 +38,3 @@ public:
 };
 
 void usage();
-
-#endif

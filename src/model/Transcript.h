@@ -18,9 +18,7 @@
 
 *************************************************************************/
 
-
-#ifndef ANNOTATIONLIFTOVER_TRANSCRIPT_H
-#define ANNOTATIONLIFTOVER_TRANSCRIPT_H
+#pragma once
 
 #include "GenomeBasicFeature.h"
 #include "STRAND.h"
@@ -235,5 +233,3 @@ public:
         }
     }
 };
-
-#endif //ANNOTATIONLIFTOVER_TRANSCRIPT_H

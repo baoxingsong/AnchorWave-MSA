@@ -25,9 +25,7 @@ The link list data structure could deal with records deletion and insertion very
 
 **************************************************************************/
 
-
-#ifndef ANNOTATIONLIFTOVER_FIRSTLASTLIST_H
-#define ANNOTATIONLIFTOVER_FIRSTLASTLIST_H
+#pragma once
 
 #include "variant.h"
 
@@ -70,5 +68,3 @@ public:
 
     Data *getLast() const;
 };
-
-#endif //ANNOTATIONLIFTOVER_FIRSTLASTLIST_H

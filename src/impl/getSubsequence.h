@@ -2,13 +2,16 @@
 // Created by baoxing on 10/10/17.
 //
 
-#ifndef ANNOTATIONLIFTOVER_GETSUBSEQUENCE_H
-#define ANNOTATIONLIFTOVER_GETSUBSEQUENCE_H
+#pragma once
 
-#include "../model/model.h"
+#include "../model/STRAND.h"
 #include "GetReverseComplementary.h"
 #include <unistd.h>
 #include <fcntl.h>
+#include <tuple>
+#include <algorithm>
+#include <iostream>
+#include <set>
 
 std::string getSubsequence2(std::map<std::string, std::tuple<std::string, long, long, int> > &map, const std::string &seqName, const int &_start, const int &_end);
 
@@ -29,5 +32,3 @@ size_t getSequenceSizeFromPath2(std::tuple<std::string, long, long, int> &t);
 std::string getSubsequence(const std::string &sequence, const int &_start, const int &_end);
 
 std::string getSubsequence(const std::string &sequence, const int &_start, const int &_end, const STRAND &strand);
-
-#endif //ANNOTATIONLIFTOVER_GETSUBSEQUENCE_H

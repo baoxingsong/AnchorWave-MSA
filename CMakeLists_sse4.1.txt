@@ -33,7 +33,6 @@ add_executable(anchorwave
         src/InputParser.h
         src/version.h
 
-        src/impl/impl.h
         src/impl/deNovoGenomeVariantCallingMultipleThreads.cpp
         src/impl/deNovoGenomeVariantCalling.h
         src/impl/geneSyntenic.cpp
@@ -51,7 +50,6 @@ add_executable(anchorwave
         src/impl/TranscriptUpdateInformation.cpp
         src/impl/TranscriptUpdateInformation.h
 
-        src/model/model.h
         src/model/AlignmentBlock.cpp
         src/model/AlignmentBlock.h
         src/model/AlignmentMatch.cpp
@@ -79,13 +77,10 @@ add_executable(anchorwave
 
         src/myImportandFunction/alignSlidingWindow.cpp
         src/myImportandFunction/alignSlidingWindow.h
-        src/myImportandFunction/myImportantFunction.h
 
-        src/service/service.h
         src/service/TransferGffWithNucmerResult.cpp
         src/service/TransferGffWithNucmerResult.h
 
-        src/util/util.h
         src/util/myutil.cpp
         src/util/myutil.h
         src/util/nucleotideCodeSubstitutionMatrix.cpp

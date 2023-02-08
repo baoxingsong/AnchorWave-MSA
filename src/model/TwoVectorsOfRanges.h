@@ -1,13 +1,12 @@
 //
 // Created by bs674 on 7/5/21.
 //
+
+#pragma once
+
 #include "./Range.h"
 #include <vector>
 #include <set>
-
-#ifndef ANCHORWAVE_TWOVECTORSOFRANGES_H
-#define ANCHORWAVE_TWOVECTORSOFRANGES_H
-
 
 class TwoVectorsOfRanges {
 private:
@@ -36,5 +35,3 @@ public:
 
     void addRange2(Range &ran);
 };
-
-#endif //ANCHORWAVE_TWOVECTORSOFRANGES_H

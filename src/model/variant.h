@@ -19,9 +19,7 @@
 
 *************************************************************************/
 
-
-#ifndef ANNOTATIONLIFTOVER_VARIANT_H
-#define ANNOTATIONLIFTOVER_VARIANT_H
+#pragma once
 
 #include <string>
 #include <iostream>
@@ -121,5 +119,3 @@ struct compare_sdi_record {
         }
     }
 };
-
-#endif //ANNOTATIONLIFTOVER_VARIANT_H

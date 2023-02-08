@@ -51,7 +51,7 @@ int main(int argc, char **argv) {
         return gff2seq(--argc, ++argv);
     }
     else if (program.compare("proali") == 0) {
-        return proportationalAlignment(--argc, ++argv);
+        return proportionalAlignment(--argc, ++argv);
     }
     else if (program.compare("genoAli") == 0) {
         return genomeAlignment(--argc, ++argv);
@@ -59,9 +59,8 @@ int main(int argc, char **argv) {
     else if (program.compare("ali") == 0) {
         return ali(--argc, ++argv);
     }
-    else {
-        usage();
-    }
+
+    usage();
 
     return 0;
 }

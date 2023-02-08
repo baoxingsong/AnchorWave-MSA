@@ -15,8 +15,7 @@
  * =====================================================================================
  */
 
-#ifndef _NUCLEOTIDECODESUBSTITUTIONMATRIX_H
-#define _NUCLEOTIDECODESUBSTITUTIONMATRIX_H
+#pragma once
 
 #include <map>
 #include <set>
@@ -27,9 +26,8 @@ enum VARIANTCATEGORY {
     SNP, INSERTION, DELETION, SNPORINSERTION, SNPORDELETION, INSERTIONORDELETION, SNPORINSERTIONORDELETION
 };
 
-
-enum BEGINMIDDLEEND //  FOR DNA TO PROTEIN TRANSLATION
-{
+//  FOR DNA TO PROTEIN TRANSLATION
+enum BEGINMIDDLEEND {
     BEGIN, MIDDLE, END
 };
 
@@ -51,7 +49,6 @@ private:
     std::map<std::string, std::set<std::string> > revDnaIupacCode;
     std::map<std::string, char> middleStandardGeneticCode;
 
-
     std::set<std::string> legalNasString;
     std::set<char> legalNasChar;
 public:
@@ -63,9 +60,6 @@ public:
 
     int32_t get_dna_acid_map(const char &c);
 
-    //std::map<char, int>& get_dna_acid_map();
-    //std::map<std::string, double>& get_allStartCodons();
-    //std::map<std::string, double>& get_allStopCodons();
     std::set<std::string> &getMustStartCodons();
 
     std::set<std::string> &getMustStopCodons();
@@ -97,8 +91,3 @@ public:
 
     std::vector<std::string> &getAcceptors();
 };
-
-#endif
-//std::unordered_set<std::string> stopCodons = {"ATG", "TTG", "CTG"};// = {"TAA", "TAG", "TGA"}; // TO DO, use iupac code
-
-

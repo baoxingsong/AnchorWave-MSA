@@ -22,8 +22,7 @@ Reading the score from configure and provide score query functions
 
  ************************************************************************/
 
-#ifndef WSA_SCORE_H
-#define WSA_SCORE_H
+#pragma once
 
 #include <map>
 #include <iostream>
@@ -68,5 +67,3 @@ public:
 
     int8_t **getScore() const;
 };
-
-#endif //WSA_SCORE_H

@@ -313,17 +313,14 @@ void readSam(std::vector<AlignmentMatch> &alignmentMatchsMapT, std::ifstream &in
     std::map<std::string, std::map<std::string, std::vector<double>>> geneScores; //first key is gene name, second key is chr value is a vector of similarity
 
     while (std::getline(infile, line)) { // no matter the transcript in on forward strand or reverse strand, it should do not matter
-//        std::cout << line << std::endl;
         if (line.substr(0, 3) == "@PG") {
             std::vector<std::string> elements;
             std::vector<std::string> elements2;
             char seperator = ' ';
             char seperator2 = ',';
             split(line, seperator, elements);
-//            std::cout << elements[1] << std::endl;
-//            std::cout << line << std::endl;
+
             if (elements[0].find("ID:minimap2") != std::string::npos) {
-//                std::cout << "using minimap2 parameter line 316" << std::endl;
 //                std::cout << "using parameters detected from the input SAM file for novel anchors identification" << std::endl;
                 for (size_t i = 0; i < elements.size(); ++i) {
                     std::string element = elements[i];
@@ -432,7 +429,7 @@ void readSam(std::vector<AlignmentMatch> &alignmentMatchsMapT, std::ifstream &in
                             }
                         }
                     }
-//                    std::cout << chromosomePosition << "\t" << transcriptHashMap[elems[0]].getPStart() << "\t" << transcriptHashMap[elems[0]].getPEnd() << "\t" << elems[0] << std::endl;
+
                     assert(chromosomePosition == transcriptHashMap[elems[0]].getPEnd());
                 } else {
                     int32_t cdsPosition = 0;
@@ -449,10 +446,8 @@ void readSam(std::vector<AlignmentMatch> &alignmentMatchsMapT, std::ifstream &in
                                 chromosomePosition--;
                             }
                         }
-//                        std::cout << transcriptHashMap[elems[0]].getCdsVector()[cdsIndex].getStart() << "\t" << transcriptHashMap[elems[0]].getCdsVector()[cdsIndex].getEnd() << std::endl;
                     }
-//                    std::cout << transcriptHashMap[elems[0]].getName() << std::endl;
-//                    std::cout << transcriptHashMap[elems[0]].getPStart() << "\t" << chromosomePosition << std::endl;
+
                     assert(transcriptHashMap[elems[0]].getPStart() == chromosomePosition);
                 }
 
@@ -477,7 +472,6 @@ void readSam(std::vector<AlignmentMatch> &alignmentMatchsMapT, std::ifstream &in
                 if (lastChr.find(elems[0]) != lastChr.end() && lastChr[elems[0]] == queryChr &&
                     min((std::abs(lastPosition[elems[0]] - queryEnd)), std::abs(lastPosition[elems[0]] - queryStart)) < std::abs(transcriptHashMap[elems[0]].getPStart() - transcriptHashMap[elems[0]].getPEnd())) {
                     blackGeneList.insert(elems[0]);
-//                    std::cout << "putting " << elems[0] << " into unwanted list" << std::endl;
                 } // remove those genes generated weired alignment
 
                 lastChr[elems[0]] = queryChr;
@@ -486,19 +480,19 @@ void readSam(std::vector<AlignmentMatch> &alignmentMatchsMapT, std::ifstream &in
                 //double thisScore = 1.0 - (tailClipping+headClipping)/(double)cdsSequenceLength;
                 double thisScore = (double) numberofMatch / (double) cdsSequenceLength;
                 if (thisScore > minimumSimilarity) {
-                    if ((0 == samFlag % 32 && transcriptHashMap[elems[0]].getStrand() == POSITIVE)
-                        || (0 != samFlag % 32 && transcriptHashMap[elems[0]].getStrand() == NEGATIVE)) {
-
+                    if ((0 == samFlag % 32 && transcriptHashMap[elems[0]].getStrand() == POSITIVE) || (0 != samFlag % 32 && transcriptHashMap[elems[0]].getStrand() == NEGATIVE)) {
                         AlignmentMatch orthologPair(databaseChr, queryChr, databaseStart, databaseEnd, queryStart, queryEnd, thisScore, POSITIVE, elems[0], elems[0]);
                         alignmentMatchsMapT.push_back(orthologPair);
                     } else {
                         AlignmentMatch orthologPair(databaseChr, queryChr, databaseStart, databaseEnd, queryStart, queryEnd, thisScore, NEGATIVE, elems[0], elems[0]);
                         alignmentMatchsMapT.push_back(orthologPair);
                     }
+
                     if (geneScores.find(elems[0]) == geneScores.end()) {
                         std::map<std::string, std::vector<double>> a;
                         geneScores[elems[0]] = a;
                     }
+
                     if (geneScores[elems[0]].find(queryChr) == geneScores[elems[0]].end()) {
                         std::vector<double> a;
                         geneScores[elems[0]][queryChr] = a;
@@ -542,7 +536,7 @@ void readSam(std::vector<AlignmentMatch> &alignmentMatchsMapT, std::ifstream &in
     }
 }
 
-void setupAnchorsWithSpliceAlignmentResult(const std::string &gffFilePath, const std::string &cdsSequenceFile, const std::string &samFile, std::map<std::string, std::vector<AlignmentMatch>> &alignmentMatchsMap,
+void setupAnchorsWithSpliceAlignmentResult(const std::string &gffFilePath, const std::string &cdsSequenceFile, const std::string &samFile, std::map<std::string, std::vector<AlignmentMatch>> &map_v_am,
                                            double &inversion_PENALTY, double &MIN_ALIGNMENT_SCORE, bool &considerInversion, const int &minExon, const int64_t &windowWidth, const double &minimumSimilarity, const double &minimumSimilarity2,
                                            std::map<std::string, std::tuple<std::string, long, long, int> > &map_ref,
                                            std::map<std::string, std::tuple<std::string, long, long, int> > &map_qry,
@@ -564,46 +558,45 @@ void setupAnchorsWithSpliceAlignmentResult(const std::string &gffFilePath, const
     bool H = false;
 
     //read genome and gff file begin
-    NucleotideCodeSubstitutionMatrix nucleotideCodeSubstitutionMatrix;
-    std::map<std::string, std::vector<Transcript> > transcriptHashSet;
+    std::map<std::string, std::vector<Transcript> > map_ts;
     if (exonModel) {
-        readGffFile(gffFilePath, transcriptHashSet, "exon", minExon);
+        readGffFile(gffFilePath, map_ts, "exon", minExon);
     }
     else {
-        readGffFile(gffFilePath, transcriptHashSet, "CDS", minExon);
+        readGffFile(gffFilePath, map_ts, "CDS", minExon);
     }
 
-    std::set<std::string> toRemoveChrs;
-    for (std::map<std::string, std::vector<Transcript> >::iterator it = transcriptHashSet.begin(); it != transcriptHashSet.end(); ++it) {
+    std::set<std::string> set_rm_chr;
+    for (std::map<std::string, std::vector<Transcript> >::iterator it = map_ts.begin(); it != map_ts.end(); ++it) {
         if (map_ref.find(it->first) == map_ref.end()) {
-            toRemoveChrs.insert(it->first);
+            set_rm_chr.insert(it->first);
         }
         if (map_qry.find(it->first) == map_qry.end()) {
-            toRemoveChrs.insert(it->first);
+            set_rm_chr.insert(it->first);
         }
     }
 
     for (std::map<std::string, std::tuple<std::string, long, long, int> >::iterator it = map_ref.begin(); it != map_ref.end(); ++it) {
-        if (transcriptHashSet.find(it->first) == transcriptHashSet.end()) {
-            toRemoveChrs.insert(it->first);
+        if (map_ts.find(it->first) == map_ts.end()) {
+            set_rm_chr.insert(it->first);
         }
         if (map_qry.find(it->first) == map_qry.end()) {
-            toRemoveChrs.insert(it->first);
+            set_rm_chr.insert(it->first);
         }
     }
 
     for (std::map<std::string, std::tuple<std::string, long, long, int> >::iterator it = map_qry.begin(); it != map_qry.end(); ++it) {
-        if (transcriptHashSet.find(it->first) == transcriptHashSet.end()) {
-            toRemoveChrs.insert(it->first);
+        if (map_ts.find(it->first) == map_ts.end()) {
+            set_rm_chr.insert(it->first);
         }
         if (map_ref.find(it->first) == map_ref.end()) {
-            toRemoveChrs.insert(it->first);
+            set_rm_chr.insert(it->first);
         }
     }
 
-    for (std::string chr: toRemoveChrs) {
-        if (transcriptHashSet.find(chr) != transcriptHashSet.end()) {
-            transcriptHashSet.erase(chr);
+    for (std::string chr: set_rm_chr) {
+        if (map_ts.find(chr) != map_ts.end()) {
+            map_ts.erase(chr);
         }
 
         if (map_ref.find(chr) != map_ref.end()) {
@@ -616,7 +609,7 @@ void setupAnchorsWithSpliceAlignmentResult(const std::string &gffFilePath, const
     }
 
     std::map<std::string, Transcript> transcriptHashMap; // key is transcript name, value is a transcript structure
-    for (std::map<std::string, std::vector<Transcript> >::iterator it = transcriptHashSet.begin(); it != transcriptHashSet.end(); ++it) {
+    for (std::map<std::string, std::vector<Transcript> >::iterator it = map_ts.begin(); it != map_ts.end(); ++it) {
         for (Transcript transcript: it->second) {
             transcriptHashMap[transcript.getName()] = transcript;
         }
@@ -662,14 +655,14 @@ void setupAnchorsWithSpliceAlignmentResult(const std::string &gffFilePath, const
                 sortedAlignmentMatchs = it->second;
             }
 
-            alignmentMatchsMap[it->first] = std::vector<AlignmentMatch>();
+            map_v_am[it->first] = std::vector<AlignmentMatch>();
 
             for (unsigned long i = 0; i < sortedAlignmentMatchs.size(); ++i) {
-                alignmentMatchsMap[it->first].push_back(sortedAlignmentMatchs[i]);
+                map_v_am[it->first].push_back(sortedAlignmentMatchs[i]);
             }
         }
 
-        for (std::map<std::string, std::vector<AlignmentMatch>>::iterator it = alignmentMatchsMap.begin(); it != alignmentMatchsMap.end(); ++it) {
+        for (std::map<std::string, std::vector<AlignmentMatch>>::iterator it = map_v_am.begin(); it != map_v_am.end(); ++it) {
             for (size_t rangeIndex = 0; rangeIndex < it->second.size(); ++rangeIndex) {
                 if (it->second[rangeIndex].getRefStartPos() != it->second[rangeIndex].getQueryStartPos() || it->second[rangeIndex].getRefEndPos() != it->second[rangeIndex].getQueryEndPos()) {
                     blackGeneList.insert(it->second[rangeIndex].getReferenceGeneName());
@@ -678,7 +671,7 @@ void setupAnchorsWithSpliceAlignmentResult(const std::string &gffFilePath, const
         }
 
         infileReferencSam.close();
-        alignmentMatchsMap.clear();
+        map_v_am.clear();
     }
 
     // set gene black list by reading reference gff file end
@@ -694,7 +687,7 @@ void setupAnchorsWithSpliceAlignmentResult(const std::string &gffFilePath, const
             alignmentMatchsMapT[orthologPair2.getRefChr()] = std::vector<AlignmentMatch>();
         }
 
-        if (orthologPair2.getRefChr() == orthologPair2.getQueryChr() && transcriptHashSet.find(orthologPair2.getRefChr()) != transcriptHashSet.end() &&
+        if (orthologPair2.getRefChr() == orthologPair2.getQueryChr() && map_ts.find(orthologPair2.getRefChr()) != map_ts.end() &&
                 map_ref.find(orthologPair2.getRefChr()) != map_ref.end() && map_qry.find(orthologPair2.getRefChr()) != map_qry.end()) {
             if (!considerInversion && orthologPair2.getStrand() == NEGATIVE) {
 
@@ -1083,7 +1076,7 @@ void setupAnchorsWithSpliceAlignmentResult(const std::string &gffFilePath, const
             }
 
             for (unsigned long i = 0; i < sortedAlignmentMatchs.size(); ++i) {
-                alignmentMatchsMap[it->first].push_back(sortedAlignmentMatchs[i]);
+                map_v_am[it->first].push_back(sortedAlignmentMatchs[i]);
             }
         }
     }
@@ -1116,7 +1109,6 @@ void setupAnchorsWithSpliceAlignmentResultQuota(const std::string &gffFilePath, 
     }
 
     // read reference genome and gff begin
-    NucleotideCodeSubstitutionMatrix nucleotideCodeSubstitutionMatrix;
     std::map<std::string, std::vector<Transcript> > transcriptHashSet;
     if (exonModel) {
         readGffFile(gffFilePath, transcriptHashSet, "exon", minExon);

@@ -2,8 +2,7 @@
 // Created by bs674 on 6/8/21.
 //
 
-#ifndef ANCHORWAVE_ALIGNMENTBLOCK_H
-#define ANCHORWAVE_ALIGNMENTBLOCK_H
+#pragma once
 
 #include <string>
 #include "STRAND.h"
@@ -44,5 +43,3 @@ public:
 
     void setStrand(STRAND strand);
 };
-
-#endif //ANCHORWAVE_ALIGNMENTBLOCK_H

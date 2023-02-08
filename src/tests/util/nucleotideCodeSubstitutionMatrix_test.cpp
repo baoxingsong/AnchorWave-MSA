@@ -3,10 +3,8 @@
 //
 
 #include "../../../googletest/googletest/include/gtest/gtest.h"
-#include "../../util/util.h"
-#include <string>
-#include <iostream>
-#include <sstream>
+#include "../../util/nucleotideCodeSubstitutionMatrix.h"
+
 using namespace std;
 
 TEST(nucleotideCodeSubstitutionMatrix_L_test, c1){

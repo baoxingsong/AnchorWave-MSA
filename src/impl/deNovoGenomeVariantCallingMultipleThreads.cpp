@@ -518,11 +518,9 @@ void genomeAlignmentAndVariantCallingSingleThread(
 
     size_t size_ref_sq = getSequenceSizeFromPath2(map_ref[refChr]);
     size_t size_target_sq = getSequenceSizeFromPath2(map_qry[queryChr]);
-    std::string path_ref;
-    std::tie(path_ref, std::ignore, std::ignore, std::ignore) = map_ref[refChr];
 
-    std::string path_qry;
-    std::tie(path_qry, std::ignore, std::ignore, std::ignore) = map_qry[queryChr];
+    std::string path_ref = std::get<0>(map_ref[refChr]);
+    std::string path_qry = std::get<0>(map_qry[queryChr]);
 
     int fd_ref = open(path_ref.c_str(), O_RDONLY);
     int fd_qry = open(path_qry.c_str(), O_RDONLY);
@@ -1001,7 +999,7 @@ void genomeAlignmentAndVariantCallingSingleThread(
 }
 
 
-void genomeAlignmentAndVariantCalling(std::map<std::string, std::vector<AlignmentMatch>> &alignmentMatchsMap,
+void genomeAlignmentAndVariantCalling(std::map<std::string, std::vector<AlignmentMatch>> &map_v_am,
                                       const std::string &refFastaFilePath, const std::string &targetFastaFilePath,
                                       const int32_t &windowWidth, const std::string &outPutMafFile,
                                       const std::string &outPutFragedFile, const int32_t &matchingScore, const int32_t &mismatchingPenalty,
@@ -1070,7 +1068,7 @@ void genomeAlignmentAndVariantCalling(std::map<std::string, std::vector<Alignmen
 
     std::atomic_int num_runing_threads(0);
 
-    for (std::map<std::string, std::vector<AlignmentMatch>>::iterator it = alignmentMatchsMap.begin(); it != alignmentMatchsMap.end(); ++it) {
+    for (std::map<std::string, std::vector<AlignmentMatch>>::iterator it = map_v_am.begin(); it != map_v_am.end(); ++it) {
         if (it->second.size() > 0) {
             bool isThisThreadUnrun = true;
 

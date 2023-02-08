@@ -2,8 +2,7 @@
 // Created by bs674 on 7/5/21.
 //
 
-#ifndef ANCHORWAVE_RANGE_H
-#define ANCHORWAVE_RANGE_H
+#pragma once
 
 #include <iostream>
 
@@ -44,5 +43,3 @@ public:
         return this->getStart() < rag.getStart();
     }
 };
-
-#endif //ANCHORWAVE_RANGE_H
