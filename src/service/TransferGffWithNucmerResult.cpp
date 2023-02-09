@@ -628,7 +628,6 @@ void setupAnchorsWithSpliceAlignmentResult(const std::string &gffFilePath, const
         std::vector<AlignmentMatch> alignmentMatchsMapT0;
         std::cout << "reading reference sam begin" << std::endl;
         readSam(alignmentMatchsMapT0, infileReferencSam, transcriptHashMap, expectedCopies, minimumSimilarity, maximumSimilarity, blackGeneList, matchingScore, mismatchingPenalty, openGapPenalty1, extendGapPenalty1, k, H, w);
-
         std::cout << "reading reference sam done" << std::endl;
         std::map<std::string, std::vector<AlignmentMatch>> alignmentMatchsMapT;
 

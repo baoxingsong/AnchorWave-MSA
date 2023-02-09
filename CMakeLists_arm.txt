@@ -53,30 +53,16 @@ add_executable(anchorwave
         src/impl/TranscriptUpdateInformation.cpp
         src/impl/TranscriptUpdateInformation.h
 
-        src/model/AlignmentBlock.cpp
-        src/model/AlignmentBlock.h
         src/model/AlignmentMatch.cpp
         src/model/AlignmentMatch.h
-        src/model/BlocksForMsa.cpp
-        src/model/BlocksForMsa.h
-        src/model/FirstLastList.cpp
-        src/model/FirstLastList.h
-        src/model/Gene.cpp
-        src/model/Gene.h
         src/model/GenomeBasicFeature.cpp
         src/model/GenomeBasicFeature.h
-        src/model/Range.cpp
-        src/model/Range.h
         src/model/Score.cpp
         src/model/Score.h
         src/model/STRAND.cpp
         src/model/STRAND.h
         src/model/Transcript.cpp
         src/model/Transcript.h
-        src/model/TwoVectorsOfRanges.cpp
-        src/model/TwoVectorsOfRanges.h
-        src/model/variant.cpp
-        src/model/variant.h
 
         src/myImportandFunction/alignSlidingWindow.cpp
         src/myImportandFunction/alignSlidingWindow.h

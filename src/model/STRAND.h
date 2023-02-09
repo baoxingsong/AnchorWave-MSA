@@ -20,7 +20,7 @@
 
 #pragma once
 
-#include "map"
+#include <map>
 #include <ostream>
 
 enum STRAND {

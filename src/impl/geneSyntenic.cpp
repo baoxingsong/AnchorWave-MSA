@@ -292,7 +292,7 @@ void longestPathQuotav2(std::vector<AlignmentMatch> pairedSimilarFragments, std:
                         std::map<std::string, std::map<int64_t, AlignmentMatch>> &refIndexMap /*chr, index, AlignmentMatch*/, std::map<std::string, std::map<int64_t, AlignmentMatch>> &queryIndexMap,
                         double &INDEL_SCORE, double &GAP_OPEN_PENALTY,
                         double &MIN_ALIGNMENT_SCORE, const int &MAX_DIST_BETWEEN_MATCHES, int &refMaximumTimes, int &queryMaximumTimes,
-                        double &calculateIndelDistance, bool withNovelAnchros) {
+                        double &calculateIndelDistance, bool withNovelAnchors) {
     sortedOrthologPairChains.clear();
     std::map<std::string, int64_t> refTimes;
     std::map<std::string, std::map<int64_t, int64_t>> queryTimes;  // key is the id set above

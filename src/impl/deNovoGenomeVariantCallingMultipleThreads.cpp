@@ -146,11 +146,9 @@ void genomeAlignmentSingleThread(std::vector<AlignmentMatch> alignmentMatchs,
 
                     int64_t thiScore = alignSlidingWindow(querySeq, refSeq, _alignment_q, _alignment_d, windowWidth, matchingScore, mismatchingPenalty, openGapPenalty1, extendGapPenalty1, openGapPenalty2, extendGapPenalty2);
                     if (checkResult) {
-                        std::string tempd;
-                        std::string tempq;
-                        tempd = _alignment_d;
+                        std::string tempd = _alignment_d;
                         tempd.erase(std::remove(tempd.begin(), tempd.end(), '-'), tempd.end());
-                        tempq = _alignment_q;
+                        std::string tempq = _alignment_q;
                         tempq.erase(std::remove(tempq.begin(), tempq.end(), '-'), tempq.end());
                         if (tempd.compare(refSeq) != 0 || tempq.compare(querySeq) != 0) {
                             thiScore = alignSlidingWindowNW(querySeq, refSeq, _alignment_q, _alignment_d, windowWidth,  matchingScore, mismatchingPenalty, openGapPenalty1, extendGapPenalty1, openGapPenalty2, extendGapPenalty2);
@@ -182,24 +180,24 @@ void genomeAlignmentSingleThread(std::vector<AlignmentMatch> alignmentMatchs,
         }
 
         {
-            std::string refGenomerSequence = getSubsequence2(map_ref, refChr, alignmentMatchs[0].getRefStartPos(), alignmentMatchs[alignmentMatchs.size() - 1].getRefEndPos());
-            std::string queryGenomerSequence = getSubsequence2(map_qry, queryChr, alignmentMatchs[0].getQueryStartPos(), alignmentMatchs[alignmentMatchs.size() - 1].getQueryEndPos());
+            std::string refGenomeSequence = getSubsequence2(map_ref, refChr, alignmentMatchs[0].getRefStartPos(), alignmentMatchs[alignmentMatchs.size() - 1].getRefEndPos());
+            std::string queryGenomeSequence = getSubsequence2(map_qry, queryChr, alignmentMatchs[0].getQueryStartPos(), alignmentMatchs[alignmentMatchs.size() - 1].getQueryEndPos());
 
             //if (checkResult) {
             std::string temp = refAlign.str();
             temp.erase(std::remove(temp.begin(), temp.end(), '-'), temp.end());
-            assert(temp.compare(refGenomerSequence) == 0);
+            assert(temp.compare(refGenomeSequence) == 0);
 
             temp = queryAlign.str();
             temp.erase(std::remove(temp.begin(), temp.end(), '-'), temp.end());
-            assert(temp.compare(queryGenomerSequence) == 0);
+            assert(temp.compare(queryGenomeSequence) == 0);
             //}
             if (outPutMaf) {
                 g_num_mutex.lock();
                 omaffile << "a\tscore=" << alignmentScore << std::endl
-                         << "s\t" << std::left << std::setw(chrWidth) << refChr << "\t" << std::right << std::setw(9) << alignmentMatchs[0].getRefStartPos() - 1 << "\t" << std::setw(9) << refGenomerSequence.size() << "\t+\t" << size_refSequence << "\t"
+                         << "s\t" << std::left << std::setw(chrWidth) << refChr << "\t" << std::right << std::setw(9) << alignmentMatchs[0].getRefStartPos() - 1 << "\t" << std::setw(9) << refGenomeSequence.size() << "\t+\t" << size_refSequence << "\t"
                          << refAlign.str() << std::endl
-                         << "s\t" << std::left << std::setw(chrWidth) << queryChr << "\t" << std::right << std::setw(9) << alignmentMatchs[0].getQueryStartPos() - 1 << "\t" << std::setw(9) << queryGenomerSequence.size() << "\t+\t"
+                         << "s\t" << std::left << std::setw(chrWidth) << queryChr << "\t" << std::right << std::setw(9) << alignmentMatchs[0].getQueryStartPos() - 1 << "\t" << std::setw(9) << queryGenomeSequence.size() << "\t+\t"
                          << size_targetSequence << "\t" << queryAlign.str() << std::endl
                          << std::endl;
                 g_num_mutex.unlock();
@@ -1000,7 +998,7 @@ void genomeAlignmentAndVariantCallingSingleThread(
 
 
 void genomeAlignmentAndVariantCalling(std::map<std::string, std::vector<AlignmentMatch>> &map_v_am,
-                                      const std::string &refFastaFilePath, const std::string &targetFastaFilePath,
+                                      const std::string &path_ref_GenomeSequence, const std::string &path_target_GenomeSequence,
                                       const int32_t &windowWidth, const std::string &outPutMafFile,
                                       const std::string &outPutFragedFile, const int32_t &matchingScore, const int32_t &mismatchingPenalty,
                                       const int32_t &openGapPenalty1, const int32_t &extendGapPenalty1, const int32_t &openGapPenalty2, const int32_t &extendGapPenalty2,
@@ -1018,19 +1016,19 @@ void genomeAlignmentAndVariantCalling(std::map<std::string, std::vector<Alignmen
     }
 
     std::map<std::string, std::tuple<std::string, long, long, int> > map_ref;
-    readFastaFile(refFastaFilePath, map_ref);
+    readFastaFile(path_ref_GenomeSequence, map_ref);
 
     std::map<std::string, std::tuple<std::string, long, long, int> > map_qry;
-    readFastaFile(targetFastaFilePath, map_qry);
+    readFastaFile(path_target_GenomeSequence, map_qry);
 
     long unsigned int chrWidth = 4;
     std::string refFileName;
     std::string queryFileName;
     std::vector<std::string> elems;
     char delim = '/';
-    split(refFastaFilePath, delim, elems);
+    split(path_ref_GenomeSequence, delim, elems);
     refFileName = elems.back();
-    split(targetFastaFilePath, delim, elems);
+    split(path_target_GenomeSequence, delim, elems);
     queryFileName = elems.back();
 
     for (std::map<std::string, std::tuple<std::string, long, long, int> >::iterator itchr = map_ref.begin(); itchr != map_ref.end(); ++itchr) {

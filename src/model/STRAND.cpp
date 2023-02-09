@@ -6,6 +6,7 @@ std::ostream &operator<<(std::ostream &out, const STRAND value) {
         strings[POSITIVE] = "POSITIVE";
         strings[NEGATIVE] = "NEGATIVE";
     }
+
     return out << strings[value];
 }
 
