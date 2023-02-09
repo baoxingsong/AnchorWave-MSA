@@ -55,7 +55,7 @@ int gff2seq(int argc, char **argv) {
 }
 
 // generate alignmentMatchsMap for genomeAlignment from anchors file.
-void genGenoMapFromFile(std::string path_anchors, std::string wholeCommand, std::map<std::string, std::vector<AlignmentMatch>> & map_v_am) {
+bool genGenoMapFromFile(std::string path_anchors, std::string wholeCommand, std::map<std::string, std::vector<AlignmentMatch>> & map_v_am) {
     std::ifstream infile_anchors(path_anchors);
 
     std::string line;
@@ -90,12 +90,6 @@ void genGenoMapFromFile(std::string path_anchors, std::string wholeCommand, std:
             count_end++;
         }
     }
-
-    std::cout << "same_command " << same_command << std::endl;
-    std::cout << "has_begin " << has_begin << std::endl;
-    std::cout << "has_end " << has_end << std::endl;
-    std::cout << "count_begin " << count_begin << std::endl;
-    std::cout << "count_end " << count_end << std::endl;
 
     // has generated anchors file before.
     if(same_command && has_begin && has_end && (count_begin == count_end)) {
@@ -195,8 +189,12 @@ void genGenoMapFromFile(std::string path_anchors, std::string wholeCommand, std:
                 v_am.push_back(am);
             }
         }
+
         infile.close();
+        return true;
     }
+
+    return false;
 }
 
 int genomeAlignment(int argc, char **argv) {
@@ -401,6 +399,8 @@ int genomeAlignment(int argc, char **argv) {
         std::map<std::string, std::vector<AlignmentMatch>> map_v_am;
 
         std::string path_anchors = inputParser.getCmdOption("-n");
+
+        bool flag_CanGen = false;
         std::ifstream infile_anchors(path_anchors);
         if (infile_anchors.good()) {
             std::string wholeCommand = argv[0];
@@ -408,10 +408,11 @@ int genomeAlignment(int argc, char **argv) {
                 wholeCommand = wholeCommand + " " + argv[i];
             }
 
-            genGenoMapFromFile(path_anchors, wholeCommand, map_v_am);
+            flag_CanGen = genGenoMapFromFile(path_anchors, wholeCommand, map_v_am);
             std::cout << "map_v_am generated!" << std::endl;
         }
-        else {
+
+        if(!flag_CanGen) {
             setupAnchorsWithSpliceAlignmentResult(refGffFilePath, cdsSequenceFile, samFilePath, map_v_am,
                                                   inversion_PENALTY, MIN_ALIGNMENT_SCORE, considerInversion, minExon, windowWidth, minimumSimilarity, minimumSimilarity2,
                                                   map_ref, map_qry,
@@ -543,7 +544,7 @@ int genomeAlignment(int argc, char **argv) {
 }
 
 // generate alignmentMatchsMap for proportionalAlignment from anchors file.
-void genProVectorFromFile(std::string path_anchors, std::string wholeCommand, std::vector<std::vector<AlignmentMatch>> & v_v_am) {
+bool genProVectorFromFile(std::string path_anchors, std::string wholeCommand, std::vector<std::vector<AlignmentMatch>> & v_v_am) {
     std::ifstream infile_anchors(path_anchors);
 
     std::string line;
@@ -578,12 +579,6 @@ void genProVectorFromFile(std::string path_anchors, std::string wholeCommand, st
             count_end++;
         }
     }
-
-    std::cout << "same_command " << same_command << std::endl;
-    std::cout << "has_begin " << has_begin << std::endl;
-    std::cout << "has_end " << has_end << std::endl;
-    std::cout << "count_begin " << count_begin << std::endl;
-    std::cout << "count_end " << count_end << std::endl;
 
     // has generated anchors file before.
     if(same_command && has_begin && has_end && (count_begin == count_end)) {
@@ -671,8 +666,13 @@ void genProVectorFromFile(std::string path_anchors, std::string wholeCommand, st
                 v_am.push_back(am);
             }
         }
+
         infile.close();
+
+        return true;
     }
+
+    return false;
 }
 
 int proportionalAlignment(int argc, char **argv) {
@@ -901,15 +901,17 @@ int proportionalAlignment(int argc, char **argv) {
 
         std::string path_anchors = inputParser.getCmdOption("-n");
 
+        bool flag_CanGen = false;
         std::ifstream infile_anchors(path_anchors);
         if (infile_anchors.good()) {
             std::string wholeCommand = argv[0];
             for (int i = 1; i < argc; ++i) {
                 wholeCommand = wholeCommand + " " + argv[i];
             }
-            genProVectorFromFile(path_anchors, wholeCommand, v_v_am);
+            flag_CanGen = genProVectorFromFile(path_anchors, wholeCommand, v_v_am);
         }
-        else {
+
+        if(!flag_CanGen) {
             std::cout << "setupAnchorsWithSpliceAlignmentResultQuota begin!" << std::endl;
             // generate alignmentMatchsMap.
             setupAnchorsWithSpliceAlignmentResultQuota(refGffFilePath, samFilePath, cdsSequenceFile, v_v_am, INDEL_SCORE, GAP_OPEN_PENALTY, MIN_ALIGNMENT_SCORE,
@@ -1000,9 +1002,9 @@ int proportionalAlignment(int argc, char **argv) {
                 ofile.close();
                 std::cout << "totalAnchors:" << totalAnchors << std::endl;
             }
-        }
 
-        std::cout << "anchors generate done!" << std::endl;
+            std::cout << "anchors generate done!" << std::endl;
+        }
 
         if (inputParser.cmdOptionExists("-f") || inputParser.cmdOptionExists("-o") || inputParser.cmdOptionExists("-l")) {
             genomeAlignment(v_v_am, referenceGenomeSequence, targetGenomeSequence, windowWidth,
