@@ -4,23 +4,23 @@
 
 #pragma once
 
-#include <algorithm>
-#include <string>
-#include <stack>
 #ifdef __SSE2NEON__
 #include "sse2neon.h"
 #else
 #include <immintrin.h>
 #endif // __SSE2NEON__
-#include <map>
-#include "../impl/getSequencesFromGff.h"
-#include "../util/myutil.h"
-#include "../util/nucleotideCodeSubstitutionMatrix.h"
-#include "../../WFA2-lib/bindings/cpp/WFAligner.hpp"
-#include <stdlib.h>
-#include "../../minimap2/ksw2.h"
-#include "../model//Score.h"
 
+#include "../impl/getSequencesFromGff.h"
+#include "../model//Score.h"
+#include "../util/myutil.h"
+
+#include "../../WFA2-lib/bindings/cpp/WFAligner.hpp"
+#include "../../minimap2/ksw2.h"
+
+#include <algorithm>
+#include <cstdlib>
+#include <map>
+#include <string>
 
 int64_t alignSlidingWindow(std::string &dna_q, std::string &dna_d, std::string &_alignment_q, std::string &_alignment_d,
                            const int64_t &slidingWindowSize, const int32_t &matchingScore,

@@ -4,12 +4,13 @@
 
 #pragma once
 
-#include "../model/AlignmentMatch.h"
 #include "readFastaFile.h"
 #include "TranscriptUpdateInformation.h"
+#include "../model/AlignmentMatch.h"
+
 #include <algorithm>
-#include <cmath>
 #include <assert.h>
+#include <cmath>
 
 void longestPath(std::vector<AlignmentMatch> &pairedSimilarFragments, std::vector<AlignmentMatch> &sortedOrthologPairs, const bool &keepTandemDuplication, double &scoreThreshold);
 

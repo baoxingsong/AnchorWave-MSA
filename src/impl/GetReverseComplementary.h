@@ -4,7 +4,7 @@
 
 #pragma once
 
-#include <string>
 #include <sstream>
+#include <string>
 
 std::string getReverseComplementary(const std::string &sequence);

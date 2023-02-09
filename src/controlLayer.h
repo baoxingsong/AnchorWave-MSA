@@ -17,16 +17,17 @@
 
 #pragma once
 
-#include <iostream>
 #include "InputParser.h"
-#include <sstream>
-#include <vector>
-#include "./model/AlignmentMatch.h"
-#include "./service/TransferGffWithNucmerResult.h"
 #include "./impl/getSequencesFromGff.h"
 #include "./impl/deNovoGenomeVariantCalling.h"
+#include "./model/AlignmentMatch.h"
 #include "./myImportandFunction/alignSlidingWindow.h"
+#include "./service/TransferGffWithNucmerResult.h"
 #include "./version.h"
+
+#include <iostream>
+#include <sstream>
+#include <vector>
 
 int gff2seq(int argc, char **argv);
 

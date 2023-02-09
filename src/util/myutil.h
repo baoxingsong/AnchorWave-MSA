@@ -16,16 +16,11 @@
 
 #include <algorithm>
 #include <fstream>
+#include <map>
+#include <sstream>
 #include <string>
 #include <vector>
-#include <map>
-#include <regex>
-#include "nucleotideCodeSubstitutionMatrix.h"
 
 void split(const std::string &s, char &delim, std::vector<std::string> &elems);
-
-std::string songStrReplaceAll(std::string &str, const std::string &pattern, const std::string &pattern2);
-
-int32_t min(const int32_t &a, const int32_t &b);
 
 void splitCIGAR(std::string cigarString, std::vector<std::string> &cigarElems);

@@ -4,54 +4,6 @@
 
 #include "alignSlidingWindow.h"
 
-
-int max(const int32_t &a, const int32_t &b) {
-    if (a > b) {
-        return a;
-    } else {
-        return b;
-    }
-}
-
-int max(const int32_t &m, const int32_t &e1, const int32_t &f1, const int32_t &e2, const int32_t &f2, int8_t &figure) {
-    int32_t max = m;
-    figure = -1;
-    if (f1 > max) {
-        max = f1;
-        figure = 3;
-    }
-    if (f2 > max) {
-        max = f2;
-        figure = 4;
-    }
-    if (e1 > max) {
-        max = e1;
-        figure = 1;
-    }
-    if (e2 > max) {
-        max = e2;
-        figure = 2;
-    }
-    return max;
-}
-
-int max(const int32_t &m, const int32_t &e1, const int32_t &f1, const int32_t &e2, const int32_t &f2) {
-    int32_t max = m;
-    if (e1 > max) {
-        max = e1;
-    }
-    if (e2 > max) {
-        max = e2;
-    }
-    if (f1 > max) {
-        max = f1;
-    }
-    if (f2 > max) {
-        max = f2;
-    }
-    return max;
-}
-
 int32_t minimap2_alignment(const std::string &_dna_q, const std::string &_dna_d, std::string &_alignment_q, std::string &_alignment_d,
                            const int32_t &matchingScore, int32_t mismatchingPenalty,
                            int32_t _open_gap_penalty1, int32_t _extend_gap_penalty1,
@@ -273,12 +225,13 @@ int64_t alignSlidingWindow(const std::string &dna_q, const std::string &dna_d, i
                 }
             }
 
-            std::string tempalignment_q = alignment_q;
-            tempalignment_q = songStrReplaceAll(tempalignment_q, "-", "");
-            assert(endPositionq == tempalignment_q.size());
-            std::string tempalignment_d = alignment_d;
-            tempalignment_d = songStrReplaceAll(tempalignment_d, "-", "");
-            assert(endPositiont == tempalignment_d.size());
+            std::string temp_q = alignment_q;
+            temp_q.erase(std::remove(temp_q.begin(), temp_q.end(), '-'), temp_q.end());
+            assert(endPositionq == temp_q.size());
+
+            std::string temp_d = alignment_d;
+            temp_d.erase(std::remove(temp_d.begin(), temp_d.end(), '-'), temp_d.end());
+            assert(endPositiont == temp_d.size());
 
             _alignment_q += alignment_q;
             _alignment_d += alignment_d;
@@ -305,7 +258,7 @@ int64_t alignSlidingWindow(const std::string &dna_q, const std::string &dna_d, i
     assert(_alignment_d.size() == _alignment_q.size());
 
     if (final_indel_length > 0) {
-        totalScore += max(openGapPenalty1 + extendGapPenalty1 * final_indel_length, openGapPenalty2 + extendGapPenalty2 * final_indel_length);
+        totalScore += std::max(openGapPenalty1 + extendGapPenalty1 * final_indel_length, openGapPenalty2 + extendGapPenalty2 * final_indel_length);
     }
 
     return totalScore;
@@ -411,7 +364,7 @@ int64_t alignSlidingWindow_minimap2_or_NW(std::string &dna_q, std::string &dna_d
     int32_t _length_of_d = dna_d.size();
 
     //check all Ns end
-    int32_t longerSeqLength = max(_length_of_d, _length_of_q);
+    int32_t longerSeqLength = std::max(_length_of_d, _length_of_q);
 
     if ((_length_of_d * 1.0 / slidingWindowSize) * (_length_of_q * 1.0 / slidingWindowSize) <= 1) { //  _length_of_d*_length_of_q <= (slidingWindowSize*slidingWindowSize) this calculated via RAM cost
         /*the above parameter settings were based on RAM cost*/

@@ -17,10 +17,12 @@
 
 #pragma once
 
+#include "version.h"
+
+#include <algorithm>
+#include <iostream>
 #include <string>
 #include <vector>
-#include <algorithm>
-#include "version.h"
 
 class InputParser {
 private:

@@ -4,7 +4,7 @@
 
 #include "readGffFile.h"
 
-void get_transcript_to_gene_map_from_gff(const std::string &filePath, std::map <std::string, std::string> &transcript_to_gene_map) {
+void get_map_from_gff(const std::string &filePath, std::map <std::string, std::string> &map_transcript_to_gene) {
     std::ifstream infile(filePath);
     if (!infile.good()) {
         std::cerr << "error in opening GFF/GTF file " << filePath << std::endl;
@@ -32,7 +32,7 @@ void get_transcript_to_gene_map_from_gff(const std::string &filePath, std::map <
             std::string line_s = line.substr(p_p_b + 7);
             size_t p_p_e = line_s.find(";");
             std::string parent = line_s.substr(0, p_p_e);
-            transcript_to_gene_map[id] = parent;
+            map_transcript_to_gene[id] = parent;
             continue;
         }
 
@@ -41,7 +41,7 @@ void get_transcript_to_gene_map_from_gff(const std::string &filePath, std::map <
             std::string line_s = line.substr(p_g_b + 7);
             size_t p_g_e = line_s.find(";");
             std::string gene_id = line_s.substr(0, p_g_e);
-            transcript_to_gene_map[id] = gene_id;
+            map_transcript_to_gene[id] = gene_id;
         }
     }
 

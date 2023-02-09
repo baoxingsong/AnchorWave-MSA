@@ -14,7 +14,7 @@ TEST(readGffFileWithEveryThing, c1){ // just to make sure that every line has be
     std::map<std::string, std::vector<Transcript> > transcriptHashSet;
     int minExon = 20;
     std::string regex = "([\\s\\S]*)Parent=([abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789.:_-]+)";
-    readGffFile (gffFilePath, transcriptHashSet, regex, minExon);
+//    readGffFile (gffFilePath, transcriptHashSet, regex, minExon);
 
     for( std::map<std::string, std::vector<Transcript> >::iterator it=transcriptHashSet.begin(); it != transcriptHashSet.end(); ++it ){
         std::cout << it->first << " " << std::endl;

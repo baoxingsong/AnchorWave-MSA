@@ -4,19 +4,18 @@
 
 #pragma once
 
+#include "getSubsequence.h"
+#include "readFastaFile.h"
+#include "../model/AlignmentMatch.h"
+#include "../myImportandFunction/alignSlidingWindow.h"
+#include "../util/myutil.h"
+
 #include <atomic>
 #include <iomanip>
 #include <iostream>
 #include <mutex>
 #include <thread>
 #include <unistd.h>
-
-#include "../model/AlignmentMatch.h"
-#include "../myImportandFunction/alignSlidingWindow.h"
-#include "../util/myutil.h"
-#include "../util/nucleotideCodeSubstitutionMatrix.h"
-#include "readFastaFile.h"
-#include "getSubsequence.h"
 
 void genomeAlignmentAndVariantCalling(std::map<std::string, std::vector<AlignmentMatch>> &map_v_am,
                                       const std::string &refFastaFilePath, const std::string &targetFastaFilePath,

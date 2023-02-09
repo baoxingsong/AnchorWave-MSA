@@ -4,14 +4,15 @@
 
 #pragma once
 
-#include "../model/STRAND.h"
 #include "GetReverseComplementary.h"
-#include <unistd.h>
-#include <fcntl.h>
-#include <tuple>
+#include "../model/STRAND.h"
+
 #include <algorithm>
+#include <fcntl.h>
 #include <iostream>
 #include <set>
+#include <tuple>
+#include <unistd.h>
 
 std::string getSubsequence2(std::map<std::string, std::tuple<std::string, long, long, int> > &map, const std::string &seqName, const int &_start, const int &_end);
 

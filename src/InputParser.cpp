@@ -14,7 +14,7 @@
  *
  * =====================================================================================
  */
-#include <iostream>
+
 #include "InputParser.h"
 
 InputParser::InputParser(int &argc, char **argv) {

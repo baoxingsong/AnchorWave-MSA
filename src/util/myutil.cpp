@@ -15,12 +15,6 @@
 
 #include "myutil.h"
 
-#ifdef __unix
-
-#include <linux/limits.h>
-
-#endif
-
 void split(const std::string &s, char &delim, std::vector <std::string> &elems) {
     std::stringstream ss(s);
     std::string item;
@@ -29,20 +23,6 @@ void split(const std::string &s, char &delim, std::vector <std::string> &elems) 
             elems.push_back(item);
         }
     }
-}
-
-std::string songStrReplaceAll(std::string &str, const std::string &pattern, const std::string &pattern2) {
-    std::regex vowel_re(pattern);
-    str = std::regex_replace(str, vowel_re, pattern2);
-    return str;
-}
-
-int32_t min(const int32_t &a, const int32_t &b) {
-    if (a < b) {
-        return a;
-    }
-
-    return b;
 }
 
 void splitCIGAR(std::string str, std::vector <std::string> &cigarElems) {

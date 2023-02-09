@@ -391,7 +391,6 @@ int genomeAlignment(int argc, char **argv) {
         std::map<std::string, std::tuple<std::string, long, long, int> > map_ref;
         readFastaFile(path_ref_GenomeSequence, map_ref);
 
-        std::cout << "path_target_GenomeSequence " << path_target_GenomeSequence << std::endl;
         std::map<std::string, std::tuple<std::string, long, long, int> > map_qry;
         readFastaFile(path_target_GenomeSequence, map_qry);
 

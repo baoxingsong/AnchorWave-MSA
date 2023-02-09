@@ -7,22 +7,16 @@
 #include "../impl/geneSyntenic.h"
 #include "../impl/getSubsequence.h"
 #include "../impl/readGffFile.h"
-
-#include "../util//myutil.h"
-#include "../myImportandFunction/alignSlidingWindow.h"
 #include "../model/AlignmentMatch.h"
 #include "../model/Transcript.h"
-#include <map>
-#include <cstdlib>
+#include "../myImportandFunction/alignSlidingWindow.h"
+#include "../util//myutil.h"
 
-#include <stdlib.h>
-#include <assert.h>
-#include <stdio.h>
-#include <zlib.h>
-#include <vector>
 #include "../../minimap2/minimap.h"
-#include "../../minimap2/kseq.h"
 
+#include <assert.h>
+#include <map>
+#include <vector>
 
 void setupAnchorsWithSpliceAlignmentResult(const std::string &gffFilePath, const std::string &cdsSequenceFile, const std::string &samFile, std::map<std::string, std::vector<AlignmentMatch>> &alignmentMatchsMap,
                                            double &inversion_PENALTY, double &MIN_ALIGNMENT_SCORE, bool &considerInversion, const int &minExon, const int64_t &windowWidth, const double &minimumSimilarity, const double &minimumSimilarity2,

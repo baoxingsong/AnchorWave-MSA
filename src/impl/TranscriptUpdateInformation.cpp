@@ -15,7 +15,7 @@ void TranscriptUpdateCdsInformation(Transcript &transcript, std::map<std::string
 
         std::string reserveString;
         reserveString.reserve(transcript.getGeneomeSequence().size());
-        std::stringstream cdsss(reserveString);
+        std::stringstream ss(reserveString);
 
         if (POSITIVE == strand) {
             for (size_t i = 0; i < transcript.getCdsVector().size(); i++) {
@@ -23,7 +23,7 @@ void TranscriptUpdateCdsInformation(Transcript &transcript, std::map<std::string
                 int end = transcript.getCdsVector()[i].getEnd();
 
                 std::string s2 = getSubsequence2(genome, transcript.getChromeSomeName(), start, end, strand);
-                cdsss << s2;
+                ss << s2;
             }
         } else {
             for (size_t i = transcript.getCdsVector().size(); i > 0; i--) {
@@ -31,11 +31,11 @@ void TranscriptUpdateCdsInformation(Transcript &transcript, std::map<std::string
                 int end = transcript.getCdsVector()[i - 1].getEnd();
 
                 std::string s2 = getSubsequence2(genome, transcript.getChromeSomeName(), start, end, strand);
-                cdsss << s2;
+                ss << s2;
             }
         }
 
-        std::string cdsSequence = cdsss.str();
+        std::string cdsSequence = ss.str();
         transcript.setCdsSequence(cdsSequence);
     }
 }

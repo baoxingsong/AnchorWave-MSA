@@ -224,7 +224,7 @@ void readSam(std::vector<AlignmentMatch> &alignmentMatchsMapT, std::ifstream &in
                 }
 
                 if (lastChr.find(elems[0]) != lastChr.end() && lastChr[elems[0]] == queryChr &&
-                    min((std::abs(lastPosition[elems[0]] - queryEnd)), std::abs(lastPosition[elems[0]] - queryStart)) < std::abs(transcriptHashMap[elems[0]].getPStart() - transcriptHashMap[elems[0]].getPEnd())) {
+                    std::min((std::abs(lastPosition[elems[0]] - queryEnd)), std::abs(lastPosition[elems[0]] - queryStart)) < std::abs(transcriptHashMap[elems[0]].getPStart() - transcriptHashMap[elems[0]].getPEnd())) {
                     blackGeneList.insert(elems[0]);
                 } // remove those genes generated weired alignment
 
@@ -268,7 +268,6 @@ void readSam(std::vector<AlignmentMatch> &alignmentMatchsMapT, std::ifstream &in
                 std::reverse(scores.begin(), scores.end());
                 if (scores.size() > expectCopy && scores[expectCopy] / scores[0] > secondarySimilarity) {
                     blackGeneList.insert(geneName);
-//                    std::cout << "removing " << geneName << " due to too much copies. " << it1->first << "\t" << scores.size() << "\t" << scores[0] << "\t" << scores[expectCopy] << std::endl;
                 }
             }
         }
@@ -470,7 +469,7 @@ void readSam(std::vector<AlignmentMatch> &alignmentMatchsMapT, std::ifstream &in
                 }
 
                 if (lastChr.find(elems[0]) != lastChr.end() && lastChr[elems[0]] == queryChr &&
-                    min((std::abs(lastPosition[elems[0]] - queryEnd)), std::abs(lastPosition[elems[0]] - queryStart)) < std::abs(transcriptHashMap[elems[0]].getPStart() - transcriptHashMap[elems[0]].getPEnd())) {
+                    std::min((std::abs(lastPosition[elems[0]] - queryEnd)), std::abs(lastPosition[elems[0]] - queryStart)) < std::abs(transcriptHashMap[elems[0]].getPStart() - transcriptHashMap[elems[0]].getPEnd())) {
                     blackGeneList.insert(elems[0]);
                 } // remove those genes generated weired alignment
 
@@ -558,16 +557,16 @@ void setupAnchorsWithSpliceAlignmentResult(const std::string &gffFilePath, const
     bool H = false;
 
     //read genome and gff file begin
-    std::map<std::string, std::vector<Transcript> > map_ts;
+    std::map<std::string, std::vector<Transcript> > map_v_ts;
     if (exonModel) {
-        readGffFile(gffFilePath, map_ts, "exon", minExon);
+        readGffFile(gffFilePath, map_v_ts, "exon", minExon);
     }
     else {
-        readGffFile(gffFilePath, map_ts, "CDS", minExon);
+        readGffFile(gffFilePath, map_v_ts, "CDS", minExon);
     }
 
     std::set<std::string> set_rm_chr;
-    for (std::map<std::string, std::vector<Transcript> >::iterator it = map_ts.begin(); it != map_ts.end(); ++it) {
+    for (std::map<std::string, std::vector<Transcript> >::iterator it = map_v_ts.begin(); it != map_v_ts.end(); ++it) {
         if (map_ref.find(it->first) == map_ref.end()) {
             set_rm_chr.insert(it->first);
         }
@@ -577,7 +576,7 @@ void setupAnchorsWithSpliceAlignmentResult(const std::string &gffFilePath, const
     }
 
     for (std::map<std::string, std::tuple<std::string, long, long, int> >::iterator it = map_ref.begin(); it != map_ref.end(); ++it) {
-        if (map_ts.find(it->first) == map_ts.end()) {
+        if (map_v_ts.find(it->first) == map_v_ts.end()) {
             set_rm_chr.insert(it->first);
         }
         if (map_qry.find(it->first) == map_qry.end()) {
@@ -586,7 +585,7 @@ void setupAnchorsWithSpliceAlignmentResult(const std::string &gffFilePath, const
     }
 
     for (std::map<std::string, std::tuple<std::string, long, long, int> >::iterator it = map_qry.begin(); it != map_qry.end(); ++it) {
-        if (map_ts.find(it->first) == map_ts.end()) {
+        if (map_v_ts.find(it->first) == map_v_ts.end()) {
             set_rm_chr.insert(it->first);
         }
         if (map_ref.find(it->first) == map_ref.end()) {
@@ -595,8 +594,8 @@ void setupAnchorsWithSpliceAlignmentResult(const std::string &gffFilePath, const
     }
 
     for (std::string chr: set_rm_chr) {
-        if (map_ts.find(chr) != map_ts.end()) {
-            map_ts.erase(chr);
+        if (map_v_ts.find(chr) != map_v_ts.end()) {
+            map_v_ts.erase(chr);
         }
 
         if (map_ref.find(chr) != map_ref.end()) {
@@ -609,7 +608,7 @@ void setupAnchorsWithSpliceAlignmentResult(const std::string &gffFilePath, const
     }
 
     std::map<std::string, Transcript> transcriptHashMap; // key is transcript name, value is a transcript structure
-    for (std::map<std::string, std::vector<Transcript> >::iterator it = map_ts.begin(); it != map_ts.end(); ++it) {
+    for (std::map<std::string, std::vector<Transcript> >::iterator it = map_v_ts.begin(); it != map_v_ts.end(); ++it) {
         for (Transcript transcript: it->second) {
             transcriptHashMap[transcript.getName()] = transcript;
         }
@@ -687,7 +686,7 @@ void setupAnchorsWithSpliceAlignmentResult(const std::string &gffFilePath, const
             alignmentMatchsMapT[orthologPair2.getRefChr()] = std::vector<AlignmentMatch>();
         }
 
-        if (orthologPair2.getRefChr() == orthologPair2.getQueryChr() && map_ts.find(orthologPair2.getRefChr()) != map_ts.end() &&
+        if (orthologPair2.getRefChr() == orthologPair2.getQueryChr() && map_v_ts.find(orthologPair2.getRefChr()) != map_v_ts.end() &&
                 map_ref.find(orthologPair2.getRefChr()) != map_ref.end() && map_qry.find(orthologPair2.getRefChr()) != map_qry.end()) {
             if (!considerInversion && orthologPair2.getStrand() == NEGATIVE) {
 
