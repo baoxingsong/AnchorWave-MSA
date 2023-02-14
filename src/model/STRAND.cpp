@@ -1,12 +1,8 @@
 #include "STRAND.h"
 
 std::ostream &operator<<(std::ostream &out, const STRAND value) {
-    static std::map<STRAND, std::string> strings;
-    if (strings.size() == 0) {
-        strings[POSITIVE] = "POSITIVE";
-        strings[NEGATIVE] = "NEGATIVE";
-    }
+    if(value == POSITIVE)
+        return out << "POSITIVE";
 
-    return out << strings[value];
+    return out << "NEGATIVE";
 }
-

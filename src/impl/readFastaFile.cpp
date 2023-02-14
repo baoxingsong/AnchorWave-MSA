@@ -33,15 +33,16 @@ void readFastaFile(const std::string &filePath, std::map<std::string, std::tuple
                 }
             }
 
-            size = 0;
-
-            name = line.substr(1, line.find(" ", 0) - 1);
-            offset += line.size() + 1;
-            if (name[0] == '>') {
-                name = name.substr(1, name.find("\t", 0) - 1);
-            } else {
-                name = name.substr(0, name.find("\t", 0) - 1);
+            size_t p_sp = line.find_first_of(" \t");
+            if(p_sp != std::string::npos) {
+                name = line.substr(1, p_sp - 1);
             }
+            else {
+                name = line.substr(1);
+            }
+
+            size = 0;
+            offset += line.size() + 1;
         } else {
             size += line.size();
             line_last = line.size();
