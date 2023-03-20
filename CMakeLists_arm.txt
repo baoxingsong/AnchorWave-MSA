@@ -14,7 +14,7 @@ find_package(ZLIB)
 add_definitions(-D__SSE2__ -D__SSE2NEON__)
 include_directories(src minimap2/sse2neon)
 
-set(CMAKE_CXX_FLAGS " -Wall -g3 -O3 -I ./ -std=gnu++14 -pthread") # the -mavx* is for GNU compiler and xCORE* are for intel compiler
+set(CMAKE_CXX_FLAGS " -Wall -g3 -O3 -I ./ -pthread") # the -mavx* is for GNU compiler and xCORE* are for intel compiler
 set(CMAKE_C_FLAGS " -Wall -g3 -O3 -I ./ -pthread")
 
 
